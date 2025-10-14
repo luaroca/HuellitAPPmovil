@@ -1,113 +1,120 @@
 import 'package:flutter/material.dart';
-import 'login_form.dart';
-import 'register_form.dart';
+import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+import 'package:huellitas/controllers/auth_controller.dart';
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+class LoginView extends StatelessWidget {
+  final AuthController authController = Get.find();
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
-  late TabController _tabController;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+  LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6FAFE),
       body: Center(
         child: SingleChildScrollView(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 410),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 26.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 20),
+                // Icono y título central
+                CircleAvatar(
+                  backgroundColor: Color(0xffffdfa5),
+                  radius: 40,
+                  child: Icon(Icons.pets, color: Color(0xffffae35), size: 48),
+                ),
                 const SizedBox(height: 24),
-                Container(
-                  width: 86,
-                  height: 86,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF09CEA5), Color(0xFF429EFF)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.favorite_outline, size: 48, color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 16),
                 const Text(
-                  'Huellitas',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF323D4F),
-                  ),
-                ),
-                const SizedBox(height: 7),
-                const Text(
-                  'Fundación de rescate y protección',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF909DAA),
-                  ),
+                  'Bienvenido a Huellitas',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 35),
+                const SizedBox(height: 6),
+                const Text(
+                  'Inicia sesión para ayudar a rescatar y proteger animales',
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+
+                // Login form
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8EBF2),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicator: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent), // Previene hover rectangular
-                    labelColor: const Color(0xFF323D4F),
-                    unselectedLabelColor: const Color(0xFF909DAA),
-                    tabs: const [
-                      Tab(child: SizedBox(height:44, child: Align(alignment: Alignment.center, child: Text('Iniciar Sesión', style: TextStyle(fontSize: 16))))),
-                      Tab(child: SizedBox(height:44, child: Align(alignment: Alignment.center, child: Text('Registrarse', style: TextStyle(fontSize: 16))))),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.13),
+                          offset: Offset(0, 2),
+                          blurRadius: 10)
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Divider(
-                  thickness: 1.2,
-                  color: Color(0xFFE8EBF2),
-                  height: 5,
-                  indent: 1,
-                  endIndent: 1,
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 380,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: const [
-                      LoginForm(),
-                      RegisterForm(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Correo electrónico',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: passwordController,
+                        decoration: const InputDecoration(
+                          labelText: 'Contraseña',
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            authController.login(
+                              emailController.text.trim(),
+                              passwordController.text.trim(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xffffae35),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: const Text('Iniciar sesión', style: TextStyle(color: Colors.white, fontSize: 18)),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Row(
+                        children: const [
+                          Expanded(child: Divider()),
+                          Text("  ¿No tienes una cuenta?  ", style: TextStyle(color: Colors.grey)),
+                          Expanded(child: Divider()),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 44,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.toNamed('/register');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            side: BorderSide(color: Color(0xffffae35)),
+                          ),
+                          child: const Text('Crear cuenta nueva', style: TextStyle(color: Color(0xffffae35))),
+                        ),
+                      )
                     ],
                   ),
                 ),

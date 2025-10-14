@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:huellitas/vistas/loginform/login.dart';
+/* import 'package:flutter/material.dart';
+import 'package:huellitas/vistas/loginform/login_view.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: LoginPage()
+      home: LoginView()
     );
   }
-}
+} */
