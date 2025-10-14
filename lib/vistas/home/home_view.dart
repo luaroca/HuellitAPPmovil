@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:huellitas/controllers/auth_controller.dart';
 import 'package:huellitas/vistas/donaciones/donacion_view.dart';
 import 'package:huellitas/vistas/reporteAnimal/reportar_animal_view.dart';
 
@@ -8,8 +10,9 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find();
+
     return Scaffold(
-      // Fondo general color crema
       backgroundColor: const Color(0xFFFFF9ED),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -28,7 +31,26 @@ class HomeView extends StatelessWidget {
           ),
         ],
         currentIndex: 0,
-        onTap: (index) {},
+        onTap: (index) async {
+          if (index == 2) {
+            final user = authController.auth.currentUser;
+            if (user != null) {
+              final doc = await authController.firestore.collection('users').doc(user.uid).get();
+              final data = doc.data();
+              if (data != null) {
+                Get.toNamed(
+                  '/userProfile',
+                  arguments: {
+                    'nombre': data['nombres'] ?? '',
+                    'correo': data['email'] ?? '',
+                    'telefono': data['telefono'] ?? '',
+                    'esAdmin': (data['role'] ?? '') == 'admin',
+                  },
+                );
+              }
+            }
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -86,13 +108,11 @@ class HomeView extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       padding: const EdgeInsets.all(12),
-                      child: const Icon(Icons.pets,
-                          size: 28, color: Colors.white),
+                      child: const Icon(Icons.pets, size: 28, color: Colors.white),
                     ),
                   ],
                 ),
               ),
-
               // Acciones Rápidas
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -106,7 +126,6 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 11),
-
               // Fila 1
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -117,8 +136,8 @@ class HomeView extends StatelessWidget {
                       icon: Icons.report,
                       title: 'Reportar Animal',
                       subtitle: 'En situación de calle',
-                      backgroundColor: const Color(0xFFFFECEC), // Rosa pálido
-                      borderColor: const Color(0xFFF28C8C), // Borde rojo claro
+                      backgroundColor: const Color(0xFFFFECEC),
+                      borderColor: const Color(0xFFF28C8C),
                       iconColor: Colors.redAccent,
                       onTap: () {
                         Navigator.push(
@@ -134,26 +153,22 @@ class HomeView extends StatelessWidget {
                       icon: Icons.card_giftcard,
                       title: 'Donar',
                       subtitle: 'Alimentos e insumos',
-                      backgroundColor: const Color(0xFFEAF9EC), // Verde claro
+                      backgroundColor: const Color(0xFFEAF9EC),
                       borderColor: const Color(0xFF9DE7A5),
                       iconColor: Colors.green,
                       onTap: () {
-                                    
-                          Navigator.push(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const DonacionView(),
                           ),
                         );
-                        
                       },
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 10),
-
               // Fila 2
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -164,7 +179,7 @@ class HomeView extends StatelessWidget {
                       icon: Icons.volunteer_activism,
                       title: 'Voluntariado',
                       subtitle: 'Únete al equipo',
-                      backgroundColor: const Color(0xFFE8F1FF), // Azul pastel
+                      backgroundColor: const Color(0xFFE8F1FF),
                       borderColor: const Color(0xFF9CC9FF),
                       iconColor: Colors.blueAccent,
                       onTap: () {},
@@ -174,18 +189,15 @@ class HomeView extends StatelessWidget {
                       icon: Icons.home_work_outlined,
                       title: 'Casas de Paso',
                       subtitle: 'Acoge temporalmente',
-                      backgroundColor: const Color(0xFFF5E9FF), // Lila claro
-                      borderColor: const Color(0xFFD5B9FF), // Borde violeta
+                      backgroundColor: const Color(0xFFF5E9FF),
+                      borderColor: const Color(0xFFD5B9FF),
                       iconColor: Colors.purple,
                       onTap: () {},
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              // Próximos Eventos
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Row(
@@ -216,7 +228,6 @@ class HomeView extends StatelessWidget {
   }
 }
 
-// Widget de tarjeta de acción rápida
 class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String title;

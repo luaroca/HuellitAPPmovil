@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF9ED),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -44,12 +45,13 @@ class LoginView extends StatelessWidget {
 
                 // Login form
                 Container(
+                  
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.white,
+                    color: const Color(0xFFFFF9ED),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.grey.withOpacity(0.13),
+                          color: const Color.fromARGB(255, 6, 1, 26).withOpacity(0.13),
                           offset: Offset(0, 2),
                           blurRadius: 10)
                     ],

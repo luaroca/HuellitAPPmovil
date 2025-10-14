@@ -16,6 +16,7 @@ class RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF9ED),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
