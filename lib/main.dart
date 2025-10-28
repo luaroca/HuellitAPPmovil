@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/vistas/adminHome/admin_home_view.dart';
+import 'package:huellitas/vistas/gestiondonacionform/gestion_donativos_view.dart';
 import 'package:huellitas/vistas/gestioneventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestioneventosform/gestion_eventos_wiew.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
@@ -73,6 +74,10 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
+        GetPage(
+          name: '/gestionDonativos',
+         page: () => GestionDonativosView(),
+        ),  
       ],
     );
   }

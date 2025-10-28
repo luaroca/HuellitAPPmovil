@@ -1,3 +1,18 @@
+enum EstadoDonacion { pendiente, confirmado, recogido, entregado }
+
+EstadoDonacion estadoFromString(String value) {
+  switch (value) {
+    case "confirmado":
+      return EstadoDonacion.confirmado;
+    case "recogido":
+      return EstadoDonacion.recogido;
+    case "entregado":
+      return EstadoDonacion.entregado;
+    default:
+      return EstadoDonacion.pendiente;
+  }
+}
+
 class DonacionModel {
   String id;
   String nombre;
@@ -8,6 +23,7 @@ class DonacionModel {
   double? lng;
   String notas;
   DateTime fecha;
+  EstadoDonacion estado;
 
   DonacionModel({
     required this.id,
@@ -19,6 +35,7 @@ class DonacionModel {
     this.lng,
     required this.notas,
     required this.fecha,
+    this.estado = EstadoDonacion.pendiente,
   });
 
   Map<String, dynamic> toMap() => {
@@ -30,6 +47,7 @@ class DonacionModel {
     'lng': lng,
     'notas': notas,
     'fecha': fecha.toIso8601String(),
+    'estado': estado.name,
   };
 
   factory DonacionModel.fromMap(Map<String, dynamic> map, String id) => DonacionModel(
@@ -42,5 +60,6 @@ class DonacionModel {
     lng: map['lng'],
     notas: map['notas'] ?? '',
     fecha: DateTime.parse(map['fecha']),
+    estado: estadoFromString(map['estado'] ?? 'pendiente'),
   );
 }

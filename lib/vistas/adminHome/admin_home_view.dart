@@ -310,46 +310,53 @@ class AdminHomeView extends StatelessWidget {
 
       // NAVBAR
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        selectedItemColor: Colors.orange[800],
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Donativos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
-        ],
-        onTap: (index) async {
-          if (index == 2) {
-            final user = authController.auth.currentUser;
-            if (user != null) {
-              final doc = await authController.firestore
-                  .collection('users')
-                  .doc(user.uid)
-                  .get();
-              final data = doc.data();
-              if (data != null) {
-                Get.toNamed('/userProfile', arguments: {
-                  'nombre': data['nombres'] ?? '',
-                  'correo': data['email'] ?? '',
-                  'telefono': data['telefono'] ?? '',
-                  'esAdmin': (data['role'] ?? '') == 'admin',
-                });
-              }
-            }
-          }
-        },
-      ),
+  backgroundColor: Colors.white,
+  type: BottomNavigationBarType.fixed,
+  currentIndex: 0, // Cambia según la vista actual si lo necesitas
+  selectedItemColor: Colors.orange[800],
+  unselectedItemColor: Colors.grey,
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home_outlined),
+      label: 'Inicio',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.card_giftcard),
+      label: 'Donativos',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person_outline),
+      label: 'Perfil',
+    ),
+  ],
+  onTap: (index) async {
+    if (index == 1) {
+      // Ir a gestión de donativos (o gestionEventos si así nombraste la ruta)
+      Get.toNamed('/gestionDonativos');
+    } else if (index == 2) {
+      final user = authController.auth.currentUser;
+      if (user != null) {
+        final doc = await authController.firestore
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        final data = doc.data();
+        if (data != null) {
+          Get.toNamed('/userProfile', arguments: {
+            'nombre': data['nombres'] ?? '',
+            'correo': data['email'] ?? '',
+            'telefono': data['telefono'] ?? '',
+            'esAdmin': (data['role'] ?? '') == 'admin',
+          });
+        }
+      }
+    } else if (index == 0) {
+      // Ir a inicio admin
+      Get.toNamed('/adminHome', arguments: {'adminName': 'Admin'});
+    }
+  },
+),
+
     );
   }
 }

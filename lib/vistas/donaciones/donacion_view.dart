@@ -37,7 +37,8 @@ class _DonacionViewState extends State<DonacionView> {
     final permiso = await Geolocator.requestPermission();
     if (permiso == LocationPermission.denied || permiso == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Permiso de ubicación denegado.')));
+        const SnackBar(content: Text('Permiso de ubicación denegado.')),
+      );
       return;
     }
     final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -86,6 +87,7 @@ class _DonacionViewState extends State<DonacionView> {
       lng: lng,
       notas: notasCtrl.text.trim(),
       fecha: DateTime.now(),
+      estado: EstadoDonacion.pendiente, // Estado inicial
     );
     await DonacionService.crearDonacion(modelo);
     if (mounted) {
