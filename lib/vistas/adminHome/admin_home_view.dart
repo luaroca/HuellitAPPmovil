@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
-import 'package:huellitas/vistas/gestioneventosform/gestion_eventos_wiew.dart';
 
 class AdminHomeView extends StatelessWidget {
   final String adminName;
@@ -16,17 +15,25 @@ class AdminHomeView extends StatelessWidget {
       backgroundColor: const Color(0xFFFFF9ED),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // CABECERA
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.only(bottom: 18),
+                padding: const EdgeInsets.all(22),
+                margin: const EdgeInsets.only(bottom: 25),
                 decoration: BoxDecoration(
-                  color: Colors.orange[800],
-                  borderRadius: BorderRadius.circular(18),
+                  color: const Color(0xFFFF9800),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.orange.withOpacity(0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,32 +42,24 @@ class AdminHomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: const [
-                              Icon(Icons.shield_rounded, color: Colors.white, size: 22),
-                              SizedBox(width: 8),
-                              Text(
-                                'Panel de Administración',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Hola, $adminName',
-                            style: const TextStyle(
+                          const Text(
+                            "Hola,",
+                            style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 22,
+                              fontSize: 18,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          Text(
+                            adminName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
                           const Text(
-                            'Gestiona toda la plataforma de Huellitas 🐾',
+                            "Bienvenido al panel administrativo 🐾",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 15,
@@ -69,99 +68,129 @@ class AdminHomeView extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.shield_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 3),
+
               const Text(
-                'Módulos Administrativos',
+                "Acciones Rápidas",
                 style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: Color(0xff616161),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color(0xFF424242),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
+
+              // GRID DE MÓDULOS
               GridView.count(
                 crossAxisCount: 2,
-                padding: EdgeInsets.zero,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 17,
-                childAspectRatio: 1.15,
-                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: 0.93,
                 children: [
                   _ModuleCard(
                     icon: Icons.pets,
                     label: 'Gestión de Animales',
-                    subtitle: 'Ver, agregar, editar',
-                    bgColor: const Color(0xFFFFF3C5),
-                    borderColor: const Color(0xFFFDE0B0),
+                    subtitle: 'Control de fichas',
+                    color: const Color(0xFFFFE0B2),
+                    borderColor: const Color(0xFFFFB74D),
                     onTap: () {},
                   ),
                   _ModuleCard(
                     icon: Icons.assignment_turned_in_rounded,
                     label: 'Adopciones',
-                    subtitle: 'Solicitudes',
-                    bgColor: const Color(0xFFFFE0F2),
-                    borderColor: const Color(0xFFFDCFEA),
+                    subtitle: 'Seguimiento y control',
+                    color: const Color(0xFFF8BBD0),
+                    borderColor: const Color(0xFFF48FB1),
                     onTap: () {},
                   ),
                   _ModuleCard(
                     icon: Icons.volunteer_activism,
                     label: 'Voluntariado',
-                    subtitle: 'Asignar tareas',
-                    bgColor: const Color(0xFFE2F1FF),
-                    borderColor: const Color(0xFFB6E3FF),
+                    subtitle: 'Gestión del equipo',
+                    color: const Color(0xFFBBDEFB),
+                    borderColor: const Color(0xFF64B5F6),
                     onTap: () {},
                   ),
                   _ModuleCard(
                     icon: Icons.report_gmailerrorred_rounded,
                     label: 'Reportes de Calle',
-                    subtitle: 'Gestión',
-                    bgColor: const Color(0xFFFFEBEB),
-                    borderColor: const Color(0xFFFFD2CF),
+                    subtitle: 'Casos reportados',
+                    color: const Color(0xFFFFCDD2),
+                    borderColor: const Color(0xFFEF9A9A),
                     onTap: () {},
                   ),
                   _ModuleCard(
                     icon: Icons.home_work_outlined,
                     label: 'Casas de Paso',
-                    subtitle: 'Asignar animales',
-                    bgColor: const Color(0xFFF3E9FF),
-                    borderColor: const Color(0xFFDFD2FF),
+                    subtitle: 'Hogares aliados',
+                    color: const Color(0xFFD1C4E9),
+                    borderColor: const Color(0xFFB39DDB),
                     onTap: () {},
                   ),
                   _ModuleCard(
                     icon: Icons.event_rounded,
                     label: 'Avisos y Jornadas',
-                    subtitle: 'Crear eventos',
-                    bgColor: const Color(0xFFFFF3E3),
-                    borderColor: const Color(0xFFFFDDC9),
-                    onTap: () {
-                      Get.toNamed('/gestionEventos');
-                    },
+                    subtitle: 'Organiza eventos',
+                    color: const Color(0xFFFFF3E0),
+                    borderColor: const Color(0xFFFFCC80),
+                    onTap: () => Get.toNamed('/gestionEventos'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Próximos Eventos',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+
+              const SizedBox(height: 28),
+
+              // EVENTOS
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'Próximos Eventos',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xFF424242),
+                    ),
+                  ),
+                  Text(
+                    'Ver todos',
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
+
               SizedBox(
-                height: 180,
-                width: double.infinity,
+                height: 190,
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('eventos')
                       .where('publico', isEqualTo: true)
-                      
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
+
                     final docs = snapshot.data?.docs ?? [];
                     if (docs.isEmpty) {
                       return const Center(
@@ -171,92 +200,101 @@ class AdminHomeView extends StatelessWidget {
                         ),
                       );
                     }
+
                     return ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: docs.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 13),
+                      separatorBuilder: (_, __) => const SizedBox(width: 14),
                       itemBuilder: (context, i) {
                         final ev = docs[i].data() as Map<String, dynamic>;
                         return Container(
                           width: 280,
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(13),
+                            borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: Colors.orange.shade100),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(.05),
-                                blurRadius: 4,
-                              )
+                                color: Colors.grey.withOpacity(0.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
                             ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 children: [
                                   Icon(Icons.label,
-                                      color: Colors.orange[300], size: 17),
+                                      color: Colors.orange[400], size: 18),
                                   const SizedBox(width: 6),
                                   Text(
                                     (ev['tipo'] ?? '').toString(),
                                     style: TextStyle(
-                                        color: Colors.orange[900],
-                                        fontWeight: FontWeight.w600),
+                                      color: Colors.orange[800],
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 7),
+                              const SizedBox(height: 8),
                               Text(
                                 (ev['titulo'] ?? ''),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ),
                                 maxLines: 2,
                               ),
-                              const SizedBox(height: 3),
+                              const SizedBox(height: 5),
                               Text(
                                 (ev['descripcion'] ?? ''),
                                 style: const TextStyle(
-                                    fontSize: 13, color: Colors.black54),
+                                  fontSize: 15,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                   height: 1.3,
+                                ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 9),
+                              const Spacer(),
                               Row(
                                 children: [
                                   Icon(Icons.event,
                                       size: 16, color: Colors.orange[300]),
-                                  const SizedBox(width: 2),
+                                  const SizedBox(width: 4),
                                   Text(ev['fecha'] ?? '',
-                                      style: const TextStyle(fontSize: 13)),
-                                  const SizedBox(width: 11),
+                                      style: const TextStyle(fontSize: 14)),
+                                  const SizedBox(width: 10),
                                   Icon(Icons.access_time,
                                       size: 16, color: Colors.blue[300]),
-                                  const SizedBox(width: 2),
+                                  const SizedBox(width: 4),
                                   Text(ev['horario'] ?? '',
-                                      style: const TextStyle(fontSize: 13)),
+                                      style: const TextStyle(fontSize: 14)),
                                 ],
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
                                   Icon(Icons.location_pin,
                                       size: 16, color: Colors.green[300]),
-                                  const SizedBox(width: 2),
+                                  const SizedBox(width: 5),
                                   Expanded(
                                     child: Text(
                                       ev['ubicacion'] ?? '',
                                       style: const TextStyle(
-                                          fontSize: 13, color: Colors.black87),
+                                        fontSize: 13,
+                                        color: Colors.black87,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         );
@@ -269,9 +307,14 @@ class AdminHomeView extends StatelessWidget {
           ),
         ),
       ),
+
+      // NAVBAR
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
+        currentIndex: 0,
+        selectedItemColor: Colors.orange[800],
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -286,30 +329,26 @@ class AdminHomeView extends StatelessWidget {
             label: 'Perfil',
           ),
         ],
-        currentIndex: 0,
         onTap: (index) async {
           if (index == 2) {
             final user = authController.auth.currentUser;
             if (user != null) {
-              final doc =
-                  await authController.firestore.collection('users').doc(user.uid).get();
+              final doc = await authController.firestore
+                  .collection('users')
+                  .doc(user.uid)
+                  .get();
               final data = doc.data();
               if (data != null) {
-                Get.toNamed(
-                  '/userProfile',
-                  arguments: {
-                    'nombre': data['nombres'] ?? '',
-                    'correo': data['email'] ?? '',
-                    'telefono': data['telefono'] ?? '',
-                    'esAdmin': (data['role'] ?? '') == 'admin',
-                  },
-                );
+                Get.toNamed('/userProfile', arguments: {
+                  'nombre': data['nombres'] ?? '',
+                  'correo': data['email'] ?? '',
+                  'telefono': data['telefono'] ?? '',
+                  'esAdmin': (data['role'] ?? '') == 'admin',
+                });
               }
             }
           }
         },
-        selectedItemColor: Colors.orange[800],
-        unselectedItemColor: Colors.grey,
       ),
     );
   }
@@ -319,7 +358,7 @@ class _ModuleCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String subtitle;
-  final Color bgColor;
+  final Color color;
   final Color borderColor;
   final VoidCallback onTap;
 
@@ -328,55 +367,60 @@ class _ModuleCard extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.subtitle,
-    required this.bgColor,
+    required this.color,
     required this.borderColor,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final scale = MediaQuery.of(context).textScaleFactor;
+
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(20),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(17),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
         decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: borderColor, width: 1.2),
+          color: color.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor, width: 1.4),
         ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: Colors.orange[900], size: 27),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Color(0xff333333),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: borderColor.withOpacity(0.25),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: borderColor, size: 34 * scale),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Color(0xFF222222),
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w500,
+                height: 1.3,
+              ),
+            ),
+          ],
         ),
       ),
     );

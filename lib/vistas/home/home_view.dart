@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
 import 'package:huellitas/vistas/donaciones/donacion_view.dart';
 import 'package:huellitas/vistas/reporteAnimal/reportar_animal_view.dart';
@@ -113,24 +114,25 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              // Acciones Rápidas
+
+              // Sección Acciones Rápidas
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Text(
                   'Acciones Rápidas',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
                     color: Colors.orange[800],
                   ),
                 ),
               ),
               const SizedBox(height: 11),
-             
+
+              // Primera fila
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _QuickActionCard(
                       icon: Icons.report,
@@ -142,9 +144,7 @@ class HomeView extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const ReportarAnimalView(),
-                          ),
+                          MaterialPageRoute(builder: (context) => const ReportarAnimalView()),
                         );
                       },
                     ),
@@ -159,26 +159,25 @@ class HomeView extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const DonacionView(),
-                          ),
+                          MaterialPageRoute(builder: (context) => const DonacionView()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
+
               const SizedBox(height: 10),
-             
+
+              // Segunda fila
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _QuickActionCard(
                       icon: Icons.volunteer_activism,
                       title: 'Voluntariado',
-                      subtitle: 'Únete al equipo',
+                      subtitle: 'Únete al equipo y ayuda',
                       backgroundColor: const Color(0xFFE8F1FF),
                       borderColor: const Color(0xFF9CC9FF),
                       iconColor: Colors.blueAccent,
@@ -197,7 +196,10 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
               ),
+
               const SizedBox(height: 24),
+
+              // Eventos
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Row(
@@ -205,10 +207,7 @@ class HomeView extends StatelessWidget {
                   children: [
                     const Text(
                       'Próximos Eventos',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                     TextButton(
                       onPressed: () {},
@@ -218,6 +217,141 @@ class HomeView extends StatelessWidget {
                       ),
                     )
                   ],
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Lista de eventos
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 17),
+                child: SizedBox(
+                  height: 165,
+                  width: double.infinity,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('eventos')
+                        .where('publico', isEqualTo: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final docs = snapshot.data?.docs ?? [];
+                      if (docs.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'Aún no hay eventos publicados.',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
+                      }
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: docs.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 16),
+                        itemBuilder: (context, i) {
+                          final ev = docs[i].data() as Map<String, dynamic>;
+                          final esAdopcion = ev['tipo'] == 'Adopción';
+                          final esEst = ev['tipo'] == 'Esterilización';
+                          final colorEtiqueta = esAdopcion
+                              ? const Color(0xFFFF9800)
+                              : (esEst ? const Color(0xFF8356EC) : Colors.blueGrey);
+                          final colorFondoEtiqueta = esAdopcion
+                              ? const Color(0xFFFFF0E0)
+                              : (esEst ? const Color(0xFFF0EFFF) : Colors.blueGrey.shade50);
+
+                          return Container(
+                            width: 265,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.orange.shade100, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(.03),
+                                  blurRadius: 3,
+                                )
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: colorFondoEtiqueta,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.folder, color: colorEtiqueta, size: 17),
+                                      const SizedBox(width: 7),
+                                      Text(
+                                        ev['tipo'] ?? '',
+                                        style: TextStyle(
+                                          color: colorEtiqueta,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  ev['titulo'] ?? '',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                Text(
+                                  ev['descripcion'] ?? '',
+                                  style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                ),
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    Icon(Icons.event, size: 14, color: Colors.orange[400]),
+                                    const SizedBox(width: 3),
+                                    Text(ev['fecha'] ?? '',
+                                        style: const TextStyle(fontSize: 12)),
+                                    const SizedBox(width: 9),
+                                    Icon(Icons.access_time,
+                                        size: 14, color: Colors.blue[300]),
+                                    const SizedBox(width: 3),
+                                    Flexible(
+                                      child: Text(
+                                        ev['horario'] ?? '',
+                                        style: const TextStyle(fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.location_pin,
+                                        size: 14, color: Colors.green[300]),
+                                    const SizedBox(width: 3),
+                                    Expanded(
+                                      child: Text(
+                                        ev['ubicacion'] ?? '',
+                                        style: const TextStyle(
+                                            fontSize: 12, color: Colors.black87),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -254,31 +388,34 @@ class _QuickActionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(16),
+          constraints: const BoxConstraints(minHeight: 130), // 🔹 Fuerza altura uniforme
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: borderColor, width: 1.3),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: iconColor, size: 30),
-              const SizedBox(height: 8),
+              Icon(icon, color: iconColor, size: 36),
+              const SizedBox(height: 10),
               Text(
                 title,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
                   color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 3),
+              const SizedBox(height: 5),
               Text(
                 subtitle,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 15,
                   color: Colors.black54,
+                  fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
               ),
