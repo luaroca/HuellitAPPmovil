@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-// Puedes recibir los datos por argumentos si estás editando
 class EventoFormView extends StatefulWidget {
   final String? id;
   final Map<String, dynamic>? initialData;
@@ -65,105 +64,106 @@ class _EventoFormViewState extends State<EventoFormView> {
     if (widget.id == null) {
       await ref.add(evento);
       Get.back();
-      Get.snackbar('Exito', '¡Evento creado correctamente!',
-          backgroundColor: Colors.green, colorText: Colors.white);
+      Get.snackbar('Éxito', '¡Evento creado correctamente!',
+          backgroundColor: Colors.green.shade400,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
     } else {
       await ref.doc(widget.id).update(evento);
       Get.back();
-      Get.snackbar('Exito', '¡Evento editado correctamente!',
-          backgroundColor: Colors.green, colorText: Colors.white);
+      Get.snackbar('Éxito', '¡Evento editado correctamente!',
+          backgroundColor: Colors.green.shade400,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      backgroundColor: const Color(0xFFA8E6CF), // Fondo menta pastel
       appBar: AppBar(
-        backgroundColor: const Color(0xFF232B47),
+        backgroundColor: const Color(0xFF55C1A7),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: Text(widget.id == null ? 'Nuevo Evento' : 'Editar Evento', style: const TextStyle(color: Colors.white)),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(36),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 18, bottom: 8),
-              child: Text(
-                widget.id == null
-                    ? 'Completa la información del evento'
-                    : 'Modifica la información del evento',
-                style: TextStyle(color: Colors.white.withOpacity(.7), fontSize: 15),
-              ),
-            ),
-          ),
+        title: Text(
+          widget.id == null ? 'Nuevo Evento' : 'Editar Evento',
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
+        centerTitle: true,
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
             width: 420,
-            padding: const EdgeInsets.all(18),
-            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+            margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.03), blurRadius: 4)],
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ],
             ),
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
+                  const Text(
+                    'Formulario de Evento',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF226776),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
                   // Título
                   TextFormField(
                     controller: tituloCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Título del Evento *',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: _inputDecoration('Título del Evento *'),
                     validator: (v) => v!.trim().isEmpty ? 'Completa este campo' : null,
                   ),
-                  const SizedBox(height: 13),
-                  // Tipo de evento
+                  const SizedBox(height: 15),
+
+                  // Tipo
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Tipo de Evento *',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: _inputDecoration('Tipo de Evento *'),
                     value: tipo.isEmpty ? null : tipo,
-                    items: tipos.map((opt) =>
-                      DropdownMenuItem(value: opt, child: Text(opt))).toList(),
+                    items: tipos
+                        .map((opt) => DropdownMenuItem(value: opt, child: Text(opt)))
+                        .toList(),
                     onChanged: (v) => setState(() => tipo = v ?? ''),
                     validator: (v) => (v == null || v.isEmpty) ? 'Selecciona un tipo' : null,
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 15),
+
                   // Descripción
                   TextFormField(
                     controller: descripcionCtrl,
                     minLines: 3,
                     maxLines: 6,
-                    decoration: const InputDecoration(
-                      labelText: 'Descripción *',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: _inputDecoration('Descripción *'),
                     validator: (v) => v!.trim().isEmpty ? 'Completa este campo' : null,
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 15),
+
+                  // Fecha y horario
                   Row(
                     children: [
                       Expanded(
                         flex: 12,
                         child: TextFormField(
                           controller: fechaCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'Fecha *',
-                            hintText: 'dd/mm/aaaa',
-                            border: OutlineInputBorder(),
-                          ),
+                          decoration: _inputDecoration('Fecha *', hint: 'dd/mm/aaaa'),
                           validator: (v) => v!.trim().isEmpty ? 'Completa la fecha' : null,
                           onTap: () async {
                             FocusScope.of(context).requestFocus(FocusNode());
@@ -185,56 +185,85 @@ class _EventoFormViewState extends State<EventoFormView> {
                         flex: 13,
                         child: TextFormField(
                           controller: horarioCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'Horario *',
-                            hintText: 'Ej: 09:00 AM - 03:00 PM',
-                            border: OutlineInputBorder(),
-                          ),
+                          decoration: _inputDecoration('Horario *', hint: 'Ej: 09:00 AM - 03:00 PM'),
                           validator: (v) => v!.trim().isEmpty ? 'Completa el horario' : null,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 15),
+
                   // Ubicación
                   TextFormField(
                     controller: ubicacionCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Ubicación *',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: _inputDecoration('Ubicación *'),
                     validator: (v) => v!.trim().isEmpty ? 'Completa este campo' : null,
                   ),
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
+
+                  // Público
                   Row(
                     children: [
                       Checkbox(
+                        activeColor: const Color(0xFF55C1A7),
                         value: publico,
                         onChanged: (v) => setState(() => publico = v ?? false),
                       ),
-                      const Text('Publicar evento (visible para usuarios)'),
+                      const Text(
+                        'Publicar evento (visible para usuarios)',
+                        style: TextStyle(color: Color(0xFF226776)),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 20),
+
+                  // Botón guardar
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
+                    height: 50,
                     child: ElevatedButton(
                       onPressed: _guardarEvento,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF232B47),
+                        backgroundColor: const Color(0xFF55C1A7),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 3,
+                      ),
+                      child: Text(
+                        widget.id == null ? 'Crear Evento' : 'Guardar Cambios',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
-                      child: Text(widget.id == null ? 'Crear Evento' : 'Guardar Cambios', style: const TextStyle(fontSize: 17)),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String label, {String? hint}) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      labelStyle: const TextStyle(color: Color(0xFF226776)),
+      hintStyle: const TextStyle(color: Colors.grey),
+      filled: true,
+      fillColor: const Color(0xFFF9F9F9),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF55C1A7)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF55C1A7), width: 2),
       ),
     );
   }

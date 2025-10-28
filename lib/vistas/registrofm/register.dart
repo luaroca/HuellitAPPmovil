@@ -16,98 +16,219 @@ class RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF9ED),
+      backgroundColor: const Color(0xFFA8E6CF), // Verde agua claro
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 26.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
-                const Icon(Icons.groups, size: 46, color: Color(0xff9c4dcc)),
-                const SizedBox(height: 12),
-                Text(
-                  'Crear Cuenta',
-                  style: TextStyle(fontSize: 28, color: Color(0xff9c4dcc), fontWeight: FontWeight.w600),
-                ),
-                const Text('Únete a la familia Huellitas', style: TextStyle(fontSize: 15, color: Colors.black54)),
                 const SizedBox(height: 30),
 
-                TextField(
-                  controller: nombresController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombres',
-                    prefixIcon: Icon(Icons.person),
-                    border: OutlineInputBorder(),
+                // Ícono principal
+                CircleAvatar(
+                  backgroundColor: const Color(0xFFFFDFA5),
+                  radius: 50,
+                  child: const Icon(Icons.groups, color: Color(0xFFFFAE35), size: 60),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Título
+                const Text(
+                  'Crear Cuenta',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1B1B1B),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  'Únete a la familia Huellitas',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF333333),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 32),
+
+                // Contenedor del formulario
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: const Color(0xFFFFF9ED),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        offset: const Offset(0, 3),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Campo Nombres
+                      TextField(
+                        controller: nombresController,
+                        decoration: InputDecoration(
+                          labelText: 'Nombres',
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          prefixIcon: const Icon(Icons.person, color: Color(0xFFFFAE35)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Campo Apellidos
+                      TextField(
+                        controller: apellidosController,
+                        decoration: InputDecoration(
+                          labelText: 'Apellidos',
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          prefixIcon: const Icon(Icons.badge, color: Color(0xFFFFAE35)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Campo Correo
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Correo Electrónico',
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          prefixIcon: const Icon(Icons.email, color: Color(0xFFFFAE35)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Campo Teléfono
+                      TextField(
+                        controller: telefonoController,
+                        decoration: InputDecoration(
+                          labelText: 'Teléfono',
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          prefixIcon: const Icon(Icons.phone, color: Color(0xFFFFAE35)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Campo Contraseña
+                      TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Contraseña',
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          prefixIcon: const Icon(Icons.lock, color: Color(0xFFFFAE35)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        obscureText: true,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+
+                      const SizedBox(height: 28),
+
+                      // Botón principal
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFAE35),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 4,
+                          ),
+                          onPressed: () {
+                            authController.register(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                              nombres: nombresController.text.trim(),
+                              apellidos: apellidosController.text.trim(),
+                              telefono: telefonoController.text.trim(),
+                            );
+                          },
+                          child: const Text(
+                            'Crear Cuenta',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // Enlace a inicio de sesión
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: const Center(
+                          child: Text(
+                            '¿Ya tienes cuenta? Inicia Sesión',
+                            style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontSize: 18,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: apellidosController,
-                  decoration: const InputDecoration(
-                    labelText: 'Apellidos',
-                    prefixIcon: Icon(Icons.badge),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Correo Electrónico',
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: telefonoController,
-                  decoration: const InputDecoration(
-                    labelText: 'Teléfono',
-                    prefixIcon: Icon(Icons.phone),
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Contraseña',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 25),
-                SizedBox(
-                  width: double.infinity,
-                  height: 47,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff9c4dcc),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                    onPressed: () {
-                      authController.register(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                        nombres: nombresController.text.trim(),
-                        apellidos: apellidosController.text.trim(),
-                        telefono: telefonoController.text.trim(),
-                      );
-                    },
-                    child: const Text('Crear Cuenta', style: TextStyle(fontSize: 17, color: Colors.white)),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: const Text('¿Ya tienes cuenta? Inicia Sesión', style: TextStyle(color: Colors.black87)),
-                ),
+
+                const SizedBox(height: 40),
               ],
             ),
           ),

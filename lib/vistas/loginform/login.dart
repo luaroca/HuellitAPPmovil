@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:huellitas/controllers/auth_controller.dart';
 
 class LoginView extends StatelessWidget {
@@ -14,7 +13,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF9ED),
+      backgroundColor: const Color(0xFFA8E6CF), // Verde agua claro
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -22,64 +21,102 @@ class LoginView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
-                
+                const SizedBox(height: 30),
+
+                // Logo
                 CircleAvatar(
-                  backgroundColor: Color(0xffffdfa5),
-                  radius: 40,
-                  child: Icon(Icons.pets, color: Color(0xffffae35), size: 48),
+                  backgroundColor: const Color(0xFFFFDFA5),
+                  radius: 50,
+                  child: const Icon(Icons.pets, color: Color(0xFFFFAE35), size: 60),
                 ),
-                const SizedBox(height: 24),
+
+                const SizedBox(height: 28),
+
+                // Título principal
                 const Text(
                   'Bienvenido a Huellitas',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1B1B1B),
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 6),
+
+                const SizedBox(height: 10),
+
+                // Subtítulo
                 const Text(
                   'Inicia sesión para ayudar a rescatar y proteger animales',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF333333),
+                    height: 1.4,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
 
-                
+                const SizedBox(height: 36),
+
+                // Contenedor principal
                 Container(
-                  
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(18),
                     color: const Color(0xFFFFF9ED),
                     boxShadow: [
                       BoxShadow(
-                          color: const Color.fromARGB(255, 6, 1, 26).withOpacity(0.13),
-                          offset: Offset(0, 2),
-                          blurRadius: 10)
+                        color: Colors.black.withOpacity(0.15),
+                        offset: const Offset(0, 3),
+                        blurRadius: 10,
+                      ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      // Campo email
                       TextField(
                         controller: emailController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Correo electrónico',
-                          border: OutlineInputBorder(),
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(fontSize: 18),
                       ),
-                      const SizedBox(height: 20),
+
+                      const SizedBox(height: 22),
+
+                      // Campo contraseña
                       TextField(
                         controller: passwordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Contraseña',
-                          border: OutlineInputBorder(),
+                          labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF333333),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         obscureText: true,
+                        style: const TextStyle(fontSize: 18),
                       ),
-                      const SizedBox(height: 24),
+
+                      const SizedBox(height: 28),
+
+                      // Botón de iniciar sesión
                       SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: 55,
                         child: ElevatedButton(
                           onPressed: () {
                             authController.login(
@@ -88,38 +125,68 @@ class LoginView extends StatelessWidget {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffffae35),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            backgroundColor: const Color(0xFFFFAE35),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 4,
                           ),
-                          child: const Text('Iniciar sesión', style: TextStyle(color: Colors.white, fontSize: 18)),
+                          child: const Text(
+                            'Iniciar sesión',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 18),
+
+                      const SizedBox(height: 22),
+
+                      // Línea divisoria
                       Row(
                         children: const [
-                          Expanded(child: Divider()),
-                          Text("  ¿No tienes una cuenta?  ", style: TextStyle(color: Colors.grey)),
-                          Expanded(child: Divider()),
+                          Expanded(child: Divider(thickness: 1.2)),
+                          Text(
+                            "  ¿No tienes una cuenta?  ",
+                            style: TextStyle(color: Colors.black54, fontSize: 16),
+                          ),
+                          Expanded(child: Divider(thickness: 1.2)),
                         ],
                       ),
-                      const SizedBox(height: 8),
+
+                      const SizedBox(height: 12),
+
+                      // Botón de crear cuenta
                       SizedBox(
                         width: double.infinity,
-                        height: 44,
+                        height: 50,
                         child: OutlinedButton(
                           onPressed: () {
                             Get.toNamed('/register');
                           },
                           style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            side: BorderSide(color: Color(0xffffae35)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: const BorderSide(color: Color(0xFFFFAE35), width: 2),
                           ),
-                          child: const Text('Crear cuenta nueva', style: TextStyle(color: Color(0xffffae35))),
+                          child: const Text(
+                            'Crear cuenta nueva',
+                            style: TextStyle(
+                              color: Color(0xFFFFAE35),
+                              fontSize: 19,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 40),
               ],
             ),
           ),

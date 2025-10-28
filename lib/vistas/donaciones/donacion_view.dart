@@ -35,13 +35,15 @@ class _DonacionViewState extends State<DonacionView> {
 
   Future<void> usarUbicacion() async {
     final permiso = await Geolocator.requestPermission();
-    if (permiso == LocationPermission.denied || permiso == LocationPermission.deniedForever) {
+    if (permiso == LocationPermission.denied ||
+        permiso == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Permiso de ubicación denegado.')),
       );
       return;
     }
-    final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final pos =
+        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = pos.latitude;
     lng = pos.longitude;
 
@@ -50,9 +52,12 @@ class _DonacionViewState extends State<DonacionView> {
       final place = placemarks.first;
       String direccionBonita = [
         if (place.street != null && place.street!.isNotEmpty) place.street!,
-        if (place.subLocality != null && place.subLocality!.isNotEmpty) place.subLocality!,
+        if (place.subLocality != null && place.subLocality!.isNotEmpty)
+          place.subLocality!,
         if (place.locality != null && place.locality!.isNotEmpty) place.locality!,
-        if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) place.administrativeArea!,
+        if (place.administrativeArea != null &&
+            place.administrativeArea!.isNotEmpty)
+          place.administrativeArea!,
         if (place.country != null && place.country!.isNotEmpty) place.country!,
       ].join(', ');
 
@@ -67,10 +72,13 @@ class _DonacionViewState extends State<DonacionView> {
       );
     } catch (e) {
       setState(() {
-        direccionCtrl.text = '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
+        direccionCtrl.text =
+            '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo obtener la dirección, usando coordenadas.')),
+        const SnackBar(
+            content:
+                Text('No se pudo obtener la dirección, usando coordenadas.')),
       );
     }
   }
@@ -87,7 +95,7 @@ class _DonacionViewState extends State<DonacionView> {
       lng: lng,
       notas: notasCtrl.text.trim(),
       fecha: DateTime.now(),
-      estado: EstadoDonacion.pendiente, // Estado inicial
+      estado: EstadoDonacion.pendiente,
     );
     await DonacionService.crearDonacion(modelo);
     if (mounted) {
@@ -102,211 +110,208 @@ class _DonacionViewState extends State<DonacionView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFFA8E6CF),
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
-        elevation: 0,
-        automaticallyImplyLeading: true,
+        backgroundColor: const Color(0xFFFFAE35),
+        elevation: 4,
         title: const Text(
           'Donar Alimentos o Insumos',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            color: Colors.white,
           ),
         ),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(22),
+        leading: const BackButton(color: Colors.white),
+        centerTitle: true,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(30),
           child: Padding(
-            padding: const EdgeInsets.only(left: 18, bottom: 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Tu donación ayuda a cuidar a los peluditos rescatados',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                ),
+            padding: EdgeInsets.only(bottom: 10),
+            child: Text(
+              'Tu donación ayuda a cuidar a los peluditos rescatados 🐾',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
               ),
             ),
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(14, 15, 14, 16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+              _buildCard([
+                _buildLabel('Nombre Completo *'),
+                _buildTextField(nombreCtrl, 'Ingresa tu nombre completo'),
+                const SizedBox(height: 16),
+                _buildLabel('Teléfono de Contacto *'),
+                _buildTextField(
+                  telefonoCtrl,
+                  '+57 300 123 4567',
+                  tipo: TextInputType.phone,
                 ),
-                margin: const EdgeInsets.only(bottom: 14),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 15, 16, 17),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Nombre Completo *", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        controller: nombreCtrl,
-                        validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)),
-                          contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Text("Teléfono de Contacto*", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        controller: telefonoCtrl,
-                        keyboardType: TextInputType.phone,
-                        validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: "+57 300 123 4567",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)),
-                          contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-                        ),
-                      ),
-                    ],
+              ]),
+              _buildCard([
+                _buildLabel('¿Qué deseas donar? *'),
+                _buildTextField(itemsCtrl,
+                    'Ej: Alimento para perros, mantas, medicamentos...'),
+              ]),
+              _buildCard([
+                _buildLabel('Dirección para Recogida *'),
+                TextFormField(
+                  controller: direccionCtrl,
+                  validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
+                  decoration: _inputDecoration(
+                    'Dirección completa',
+                    icono: const Icon(Icons.location_on_outlined,
+                        color: Color(0xFF0D7864)),
+                  ),
+                  style: const TextStyle(fontSize: 17),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF0D7864),
+                      side:
+                          const BorderSide(color: Color(0xFF0D7864), width: 1.2),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    icon: const Icon(Icons.gps_fixed),
+                    label: const Text(
+                      'Usar mi ubicación GPS',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                    ),
+                    onPressed: usarUbicacion,
                   ),
                 ),
-              ),
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                margin: const EdgeInsets.only(bottom: 14),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 15, 16, 17),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("¿Qué deseas donar? *", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        controller: itemsCtrl,
-                        validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: "Ej: Alimento para perros, Mantas, Medicamentos...",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)),
-                          contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 15, 16, 17),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Dirección para Recogida *", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        controller: direccionCtrl,
-                        validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: "Dirección completa",
-                          prefixIcon: Icon(Icons.location_on_outlined, color: Colors.green),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)),
-                          contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.green[700],
-                            side: BorderSide(color: Colors.green[300]!),
-                          ),
-                          icon: Icon(Icons.gps_fixed),
-                          label: Text('Usar mi ubicación GPS'),
-                          onPressed: usarUbicacion,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Text("Notas Adicionales", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        controller: notasCtrl,
-                        maxLines: 2,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          hintText: "Horarios disponibles, instrucciones especiales...",
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)),
-                          contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                const SizedBox(height: 18),
+                _buildLabel('Notas Adicionales'),
+                _buildTextField(notasCtrl,
+                    'Horarios disponibles, instrucciones especiales...',
+                    maxLines: 3),
+              ]),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black54,
-                        backgroundColor: Colors.grey[100],
-                        side: BorderSide(color: Colors.grey[300]!),
+                        foregroundColor: Colors.black87,
+                        side: const BorderSide(color: Colors.black26),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Cancelar'),
+                      child: const Text(
+                        'Cancelar',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: enviarDonacion,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[700],
-                        padding: EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: const Color(0xFFFFAE35),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        elevation: 3,
                       ),
-                      child: Text(
+                      child: const Text(
                         'Enviar Donación',
                         style: TextStyle(
-                          color: const Color.fromARGB(233, 39, 15, 15),
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // ---------- COMPONENTES VISUALES ---------- //
+
+  Widget _buildCard(List<Widget> children) {
+    return Card(
+      color: Colors.white,
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+        ),
+      );
+
+  Widget _buildTextField(TextEditingController controller, String hint,
+      {TextInputType tipo = TextInputType.text, int maxLines = 1}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: tipo,
+      validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
+      maxLines: maxLines,
+      decoration: _inputDecoration(hint),
+      style: const TextStyle(fontSize: 17),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint, {Icon? icono}) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: icono,
+      filled: true,
+      fillColor: const Color(0xFFF9F9F9),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.black12),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.black26),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide:
+            const BorderSide(color: Color(0xFF0D7864), width: 1.5),
       ),
     );
   }
