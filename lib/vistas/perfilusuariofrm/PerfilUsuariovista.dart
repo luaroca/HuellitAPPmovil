@@ -19,6 +19,7 @@ class PerfilUsuarioView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.find();
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9ED),
       appBar: AppBar(
@@ -33,7 +34,7 @@ class PerfilUsuarioView extends StatelessWidget {
             padding: const EdgeInsets.all(18.0),
             child: Column(
               children: [
-                // Tarjeta superior con nombre y círculo
+                // Tarjeta superior
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.orange[800],
@@ -47,12 +48,19 @@ class PerfilUsuarioView extends StatelessWidget {
                         backgroundColor: Colors.white,
                         child: Text(
                           nombre.trim().isNotEmpty
-                              ? nombre.trim().split(' ').map((e) => e[0]).take(2).join().toUpperCase()
+                              ? nombre
+                                  .trim()
+                                  .split(' ')
+                                  .map((e) => e[0])
+                                  .take(2)
+                                  .join()
+                                  .toUpperCase()
                               : 'U',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange[800],
-                              fontSize: 22),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange[800],
+                            fontSize: 22,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -91,33 +99,34 @@ class PerfilUsuarioView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 22),
-                // Información Personal
+                
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(13),
                     border: Border.all(
-                        color: Colors.grey.withOpacity(0.13), width: 1.1),
+                      color: Colors.grey.withOpacity(0.13),
+                      width: 1.1,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Información Personal',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
+                      const Text('Información Personal',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 16)),
                       const SizedBox(height: 11),
                       Row(
                         children: [
                           const Icon(Icons.email, size: 21, color: Colors.black54),
                           const SizedBox(width: 10),
-                          Text(
-                            correo,
-                            style: const TextStyle(fontSize: 15, color: Colors.black87),
+                          Expanded(
+                            child: Text(correo,
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.black87)),
                           ),
                         ],
                       ),
@@ -126,9 +135,10 @@ class PerfilUsuarioView extends StatelessWidget {
                         children: [
                           const Icon(Icons.phone, size: 21, color: Colors.black54),
                           const SizedBox(width: 10),
-                          Text(
-                            telefono,
-                            style: const TextStyle(fontSize: 15, color: Colors.black87),
+                          Expanded(
+                            child: Text(telefono,
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.black87)),
                           ),
                         ],
                       ),
@@ -143,7 +153,10 @@ class PerfilUsuarioView extends StatelessWidget {
                     icon: const Icon(Icons.logout, color: Colors.red),
                     label: const Text(
                       'Cerrar Sesión',
-                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 16),
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red),
@@ -178,7 +191,24 @@ class PerfilUsuarioView extends StatelessWidget {
           ),
         ],
         currentIndex: 2,
-        onTap: (index) {/* Navegación interna */},
+        onTap: (index) async {
+          final user = authController.auth.currentUser;
+          if (user == null) return;
+          final doc =
+              await authController.firestore.collection('users').doc(user.uid).get();
+          final data = doc.data();
+          if (data == null) return;
+          final nombre = data['nombres'] ?? '';
+          final esAdmin = (data['role'] ?? '') == 'admin';
+
+          if (index == 0) {
+            if (esAdmin) {
+              Get.offAllNamed('/adminHome', arguments: {'adminName': nombre});
+            } else {
+              Get.offAllNamed('/userHome', arguments: {'userName': nombre});
+            }
+          }
+        },
         selectedItemColor: Colors.orange[800],
         unselectedItemColor: Colors.grey,
       ),

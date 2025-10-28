@@ -126,7 +126,7 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 11),
-              // Fila 1
+             
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -169,7 +169,7 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              // Fila 2
+             
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(

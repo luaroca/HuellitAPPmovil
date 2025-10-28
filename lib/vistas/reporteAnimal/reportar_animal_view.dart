@@ -42,7 +42,7 @@ class ReportarAnimalView extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(14, 15, 14, 16),
         child: Column(
           children: [
-            // Ubicación del Animal
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -100,7 +100,7 @@ class ReportarAnimalView extends StatelessWidget {
                         icon: Icon(Icons.gps_fixed),
                         label: Text('Usar mi ubicación GPS'),
                         onPressed: () {
-                          // TODO: lógica de GPS
+                          
                         },
                       ),
                     ),
@@ -109,7 +109,7 @@ class ReportarAnimalView extends StatelessWidget {
               ),
             ),
 
-            // Fotos del Animal (sin descripción de límite)
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -136,10 +136,10 @@ class ReportarAnimalView extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 9),
-                    // Widget para subir foto
+                    
                     GestureDetector(
                       onTap: () {
-                        // TODO: lógica para cargar foto
+                        
                       },
                       child: Container(
                         width: double.infinity,
@@ -178,7 +178,7 @@ class ReportarAnimalView extends StatelessWidget {
               ),
             ),
 
-            // Información del Animal
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -247,7 +247,7 @@ class ReportarAnimalView extends StatelessWidget {
               ),
             ),
 
-            // Botones finales
+            
             Row(
               children: [
                 Expanded(
@@ -267,7 +267,7 @@ class ReportarAnimalView extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO: lógica para enviar reporte
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[600],

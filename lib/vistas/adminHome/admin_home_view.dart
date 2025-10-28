@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
+import 'package:huellitas/vistas/gestioneventosform/gestion_eventos_wiew.dart';
 
 class AdminHomeView extends StatelessWidget {
   final String adminName;
@@ -8,7 +10,7 @@ class AdminHomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find();
+    final authController = Get.find<AuthController>();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9ED),
@@ -18,7 +20,6 @@ class AdminHomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Panel superior de saludo admin
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -81,13 +82,12 @@ class AdminHomeView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              // === GRID DE MÓDULOS ===
               GridView.count(
                 crossAxisCount: 2,
                 padding: EdgeInsets.zero,
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 17,
-                childAspectRatio: 1.15, // Más altura para evitar overflow
+                childAspectRatio: 1.15,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
@@ -137,7 +137,9 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Crear eventos',
                     bgColor: const Color(0xFFFFF3E3),
                     borderColor: const Color(0xFFFFDDC9),
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed('/gestionEventos');
+                    },
                   ),
                 ],
               ),
@@ -147,25 +149,126 @@ class AdminHomeView extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 10),
-              Container(
-                height: 100,
+              SizedBox(
+                height: 180,
                 width: double.infinity,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.orange.shade100),
-                ),
-                child: const Text(
-                  'Aún no hay eventos programados.',
-                  style: TextStyle(color: Colors.grey),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('eventos')
+                      .where('publico', isEqualTo: true)
+                      
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final docs = snapshot.data?.docs ?? [];
+                    if (docs.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Aún no hay eventos publicados.',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      );
+                    }
+                    return ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: docs.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 13),
+                      itemBuilder: (context, i) {
+                        final ev = docs[i].data() as Map<String, dynamic>;
+                        return Container(
+                          width: 280,
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(13),
+                            border: Border.all(color: Colors.orange.shade100),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(.05),
+                                blurRadius: 4,
+                              )
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.label,
+                                      color: Colors.orange[300], size: 17),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    (ev['tipo'] ?? '').toString(),
+                                    style: TextStyle(
+                                        color: Colors.orange[900],
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 7),
+                              Text(
+                                (ev['titulo'] ?? ''),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
+                                maxLines: 2,
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                (ev['descripcion'] ?? ''),
+                                style: const TextStyle(
+                                    fontSize: 13, color: Colors.black54),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 9),
+                              Row(
+                                children: [
+                                  Icon(Icons.event,
+                                      size: 16, color: Colors.orange[300]),
+                                  const SizedBox(width: 2),
+                                  Text(ev['fecha'] ?? '',
+                                      style: const TextStyle(fontSize: 13)),
+                                  const SizedBox(width: 11),
+                                  Icon(Icons.access_time,
+                                      size: 16, color: Colors.blue[300]),
+                                  const SizedBox(width: 2),
+                                  Text(ev['horario'] ?? '',
+                                      style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_pin,
+                                      size: 16, color: Colors.green[300]),
+                                  const SizedBox(width: 2),
+                                  Expanded(
+                                    child: Text(
+                                      ev['ubicacion'] ?? '',
+                                      style: const TextStyle(
+                                          fontSize: 13, color: Colors.black87),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],
           ),
         ),
       ),
-      // === NAVBAR INFERIOR ===
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
@@ -188,7 +291,8 @@ class AdminHomeView extends StatelessWidget {
           if (index == 2) {
             final user = authController.auth.currentUser;
             if (user != null) {
-              final doc = await authController.firestore.collection('users').doc(user.uid).get();
+              final doc =
+                  await authController.firestore.collection('users').doc(user.uid).get();
               final data = doc.data();
               if (data != null) {
                 Get.toNamed(

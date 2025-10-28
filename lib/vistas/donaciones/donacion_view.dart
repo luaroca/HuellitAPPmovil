@@ -50,7 +50,7 @@ class DonacionView extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(14, 15, 14, 16),
         child: Column(
           children: [
-            // Datos principales del donante
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -82,7 +82,7 @@ class DonacionView extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "Teléfono de Contacto *",
+                      "Teléfono de Contacto*",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -105,7 +105,7 @@ class DonacionView extends StatelessWidget {
               ),
             ),
 
-            // Detalles de la donación
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -141,7 +141,7 @@ class DonacionView extends StatelessWidget {
               ),
             ),
 
-            // Dirección y notas, con botón GPS o manual
+            
             Card(
               elevation: 0,
               color: Colors.white,
@@ -186,8 +186,7 @@ class DonacionView extends StatelessWidget {
                         icon: Icon(Icons.gps_fixed),
                         label: Text('Usar mi ubicación GPS'),
                         onPressed: () {
-                          // TODO: lógica para capturar ubicación GPS y llenar el campo
-                          // Ejemplo: direccionController.text = "Ubicación detectada...";
+                          
                         },
                       ),
                     ),
@@ -217,7 +216,7 @@ class DonacionView extends StatelessWidget {
               ),
             ),
 
-            // Botones finales
+            
             Row(
               children: [
                 Expanded(
@@ -237,7 +236,7 @@ class DonacionView extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO: lógica para enviar donación
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green[700],

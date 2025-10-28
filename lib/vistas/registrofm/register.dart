@@ -24,7 +24,7 @@ class RegisterView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo/Icono y título
+                
                 const Icon(Icons.groups, size: 46, color: Color(0xff9c4dcc)),
                 const SizedBox(height: 12),
                 Text(
@@ -87,8 +87,8 @@ class RegisterView extends StatelessWidget {
                   height: 47,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-    backgroundColor: const Color(0xff9c4dcc),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                      backgroundColor: const Color(0xff9c4dcc),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
                     onPressed: () {
                       authController.register(
                         email: emailController.text.trim(),

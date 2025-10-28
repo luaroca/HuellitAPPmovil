@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../modelos/user_model.dart';
+
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -83,7 +83,7 @@ class AuthController extends GetxController {
         await firestore.collection('users').doc(userCredential.user!.uid).set(userDoc);
         Get.snackbar('Éxito', 'Cuenta creada correctamente',
             backgroundColor: Colors.green, colorText: Colors.white);
-        Get.offAllNamed('/login'); // Navega al login después de registrar
+        Get.offAllNamed('/login'); 
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error de registro', e.message ?? 'Ocurrió un error',

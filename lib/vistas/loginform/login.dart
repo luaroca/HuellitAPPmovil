@@ -23,7 +23,7 @@ class LoginView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                // Icono y título central
+                
                 CircleAvatar(
                   backgroundColor: Color(0xffffdfa5),
                   radius: 40,
@@ -43,7 +43,7 @@ class LoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Login form
+                
                 Container(
                   
                   decoration: BoxDecoration(
