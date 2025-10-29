@@ -5,18 +5,18 @@ import 'package:huellitas/vistas/adminHome/admin_home_view.dart';
 import 'package:huellitas/vistas/casaspaso/casa_paso_home_view.dart';
 import 'package:huellitas/vistas/casaspaso/casa_paso_view.dart';
 import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.dart';
-import 'package:huellitas/vistas/gestion_voluntario_admin_view/gestion_voluntariados_view';
-import 'package:huellitas/vistas/gestiondonacionform/gestion_donativos_view.dart';
-import 'package:huellitas/vistas/gestioneventosform/evento_form_view.dart';
-import 'package:huellitas/vistas/gestioneventosform/gestion_eventos_wiew.dart';
+import 'package:huellitas/vistas/gestion_voluntario_view/gestion_voluntariados_view.dart';
+import 'package:huellitas/vistas/gestion_donacionform/gestion_donativos_view.dart';
+import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
+import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
-import 'package:huellitas/vistas/loginform/login.dart';
-import 'package:huellitas/vistas/perfilusuariofrm/perfilusuariovista.dart';
+import 'package:huellitas/vistas/login_form/login.dart';
+import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
 import 'package:huellitas/vistas/voluntariado_view_user/regis_home_voluntario_view.dart';
 
 
 import 'controllers/auth_controller.dart';
-import 'vistas/registrofm/register.dart'; 
+import 'vistas/registro_fm/register.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

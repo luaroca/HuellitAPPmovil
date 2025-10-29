@@ -1,96 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 
-class ReportarAnimalView extends StatefulWidget {
-  const ReportarAnimalView({Key? key}) : super(key: key);
+class ReportarAnimalWidget extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController direccionCtrl;
+  final TextEditingController descripcionCtrl;
+  final TextEditingController condicionCtrl;
+  final Future<void> Function() usarUbicacion;
+  final VoidCallback enviarReporte;
 
-  @override
-  State<ReportarAnimalView> createState() => _ReportarAnimalViewState();
-}
+  const ReportarAnimalWidget({
+    Key? key,
+    required this.formKey,
+    required this.direccionCtrl,
+    required this.descripcionCtrl,
+    required this.condicionCtrl,
+    required this.usarUbicacion,
+    required this.enviarReporte,
+  }) : super(key: key);
 
-class _ReportarAnimalViewState extends State<ReportarAnimalView> {
-  final _formKey = GlobalKey<FormState>();
-
-  final direccionCtrl = TextEditingController();
-  final descripcionCtrl = TextEditingController();
-  final condicionCtrl = TextEditingController();
-
-  double? lat;
-  double? lng;
-
-  @override
-  void dispose() {
-    direccionCtrl.dispose();
-    descripcionCtrl.dispose();
-    condicionCtrl.dispose();
-    super.dispose();
-  }
-
-  // -------- FUNCIÓN GPS --------
-  Future<void> usarUbicacion() async {
-    final permiso = await Geolocator.requestPermission();
-    if (permiso == LocationPermission.denied ||
-        permiso == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Permiso de ubicación denegado.')),
-      );
-      return;
-    }
-
-    final pos =
-        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    lat = pos.latitude;
-    lng = pos.longitude;
-
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat!, lng!);
-      final place = placemarks.first;
-      String direccionBonita = [
-        if (place.street != null && place.street!.isNotEmpty) place.street!,
-        if (place.subLocality != null && place.subLocality!.isNotEmpty)
-          place.subLocality!,
-        if (place.locality != null && place.locality!.isNotEmpty) place.locality!,
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty)
-          place.administrativeArea!,
-      ].join(', ');
-
-      setState(() {
-        direccionCtrl.text = direccionBonita.isNotEmpty
-            ? direccionBonita
-            : '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ubicación capturada: $direccionBonita')),
-      );
-    } catch (e) {
-      setState(() {
-        direccionCtrl.text =
-            '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ubicación obtenida mediante coordenadas.')),
-      );
-    }
-  }
-
-  // -------- ENVÍO --------
-  void enviarReporte() {
-    if (!_formKey.currentState!.validate()) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('🐕 Reporte enviado correctamente. ¡Gracias por ayudar!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-
-    Navigator.pop(context);
-  }
-
-  // -------- UI --------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +52,7 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             children: [
               // -------- UBICACIÓN --------

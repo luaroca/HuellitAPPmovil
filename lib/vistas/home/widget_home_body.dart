@@ -3,7 +3,7 @@ import 'widget_header_home.dart';
 import 'widget_quick_action_card.dart';
 import 'widget_event_list.dart';
 import 'package:huellitas/vistas/donaciones/donacion_view.dart';
-import 'package:huellitas/vistas/reporteAnimal/reportar_animal_view.dart';
+import 'package:huellitas/vistas/reporte_animal/reportar_animal_view.dart';
 import 'package:get/get.dart';
 
 class HomeBody extends StatelessWidget {

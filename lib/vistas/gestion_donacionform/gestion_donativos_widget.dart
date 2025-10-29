@@ -3,164 +3,131 @@ import 'package:get/get.dart';
 import 'package:huellitas/controllers/donacion_controller.dart';
 import 'package:huellitas/modelos/donacion_model.dart';
 
-class GestionDonativosView extends StatelessWidget {
-  const GestionDonativosView({super.key});
+class GestionDonativosWidget extends StatelessWidget {
+  final DonacionController controller;
+
+  const GestionDonativosWidget({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.put(DonacionController());
-    return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF), // Fondo verde menta pastel
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF5594A3),
-        title: const Text(
-          'Gestión de Donativos',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => c.onInit(),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(28),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 18, bottom: 13),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Administra las donaciones recibidas',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // === Dashboard cards ===
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            child: Row(
+              children: [
+                _DashboardCardPretty(
+                  controller: controller,
+                  estado: EstadoDonacion.pendiente,
+                  color: const Color(0xFF226776),
+                  borderColor: const Color(0xFFB2DFDB),
+                  bgOpacity: 0.12,
+                  icon: Icons.hourglass_bottom,
+                  title: 'Pendientes',
                 ),
+                const SizedBox(width: 10),
+                _DashboardCardPretty(
+                  controller: controller,
+                  estado: EstadoDonacion.recogido,
+                  color: const Color(0xFF1F4E60),
+                  borderColor: const Color(0xFFD0E6E3),
+                  bgOpacity: 0.13,
+                  icon: Icons.inbox_outlined,
+                  title: 'Recogidos',
+                ),
+              ],
+            ),
+          ),
+
+          // === Filtros ===
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 7),
+            child: Center(
+              child: Wrap(
+                spacing: 8,
+                children: [
+                  _FiltroChip('todos', 'Todos', controller),
+                  _FiltroChip('pendiente', 'Pendientes', controller),
+                  _FiltroChip('recogido', 'Recogidos', controller),
+                ],
               ),
             ),
           ),
-        ),
-      ),
-      body: Obx(() {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              // Dashboard cards
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                child: Row(
-                  children: [
-                    _DashboardCardPretty(
-                      color: const Color(0xFF226776),
-                      borderColor: const Color(0xFFB2DFDB),
-                      bgOpacity: 0.12,
-                      icon: Icons.hourglass_bottom,
-                      title: 'Pendientes',
-                      value: c
-                          .contarPorEstado(EstadoDonacion.pendiente)
-                          .toString(),
-                    ),
-                    const SizedBox(width: 10),
-                    _DashboardCardPretty(
-                      color: const Color(0xFF1F4E60),
-                      borderColor: const Color(0xFFD0E6E3),
-                      bgOpacity: 0.13,
-                      icon: Icons.inbox_outlined,
-                      title: 'Recogidos',
-                      value: c
-                          .contarPorEstado(EstadoDonacion.recogido)
-                          .toString(),
-                    ),
-                  ],
-                ),
-              ),
-              // Filtros
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 7),
+
+          // === Lista reactiva ===
+          Obx(() {
+            final filtroActual = controller.filtro.value;
+            final listaBase = controller.donaciones
+                .where((d) =>
+                    d.estado == EstadoDonacion.pendiente ||
+                    d.estado == EstadoDonacion.recogido)
+                .toList();
+
+            List<DonacionModel> lista = listaBase;
+            if (filtroActual == 'pendiente') {
+              lista = listaBase
+                  .where((d) => d.estado == EstadoDonacion.pendiente)
+                  .toList();
+            } else if (filtroActual == 'recogido') {
+              lista = listaBase
+                  .where((d) => d.estado == EstadoDonacion.recogido)
+                  .toList();
+            }
+
+            if (lista.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.only(top: 50),
                 child: Center(
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      _FiltroChip('todos', 'Todos', c),
-                      _FiltroChip('pendiente', 'Pendientes', c),
-                      _FiltroChip('recogido', 'Recogidos', c),
-                    ],
+                  child: Text(
+                    'No hay donaciones registradas.',
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
+              );
+            }
+
+            return ListView.builder(
+              key: ValueKey(filtroActual), // 🔹 cambia lista al cambiar filtro
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: lista.length,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 40),
+              itemBuilder: (_, i) => _DonacionCard(
+                key: ValueKey(lista[i].id), // 🔹 clave única por elemento
+                model: lista[i],
+                controller: controller,
               ),
-              // Listado
-              Obx(() {
-                var lista = c.donacionesFiltradas
-                    .where((d) =>
-                        d.estado == EstadoDonacion.pendiente ||
-                        d.estado == EstadoDonacion.recogido)
-                    .toList();
-                if (c.filtro.value == 'pendiente') {
-                  lista = lista
-                      .where((d) => d.estado == EstadoDonacion.pendiente)
-                      .toList();
-                } else if (c.filtro.value == 'recogido') {
-                  lista = lista
-                      .where((d) => d.estado == EstadoDonacion.recogido)
-                      .toList();
-                }
-
-                if (lista.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Center(
-                      child: Text(
-                        'No hay donaciones registradas.',
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: lista.length,
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 40),
-                  itemBuilder: (_, i) =>
-                      _DonacionCard(model: lista[i], controller: c),
-                );
-              }),
-            ],
-          ),
-        );
-      }),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
 
 // === TARJETA DE DASHBOARD ===
 class _DashboardCardPretty extends StatelessWidget {
+  final DonacionController controller;
+  final EstadoDonacion estado;
   final Color color;
   final Color borderColor;
   final double bgOpacity;
   final IconData icon;
   final String title;
-  final String value;
 
   const _DashboardCardPretty({
+    required this.controller,
+    required this.estado,
     required this.color,
     required this.borderColor,
     required this.bgOpacity,
     required this.icon,
     required this.title,
-    required this.value,
   });
 
   @override
@@ -174,34 +141,38 @@ class _DashboardCardPretty extends StatelessWidget {
           border: Border.all(color: borderColor, width: 1.5),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: const Offset(1, 1))
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(1, 1),
+            )
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color.withOpacity(0.9), size: 30),
-            const SizedBox(height: 5),
-            Text(
-              value,
-              style: TextStyle(
-                color: color.withOpacity(0.95),
-                fontWeight: FontWeight.bold,
-                fontSize: 19,
+        child: Obx(() {
+          final count = controller.contarPorEstado(estado);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color.withOpacity(0.9), size: 30),
+              const SizedBox(height: 5),
+              Text(
+                count.toString(),
+                style: TextStyle(
+                  color: color.withOpacity(0.95),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 19,
+                ),
               ),
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                color: color.withOpacity(0.9),
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
+              Text(
+                title,
+                style: TextStyle(
+                  color: color.withOpacity(0.9),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -211,14 +182,14 @@ class _DashboardCardPretty extends StatelessWidget {
 class _FiltroChip extends StatelessWidget {
   final String id;
   final String label;
-  final DonacionController c;
+  final DonacionController controller;
 
-  const _FiltroChip(this.id, this.label, this.c, {super.key});
+  const _FiltroChip(this.id, this.label, this.controller, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final selected = id == c.filtro.value;
+      final selected = id == controller.filtro.value;
       return ChoiceChip(
         selected: selected,
         label: Text(
@@ -231,7 +202,7 @@ class _FiltroChip extends StatelessWidget {
         ),
         selectedColor: const Color(0xFFB2EBF2),
         backgroundColor: Colors.white,
-        onSelected: (_) => c.cambiarFiltro(id),
+        onSelected: (_) => controller.cambiarFiltro(id),
       );
     });
   }
@@ -243,6 +214,7 @@ class _DonacionCard extends StatelessWidget {
   final DonacionController controller;
 
   const _DonacionCard({
+    super.key,
     required this.model,
     required this.controller,
   });
@@ -330,11 +302,12 @@ class _DonacionCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 13),
-            // --- Items donados ---
+
+            // --- Info ---
             Row(
               children: [
-                Icon(Icons.restaurant_rounded,
-                    color: const Color(0xFF226776), size: 20),
+                const Icon(Icons.restaurant_rounded,
+                    color: Color(0xFF226776), size: 20),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -362,7 +335,8 @@ class _DonacionCard extends StatelessWidget {
                 ),
               ),
             const SizedBox(height: 10),
-            // --- Info donativo ---
+
+            // --- Info de contacto ---
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFE0F2F1),
@@ -417,6 +391,7 @@ class _DonacionCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+
             // --- Dropdown de estado ---
             DropdownButtonFormField<EstadoDonacion>(
               value: model.estado,
@@ -426,9 +401,17 @@ class _DonacionCard extends StatelessWidget {
                 DropdownMenuItem(
                     value: EstadoDonacion.recogido, child: Text('Recogido')),
               ],
-              onChanged: (value) {
+              onChanged: (value) async {
                 if (value != null && value != model.estado) {
-                  controller.actualizarEstado(model, value);
+                  await controller.actualizarEstado(model, value);
+
+                  // 🔹 Refresca la lista correctamente
+                  final index = controller.donaciones
+                      .indexWhere((d) => d.id == model.id);
+                  if (index != -1) {
+                    controller.donaciones[index].estado = value;
+                    controller.donaciones.refresh();
+                  }
                 }
               },
               decoration: InputDecoration(
