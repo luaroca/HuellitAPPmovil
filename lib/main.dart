@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/vistas/adminHome/admin_home_view.dart';
+import 'package:huellitas/vistas/casas_de_paso_view_user/casa_paso_view.dart';
+import 'package:huellitas/vistas/casaspaso/casa_paso_home_view.dart';
+import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.dart';
+import 'package:huellitas/vistas/gestion_voluntario_admin_view/gestion_voluntariados_view';
 import 'package:huellitas/vistas/gestiondonacionform/gestion_donativos_view.dart';
 import 'package:huellitas/vistas/gestioneventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestioneventosform/gestion_eventos_wiew.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/loginform/login.dart';
 import 'package:huellitas/vistas/perfilusuariofrm/perfilusuariovista.dart';
+import 'package:huellitas/vistas/voluntariado_view_user/regis_home_voluntario_view.dart';
 
 
 import 'controllers/auth_controller.dart';
@@ -62,7 +67,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/crearEvento',
-          page: () => EventoFormView(), // Formulario en blanco para crear
+          page: () => EventoFormView(), 
         ),
         GetPage(
           name: '/editarEvento',
@@ -76,8 +81,28 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/gestionDonativos',
-         page: () => GestionDonativosView(),
+          page: () => GestionDonativosView(),
         ),  
+      GetPage(
+          name: '/casasPaso',
+          page: () => CasaPasoView(userId: ''), 
+        ),
+        GetPage(
+          name: '/casasPasoHome',
+          page: () => const CasaPasoHomeView(),
+        ),
+        GetPage(
+          name: '/voluntariadoHome',
+          page: () => const VoluntariadoHomeView(),
+        ),
+        GetPage(
+          name: '/gestionVoluntariados',
+          page: () => const GestionVoluntariadosAdminView(),
+        ),
+        GetPage(
+          name: '/gestionCasasPaso',
+          page: () => const GestionCasasPasoAdminView(),
+        ),
       ],
     );
   }

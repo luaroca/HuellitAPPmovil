@@ -13,7 +13,7 @@ class AdminHomeView extends StatelessWidget {
     final scale = MediaQuery.of(context).textScaleFactor;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF9ED),
+      backgroundColor: const Color(0xFFA8E6CF),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(22.0),
@@ -129,7 +129,10 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Gestión del equipo',
                     color: const Color(0xFFBBDEFB),
                     borderColor: const Color(0xFF64B5F6),
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed('/gestionVoluntariados');
+
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.report_gmailerrorred_rounded,
@@ -145,7 +148,10 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Hogares aliados',
                     color: const Color(0xFFD1C4E9),
                     borderColor: const Color(0xFFB39DDB),
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed('/gestionCasasPaso');
+
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.event_rounded,

@@ -29,7 +29,7 @@ class PerfilUsuarioView extends StatelessWidget {
       ),
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: const Color(0xFFFFF9ED),
+        backgroundColor: const Color(0xFFA8E6CF),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
