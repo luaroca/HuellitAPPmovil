@@ -43,7 +43,7 @@ class GestionEventosView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Contadores pastel
+               
                 Row(
                   children: [
                     Expanded(
@@ -51,7 +51,7 @@ class GestionEventosView extends StatelessWidget {
                         icon: Icons.event,
                         count: total,
                         color: const Color(0xFFFFB74D),
-                        bgColor: const Color(0xFFFFF4E3), // tono suave pastel
+                        bgColor: const Color(0xFFFFF4E3), 
                         title: 'Total de eventos',
                       ),
                     ),
@@ -70,7 +70,7 @@ class GestionEventosView extends StatelessWidget {
 
                 const SizedBox(height: 22),
 
-                // Botón crear evento
+               
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -98,7 +98,7 @@ class GestionEventosView extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // Lista de eventos
+                
                 ListView.builder(
                   itemCount: docs.length,
                   shrinkWrap: true,
@@ -287,7 +287,7 @@ class GestionEventosView extends StatelessWidget {
   }
 }
 
-// -------- COMPONENTES -------- //
+
 
 class _ContadorBonito extends StatelessWidget {
   final IconData icon;

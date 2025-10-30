@@ -17,7 +17,7 @@ class LoginFormWidget extends StatelessWidget {
       children: [
         const SizedBox(height: 30),
 
-        // Logo
+        
         CircleAvatar(
           backgroundColor: const Color(0xFFFFDFA5),
           radius: 50,
@@ -26,7 +26,7 @@ class LoginFormWidget extends StatelessWidget {
 
         const SizedBox(height: 28),
 
-        // Título principal
+        
         const Text(
           'Bienvenido a Huellitas',
           style: TextStyle(
@@ -39,7 +39,7 @@ class LoginFormWidget extends StatelessWidget {
 
         const SizedBox(height: 10),
 
-        // Subtítulo
+        
         const Text(
           'Inicia sesión para ayudar a rescatar y proteger animales',
           style: TextStyle(
@@ -52,7 +52,7 @@ class LoginFormWidget extends StatelessWidget {
 
         const SizedBox(height: 36),
 
-        // Contenedor principal
+        
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
@@ -69,7 +69,7 @@ class LoginFormWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Campo email
+             
               _buildTextField(
                 controller: emailController,
                 label: 'Correo electrónico',
@@ -77,7 +77,7 @@ class LoginFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 22),
 
-              // Campo contraseña
+             
               _buildTextField(
                 controller: passwordController,
                 label: 'Contraseña',
@@ -85,7 +85,7 @@ class LoginFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // Botón de iniciar sesión
+              
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -115,7 +115,7 @@ class LoginFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 22),
 
-              // Línea divisoria
+              
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1.2)),
@@ -129,7 +129,7 @@ class LoginFormWidget extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // Botón de crear cuenta
+              
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -165,7 +165,7 @@ class LoginFormWidget extends StatelessWidget {
     );
   }
 
-  // 🔧 Campo de texto reutilizable
+  
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,

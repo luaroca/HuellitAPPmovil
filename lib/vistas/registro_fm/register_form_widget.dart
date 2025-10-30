@@ -20,7 +20,7 @@ class RegisterFormWidget extends StatelessWidget {
       children: [
         const SizedBox(height: 30),
 
-        // Ícono principal
+        
         CircleAvatar(
           backgroundColor: const Color(0xFFFFDFA5),
           radius: 50,
@@ -29,7 +29,7 @@ class RegisterFormWidget extends StatelessWidget {
 
         const SizedBox(height: 24),
 
-        // Título
+        
         const Text(
           'Crear Cuenta',
           style: TextStyle(
@@ -53,7 +53,7 @@ class RegisterFormWidget extends StatelessWidget {
 
         const SizedBox(height: 32),
 
-        // Contenedor del formulario
+        
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
@@ -70,7 +70,7 @@ class RegisterFormWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Campo Nombres
+              
               _buildTextField(
                 controller: nombresController,
                 label: 'Nombres',
@@ -78,7 +78,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Campo Apellidos
+              
               _buildTextField(
                 controller: apellidosController,
                 label: 'Apellidos',
@@ -86,7 +86,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Campo Correo
+              
               _buildTextField(
                 controller: emailController,
                 label: 'Correo Electrónico',
@@ -95,7 +95,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Campo Teléfono
+             
               _buildTextField(
                 controller: telefonoController,
                 label: 'Teléfono',
@@ -104,7 +104,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Campo Contraseña
+              
               _buildTextField(
                 controller: passwordController,
                 label: 'Contraseña',
@@ -113,7 +113,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // Botón principal
+              
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -146,7 +146,7 @@ class RegisterFormWidget extends StatelessWidget {
               ),
               const SizedBox(height: 18),
 
-              // Enlace a inicio de sesión
+              
               GestureDetector(
                 onTap: () {
                   Get.back();
@@ -171,7 +171,7 @@ class RegisterFormWidget extends StatelessWidget {
     );
   }
 
-  // 🔧 Campo de texto reutilizable
+  
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,

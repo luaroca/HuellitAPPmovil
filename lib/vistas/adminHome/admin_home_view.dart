@@ -20,7 +20,7 @@ class AdminHomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ===== CABECERA =====
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(26),
@@ -87,7 +87,7 @@ class AdminHomeView extends StatelessWidget {
                 ),
               ),
 
-              // ===== TÍTULO DE ACCIONES =====
+              
               const Text(
                 "Acciones Rápidas",
                 style: TextStyle(
@@ -98,7 +98,7 @@ class AdminHomeView extends StatelessWidget {
               ),
               const SizedBox(height: 18),
 
-              // ===== GRID DE MÓDULOS =====
+              
               GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 14,
@@ -166,7 +166,7 @@ class AdminHomeView extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              // ===== SECCIÓN EVENTOS =====
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -320,7 +320,7 @@ class AdminHomeView extends StatelessWidget {
         ),
       ),
 
-      // ===== NAVBAR =====
+      
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
@@ -370,7 +370,7 @@ class AdminHomeView extends StatelessWidget {
   }
 }
 
-// ===== CARD DE MÓDULO =====
+
 class _ModuleCard extends StatelessWidget {
   final IconData icon;
   final String label;

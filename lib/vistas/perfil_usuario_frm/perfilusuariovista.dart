@@ -46,7 +46,7 @@ class PerfilUsuarioView extends StatelessWidget {
           onLogout: () => authController.logout(),
         ),
 
-        // navegación inferior
+       
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,

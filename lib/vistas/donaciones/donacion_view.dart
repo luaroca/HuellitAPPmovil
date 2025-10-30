@@ -34,7 +34,8 @@ class _DonacionViewState extends State<DonacionView> {
     super.dispose();
   }
 
-  // --- CAPTURAR UBICACIÓN ---
+  
+  
   Future<void> usarUbicacion() async {
     final permiso = await Geolocator.requestPermission();
     if (permiso == LocationPermission.denied ||
@@ -86,7 +87,7 @@ class _DonacionViewState extends State<DonacionView> {
     }
   }
 
-  // --- ENVIAR DONACIÓN ---
+  
   Future<void> enviarDonacion() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -129,17 +130,21 @@ class _DonacionViewState extends State<DonacionView> {
             color: Colors.white,
           ),
         ),
-        leading: const BackButton(color: Colors.white),
         centerTitle: true,
+        leading: const BackButton(color: Colors.white),
         bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(30),
+          preferredSize: Size.fromHeight(50),
           child: Padding(
-            padding: EdgeInsets.only(bottom: 10),
-            child: Text(
-              'Tu donación ayuda a cuidar a los peluditos rescatados 🐾',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
+            padding: EdgeInsets.only(bottom: 12, left: 20, right: 20),
+            child: Center(
+              child: Text(
+                ' Tu donación ayuda a cuidar a los peluditos rescatados ',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),

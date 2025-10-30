@@ -8,11 +8,11 @@ class GestionDonativosView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Aseguramos una única instancia para esta vista
+    
     final c = Get.put(DonacionController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF), // Fondo verde menta pastel
+      backgroundColor: const Color(0xFFA8E6CF), 
       appBar: AppBar(
         backgroundColor: const Color(0xFF5594A3),
         title: const Text(
@@ -49,7 +49,7 @@ class GestionDonativosView extends StatelessWidget {
           ),
         ),
       ),
-      // Pasamos el controller al widget visual (el widget se encargará de sus Obx internos)
+     
       body: GestionDonativosWidget(controller: c),
     );
   }

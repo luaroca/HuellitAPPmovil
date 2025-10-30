@@ -55,7 +55,7 @@ class ReportarAnimalWidget extends StatelessWidget {
           key: formKey,
           child: Column(
             children: [
-              // -------- UBICACIÓN --------
+              
               _buildCard([
                 _buildSectionHeader("Ubicación del Animal", Icons.location_on_outlined),
                 const SizedBox(height: 12),
@@ -89,7 +89,7 @@ class ReportarAnimalWidget extends StatelessWidget {
                 ),
               ]),
 
-              // -------- FOTOS --------
+              
               _buildCard([
                 _buildSectionHeader("Fotos del Animal", Icons.photo_camera_outlined),
                 const SizedBox(height: 12),
@@ -126,7 +126,7 @@ class ReportarAnimalWidget extends StatelessWidget {
                 ),
               ]),
 
-              // -------- INFORMACIÓN --------
+              
               _buildCard([
                 _buildSectionHeader("Información del Animal", Icons.pets_outlined),
                 const SizedBox(height: 12),
@@ -151,7 +151,7 @@ class ReportarAnimalWidget extends StatelessWidget {
                 ),
               ]),
 
-              // -------- BOTONES --------
+              
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -202,7 +202,7 @@ class ReportarAnimalWidget extends StatelessWidget {
     );
   }
 
-  // -------- COMPONENTES VISUALES --------
+  
   Widget _buildCard(List<Widget> children) => Card(
         color: Colors.white,
         elevation: 3,

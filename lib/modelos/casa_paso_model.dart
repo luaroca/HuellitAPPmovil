@@ -1,6 +1,6 @@
 class CasaPasoModel {
   String id;
-  String userId; // Nuevo campo
+  String userId; 
   String nombre;
   String telefono;
   String direccion;

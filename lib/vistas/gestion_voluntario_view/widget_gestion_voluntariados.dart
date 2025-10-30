@@ -48,7 +48,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // 🔹 Filtros superiores
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: LayoutBuilder(
@@ -73,7 +73,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Lista de voluntarios
+            
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: streamVoluntarios,
@@ -95,7 +95,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                     );
                   }
 
-                  // 🔹 Filtrado de resultados
+                  
                   final filtrados = docs.where((d) {
                     final data = d.data() as Map<String, dynamic>;
                     final dias = List<String>.from(data['dias'] ?? []);
@@ -139,7 +139,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // 🔸 Widget del filtro de días
+  
   Widget _filtroDias() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
@@ -160,7 +160,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // 🔸 Widget del filtro de intereses
+  
   Widget _filtroIntereses() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
@@ -181,7 +181,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // 🔹 Tarjeta del voluntario
+  
   Widget _tarjetaVoluntario(VoluntarioModel v, TextTheme textTheme) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -232,7 +232,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // 🔹 Fila de información dentro de la tarjeta
+  
   Widget _infoFila(IconData icon, String titulo, String valor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 7),

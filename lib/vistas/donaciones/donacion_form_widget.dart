@@ -133,7 +133,7 @@ class DonacionFormWidget extends StatelessWidget {
     );
   }
 
-  // ---------- COMPONENTES DE UI ---------- //
+ 
 
   Widget _buildCard(List<Widget> children) {
     return Card(

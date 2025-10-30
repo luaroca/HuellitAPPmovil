@@ -44,7 +44,7 @@ class WidgetVoluntariadoHome extends StatelessWidget {
     );
   }
 
-  /// Vista cuando el usuario no está registrado
+  
   Widget _noVoluntarioWidget() {
     return Center(
       child: Padding(
@@ -85,7 +85,7 @@ class WidgetVoluntariadoHome extends StatelessWidget {
     );
   }
 
-  /// Tarjeta con los datos del voluntario
+
   Widget _voluntarioCardWidget(VoluntarioModel voluntario) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 25),
@@ -166,7 +166,7 @@ class WidgetVoluntariadoHome extends StatelessWidget {
     );
   }
 
-  /// Fila con ícono + texto grande y legible
+  
   Widget _infoRow(IconData icon, String label, String valor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7),

@@ -4,7 +4,7 @@ class VoluntarioModel {
   String correo;
   String telefono;
   List<String> dias;
-  String horario; // horario disponible, string simple
+  String horario; 
   List<String> intereses;
 
   VoluntarioModel({

@@ -24,7 +24,7 @@ class PerfilWidget extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              // Encabezado
+              
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -42,7 +42,7 @@ class PerfilWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Texto izquierda
+                    
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +107,7 @@ class PerfilWidget extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              // Información personal
+              
               Container(
                 width: double.infinity,
                 padding:
@@ -180,7 +180,7 @@ class PerfilWidget extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Botón cerrar sesión
+              
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(

@@ -32,7 +32,7 @@ class HomeBody extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Fila 1
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Row(
@@ -73,7 +73,7 @@ class HomeBody extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Fila 2
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Row(

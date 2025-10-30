@@ -81,7 +81,7 @@ class _EventoFormViewState extends State<EventoFormView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF), // Fondo menta pastel
+      backgroundColor: const Color(0xFFA8E6CF), 
       appBar: AppBar(
         backgroundColor: const Color(0xFF55C1A7),
         elevation: 0,
@@ -126,7 +126,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Título
+                  
                   TextFormField(
                     controller: tituloCtrl,
                     decoration: _inputDecoration('Título del Evento *'),
@@ -134,7 +134,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Tipo
+                  
                   DropdownButtonFormField<String>(
                     decoration: _inputDecoration('Tipo de Evento *'),
                     value: tipo.isEmpty ? null : tipo,
@@ -146,7 +146,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Descripción
+                
                   TextFormField(
                     controller: descripcionCtrl,
                     minLines: 3,
@@ -156,7 +156,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Fecha y horario
+                  
                   Row(
                     children: [
                       Expanded(
@@ -193,7 +193,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Ubicación
+                  
                   TextFormField(
                     controller: ubicacionCtrl,
                     decoration: _inputDecoration('Ubicación *'),
@@ -201,7 +201,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Público
+                  
                   Row(
                     children: [
                       Checkbox(
@@ -217,7 +217,7 @@ class _EventoFormViewState extends State<EventoFormView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Botón guardar
+                
                   SizedBox(
                     width: double.infinity,
                     height: 50,

@@ -13,7 +13,7 @@ class GestionDonativosWidget extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // === Dashboard cards ===
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             child: Row(
@@ -41,7 +41,7 @@ class GestionDonativosWidget extends StatelessWidget {
             ),
           ),
 
-          // === Filtros ===
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 7),
             child: Center(
@@ -56,7 +56,7 @@ class GestionDonativosWidget extends StatelessWidget {
             ),
           ),
 
-          // === Lista reactiva ===
+          
           Obx(() {
             final filtroActual = controller.filtro.value;
             final listaBase = controller.donaciones
@@ -92,13 +92,13 @@ class GestionDonativosWidget extends StatelessWidget {
             }
 
             return ListView.builder(
-              key: ValueKey(filtroActual), // 🔹 cambia lista al cambiar filtro
+              key: ValueKey(filtroActual), 
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: lista.length,
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 40),
               itemBuilder: (_, i) => _DonacionCard(
-                key: ValueKey(lista[i].id), // 🔹 clave única por elemento
+                key: ValueKey(lista[i].id), 
                 model: lista[i],
                 controller: controller,
               ),
@@ -110,7 +110,7 @@ class GestionDonativosWidget extends StatelessWidget {
   }
 }
 
-// === TARJETA DE DASHBOARD ===
+
 class _DashboardCardPretty extends StatelessWidget {
   final DonacionController controller;
   final EstadoDonacion estado;
@@ -178,7 +178,7 @@ class _DashboardCardPretty extends StatelessWidget {
   }
 }
 
-// === CHIP DE FILTRO ===
+
 class _FiltroChip extends StatelessWidget {
   final String id;
   final String label;
@@ -208,7 +208,7 @@ class _FiltroChip extends StatelessWidget {
   }
 }
 
-// === TARJETA DE DONACIÓN ===
+
 class _DonacionCard extends StatelessWidget {
   final DonacionModel model;
   final DonacionController controller;
@@ -259,7 +259,7 @@ class _DonacionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Header ---
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -303,7 +303,7 @@ class _DonacionCard extends StatelessWidget {
             ),
             const SizedBox(height: 13),
 
-            // --- Info ---
+          
             Row(
               children: [
                 const Icon(Icons.restaurant_rounded,
@@ -336,7 +336,7 @@ class _DonacionCard extends StatelessWidget {
               ),
             const SizedBox(height: 10),
 
-            // --- Info de contacto ---
+            
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFE0F2F1),
@@ -392,7 +392,7 @@ class _DonacionCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // --- Dropdown de estado ---
+           
             DropdownButtonFormField<EstadoDonacion>(
               value: model.estado,
               items: const [
@@ -405,7 +405,7 @@ class _DonacionCard extends StatelessWidget {
                 if (value != null && value != model.estado) {
                   await controller.actualizarEstado(model, value);
 
-                  // 🔹 Refresca la lista correctamente
+                  
                   final index = controller.donaciones
                       .indexWhere((d) => d.id == model.id);
                   if (index != -1) {

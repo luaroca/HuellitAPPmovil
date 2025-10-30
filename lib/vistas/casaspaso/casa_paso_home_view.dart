@@ -35,7 +35,7 @@ class _CasaPasoHomeViewState extends State<CasaPasoHomeView> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await Get.to(() => CasaPasoView(userId: user.uid));
-      await cargar(); // recarga datos después de crear o modificar
+      await cargar(); 
     }
   }
 
@@ -116,7 +116,7 @@ class _CasaPasoHomeViewState extends State<CasaPasoHomeView> {
     );
   }
 
-  /// Vista cuando el usuario no tiene casa registrada
+  
   Widget _noCasaWidget() {
     return Center(
       child: Padding(
@@ -157,7 +157,7 @@ class _CasaPasoHomeViewState extends State<CasaPasoHomeView> {
     );
   }
 
-  /// Tarjeta con los datos de la casa registrada
+  
   Widget _casaCardWidget() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -230,7 +230,7 @@ class _CasaPasoHomeViewState extends State<CasaPasoHomeView> {
     );
   }
 
-  /// Fila informativa con ícono + texto grande y legible
+  
   Widget _infoRow(IconData icon, String label, String valor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),

@@ -28,7 +28,7 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
     super.dispose();
   }
 
-  // -------- FUNCIÓN GPS --------
+  
   Future<void> usarUbicacion() async {
     final permiso = await Geolocator.requestPermission();
     if (permiso == LocationPermission.denied ||
@@ -77,13 +77,13 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
     }
   }
 
-  // -------- ENVÍO --------
+  
   void enviarReporte() {
     if (!_formKey.currentState!.validate()) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text(' Reporte enviado correctamente. ¡Gracias por ayudar!'),
+        content: Text(' Reporte enviado '),
         backgroundColor: Colors.green,
       ),
     );
