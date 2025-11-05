@@ -47,7 +47,7 @@ class HomeBody extends StatelessWidget {
                     iconColor: Colors.redAccent,
                     onTap: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const ReportarAnimalView()),
+                        MaterialPageRoute(builder: (context) => ReportarAnimalView()),
                       );
                     },
                   ),
@@ -63,7 +63,7 @@ class HomeBody extends StatelessWidget {
                     iconColor: Colors.green.shade700,
                     onTap: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const DonacionView()),
+                        MaterialPageRoute(builder: (context) => DonacionView()),
                       );
                     },
                   ),

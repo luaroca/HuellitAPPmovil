@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:huellitas/modelos/donacion_model.dart';
 import 'package:huellitas/servicios/donacion_service.dart';
 
@@ -24,6 +25,29 @@ class _DonacionViewState extends State<DonacionView> {
   double? lng;
 
   @override
+  void initState() {
+    super.initState();
+    cargarDatosUsuario();
+  }
+
+  Future<void> cargarDatosUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      final data = doc.data();
+      if (data != null) {
+        nombreCtrl.text = (data['nombres'] ?? '').toString();
+        telefonoCtrl.text = (data['telefono'] ?? '').toString();
+        setState(() {}); // Refresca la vista al cargar los datos
+      }
+    }
+  }
+
+  @override
   void dispose() {
     nombreCtrl.dispose();
     telefonoCtrl.dispose();
@@ -42,8 +66,7 @@ class _DonacionViewState extends State<DonacionView> {
       );
       return;
     }
-    final pos =
-        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = pos.latitude;
     lng = pos.longitude;
 
@@ -52,12 +75,9 @@ class _DonacionViewState extends State<DonacionView> {
       final place = placemarks.first;
       String direccionBonita = [
         if (place.street != null && place.street!.isNotEmpty) place.street!,
-        if (place.subLocality != null && place.subLocality!.isNotEmpty)
-          place.subLocality!,
+        if (place.subLocality != null && place.subLocality!.isNotEmpty) place.subLocality!,
         if (place.locality != null && place.locality!.isNotEmpty) place.locality!,
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty)
-          place.administrativeArea!,
+        if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) place.administrativeArea!,
         if (place.country != null && place.country!.isNotEmpty) place.country!,
       ].join(', ');
 
@@ -72,13 +92,10 @@ class _DonacionViewState extends State<DonacionView> {
       );
     } catch (e) {
       setState(() {
-        direccionCtrl.text =
-            '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
+        direccionCtrl.text = '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('No se pudo obtener la dirección, usando coordenadas.')),
+        const SnackBar(content: Text('No se pudo obtener la dirección, usando coordenadas.')),
       );
     }
   }
@@ -149,16 +166,11 @@ class _DonacionViewState extends State<DonacionView> {
                 _buildTextField(nombreCtrl, 'Ingresa tu nombre completo'),
                 const SizedBox(height: 16),
                 _buildLabel('Teléfono de Contacto *'),
-                _buildTextField(
-                  telefonoCtrl,
-                  '+57 300 123 4567',
-                  tipo: TextInputType.phone,
-                ),
+                _buildTextField(telefonoCtrl, '+57 300 123 4567', tipo: TextInputType.phone),
               ]),
               _buildCard([
                 _buildLabel('¿Qué deseas donar? *'),
-                _buildTextField(itemsCtrl,
-                    'Ej: Alimento para perros, mantas, medicamentos...'),
+                _buildTextField(itemsCtrl, 'Ej: Alimento para perros, mantas, medicamentos...'),
               ]),
               _buildCard([
                 _buildLabel('Dirección para Recogida *'),
@@ -167,8 +179,7 @@ class _DonacionViewState extends State<DonacionView> {
                   validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
                   decoration: _inputDecoration(
                     'Dirección completa',
-                    icono: const Icon(Icons.location_on_outlined,
-                        color: Color(0xFF0D7864)),
+                    icono: const Icon(Icons.location_on_outlined, color: Color(0xFF0D7864)),
                   ),
                   style: const TextStyle(fontSize: 17),
                 ),
@@ -179,25 +190,20 @@ class _DonacionViewState extends State<DonacionView> {
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF0D7864),
-                      side:
-                          const BorderSide(color: Color(0xFF0D7864), width: 1.2),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      side: const BorderSide(color: Color(0xFF0D7864), width: 1.2),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     icon: const Icon(Icons.gps_fixed),
                     label: const Text(
                       'Usar mi ubicación GPS',
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                     ),
                     onPressed: usarUbicacion,
                   ),
                 ),
                 const SizedBox(height: 18),
                 _buildLabel('Notas Adicionales'),
-                _buildTextField(notasCtrl,
-                    'Horarios disponibles, instrucciones especiales...',
-                    maxLines: 3),
+                _buildTextField(notasCtrl, 'Horarios disponibles, instrucciones especiales...', maxLines: 3),
               ]),
               const SizedBox(height: 20),
               Row(
@@ -209,8 +215,7 @@ class _DonacionViewState extends State<DonacionView> {
                         foregroundColor: Colors.black87,
                         side: const BorderSide(color: Colors.black26),
                         backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: const Text(
@@ -226,8 +231,7 @@ class _DonacionViewState extends State<DonacionView> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFAE35),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         elevation: 3,
                       ),
                       child: const Text(
@@ -280,8 +284,12 @@ class _DonacionViewState extends State<DonacionView> {
         ),
       );
 
-  Widget _buildTextField(TextEditingController controller, String hint,
-      {TextInputType tipo = TextInputType.text, int maxLines = 1}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint, {
+    TextInputType tipo = TextInputType.text,
+    int maxLines = 1,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: tipo,
@@ -298,8 +306,7 @@ class _DonacionViewState extends State<DonacionView> {
       prefixIcon: icono,
       filled: true,
       fillColor: const Color(0xFFF9F9F9),
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.black12),
@@ -310,8 +317,7 @@ class _DonacionViewState extends State<DonacionView> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide:
-            const BorderSide(color: Color(0xFF0D7864), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFF0D7864), width: 1.5),
       ),
     );
   }
