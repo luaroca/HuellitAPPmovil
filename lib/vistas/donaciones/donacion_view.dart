@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:huellitas/modelos/donacion_model.dart';
 import 'package:huellitas/servicios/donacion_service.dart';
 import 'donacion_form_widget.dart';
@@ -25,6 +27,28 @@ class _DonacionViewState extends State<DonacionView> {
   double? lng;
 
   @override
+  void initState() {
+    super.initState();
+    _cargarDatosUsuario(); 
+  }
+
+  Future<void> _cargarDatosUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final data = doc.data();
+      if (data != null) {
+        nombreCtrl.text = (data['nombres'] ?? '').toString();
+        telefonoCtrl.text = (data['telefono'] ?? '').toString();
+        setState(() {});
+      }
+    }
+  }
+
+  @override
   void dispose() {
     nombreCtrl.dispose();
     telefonoCtrl.dispose();
@@ -34,8 +58,6 @@ class _DonacionViewState extends State<DonacionView> {
     super.dispose();
   }
 
-  
-  
   Future<void> usarUbicacion() async {
     final permiso = await Geolocator.requestPermission();
     if (permiso == LocationPermission.denied ||
@@ -46,8 +68,7 @@ class _DonacionViewState extends State<DonacionView> {
       return;
     }
 
-    final pos =
-        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = pos.latitude;
     lng = pos.longitude;
 
@@ -56,12 +77,9 @@ class _DonacionViewState extends State<DonacionView> {
       final place = placemarks.first;
       String direccionBonita = [
         if (place.street != null && place.street!.isNotEmpty) place.street!,
-        if (place.subLocality != null && place.subLocality!.isNotEmpty)
-          place.subLocality!,
+        if (place.subLocality != null && place.subLocality!.isNotEmpty) place.subLocality!,
         if (place.locality != null && place.locality!.isNotEmpty) place.locality!,
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty)
-          place.administrativeArea!,
+        if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) place.administrativeArea!,
         if (place.country != null && place.country!.isNotEmpty) place.country!,
       ].join(', ');
 
@@ -76,18 +94,14 @@ class _DonacionViewState extends State<DonacionView> {
       );
     } catch (e) {
       setState(() {
-        direccionCtrl.text =
-            '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
+        direccionCtrl.text = '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('No se pudo obtener la dirección, usando coordenadas.')),
+        const SnackBar(content: Text('No se pudo obtener la dirección, usando coordenadas.')),
       );
     }
   }
 
-  
   Future<void> enviarDonacion() async {
     if (!_formKey.currentState!.validate()) return;
 

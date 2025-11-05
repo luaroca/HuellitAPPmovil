@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/modelos/voluntario_model.dart';
 import 'package:huellitas/controllers/voluntario_controller.dart';
 import 'registro_voluntario_widget.dart';
@@ -18,18 +20,34 @@ class _RegistroVoluntarioViewState extends State<RegistroVoluntarioView> {
   final telefonoCtrl = TextEditingController();
   final horarioCtrl = TextEditingController();
 
-  final diasSemana = [
-    'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábados', 'Domingos'
-  ];
-  final interesesList = [
-    'Rescates', 'Jornadas de adopción', 'Esterilización',
-    'Alimentación', 'Redes sociales', 'Eventos y campañas'
-  ];
+  final diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábados', 'Domingos'];
+  final interesesList = ['Rescates', 'Jornadas de adopción', 'Esterilización', 'Alimentación', 'Redes sociales', 'Eventos y campañas'];
 
   List<String> diasSeleccionados = [];
   List<String> interesesSeleccionados = [];
 
   final controller = Get.put(VoluntarioController());
+
+  @override
+  void initState() {
+    super.initState();
+    cargarDatosUsuario();
+  }
+
+  Future<void> cargarDatosUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final data = doc.data();
+      if (data != null) {
+        setState(() {
+          nombreCtrl.text = (data['nombres'] ?? '').toString();
+          correoCtrl.text = (data['email'] ?? '').toString();
+          telefonoCtrl.text = (data['telefono'] ?? '').toString();
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -43,21 +61,15 @@ class _RegistroVoluntarioViewState extends State<RegistroVoluntarioView> {
   void enviar() async {
     if (!_formKey.currentState!.validate()) return;
     if (diasSeleccionados.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debes seleccionar al menos un día.')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Debes seleccionar al menos un día.')));
       return;
     }
     if (interesesSeleccionados.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona mínimo un área de interés.')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Selecciona mínimo un área de interés.')));
       return;
     }
     if (horarioCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debes ingresar tu horario disponible.')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Debes ingresar tu horario disponible.')));
       return;
     }
 
@@ -73,10 +85,7 @@ class _RegistroVoluntarioViewState extends State<RegistroVoluntarioView> {
     await controller.registrarVoluntario(modelo);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('¡Registro exitoso!'),
-        backgroundColor: Colors.green,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('¡Registro exitoso!'), backgroundColor: Colors.green,));
       Navigator.pop(context);
     }
   }
@@ -110,12 +119,8 @@ class _RegistroVoluntarioViewState extends State<RegistroVoluntarioView> {
         interesesSeleccionados: interesesSeleccionados,
         onEnviar: enviar,
         controller: controller,
-        onActualizarDias: (List<String> nuevosDias) {
-          setState(() => diasSeleccionados = nuevosDias);
-        },
-        onActualizarIntereses: (List<String> nuevosIntereses) {
-          setState(() => interesesSeleccionados = nuevosIntereses);
-        },
+        onActualizarDias: (nuevosDias) { setState(() => diasSeleccionados = nuevosDias); },
+        onActualizarIntereses: (nuevosIntereses) { setState(() => interesesSeleccionados = nuevosIntereses); },
       ),
     );
   }
