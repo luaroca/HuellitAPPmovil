@@ -28,7 +28,7 @@ class LoginFormWidget extends StatelessWidget {
 
         
         const Text(
-          'Bienvenido a Huellitas',
+          'Bienvenido a HelPet',
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,

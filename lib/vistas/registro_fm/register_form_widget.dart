@@ -43,7 +43,7 @@ class RegisterFormWidget extends StatelessWidget {
         const SizedBox(height: 8),
 
         const Text(
-          'Únete a la familia Huellitas',
+          'Únete a la comunidad',
           style: TextStyle(
             fontSize: 18,
             color: Color(0xFF333333),
