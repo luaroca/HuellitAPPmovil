@@ -41,7 +41,7 @@ class HeaderHome extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Gracias por ser parte de la familia Huellitas 🐾',
+                  'Gracias por ser parte de la familia🐾',
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ],

@@ -34,6 +34,30 @@ class RegistroVoluntarioWidget extends StatelessWidget {
     required this.onActualizarIntereses,
   });
 
+  Future<void> _seleccionarHorario(BuildContext context) async {
+    // Selecciona hora de inicio
+    final TimeOfDay? horaInicio = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      helpText: 'Selecciona hora de inicio',
+    );
+
+    if (horaInicio == null) return;
+
+    // Selecciona hora de fin
+    final TimeOfDay? horaFin = await showTimePicker(
+      context: context,
+      initialTime: horaInicio.replacing(hour: horaInicio.hour + 1),
+      helpText: 'Selecciona hora de fin',
+    );
+
+    if (horaFin == null) return;
+
+    // Guarda el resultado formateado
+    final String rango = '${horaInicio.format(context)} - ${horaFin.format(context)}';
+    horarioCtrl.text = rango;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -102,6 +126,7 @@ class RegistroVoluntarioWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+
                   Wrap(
                     spacing: 10,
                     runSpacing: 8,
@@ -125,7 +150,8 @@ class RegistroVoluntarioWidget extends StatelessWidget {
                         backgroundColor: Colors.grey[200],
                         selectedColor: const Color(0xFF226776),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 6),
                       );
@@ -133,10 +159,16 @@ class RegistroVoluntarioWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  _inputDecorado(
-                    controller: horarioCtrl,
-                    label: 'Horario disponible (ej: 8am - 12pm, tardes...) *',
-                    validator: (v) => v!.isEmpty ? 'Completa este campo' : null,
+                  GestureDetector(
+                    onTap: () => _seleccionarHorario(context),
+                    child: AbsorbPointer(
+                      child: _inputDecorado(
+                        controller: horarioCtrl,
+                        label: 'Selecciona tu horario disponible *',
+                        validator: (v) =>
+                            v!.isEmpty ? 'Selecciona un horario' : null,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 22),
 
@@ -149,6 +181,7 @@ class RegistroVoluntarioWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+
                   Column(
                     children: interesesList.map((interes) {
                       final seleccionado =
@@ -182,7 +215,8 @@ class RegistroVoluntarioWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10)),
                             elevation: 4,
                           ),
-                          onPressed: controller.cargando.value ? null : onEnviar,
+                          onPressed:
+                              controller.cargando.value ? null : onEnviar,
                           child: controller.cargando.value
                               ? const SizedBox(
                                   width: 22,
@@ -211,7 +245,6 @@ class RegistroVoluntarioWidget extends StatelessWidget {
     );
   }
 
-  
   Widget _inputDecorado({
     required TextEditingController controller,
     required String label,
@@ -226,6 +259,9 @@ class RegistroVoluntarioWidget extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 17, color: Colors.black87),
+        suffixIcon: label.contains('horario')
+            ? const Icon(Icons.access_time, color: Color(0xFF226776))
+            : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
