@@ -1,7 +1,9 @@
+// perfil_widget.dart
 import 'package:flutter/material.dart';
 
 class PerfilWidget extends StatelessWidget {
   final String nombre;
+  final String apellido;  // Nuevo parámetro
   final String correo;
   final String telefono;
   final bool esAdmin;
@@ -10,6 +12,7 @@ class PerfilWidget extends StatelessWidget {
   const PerfilWidget({
     Key? key,
     required this.nombre,
+    required this.apellido,  // Nuevo parámetro
     required this.correo,
     required this.telefono,
     required this.onLogout,
@@ -24,7 +27,6 @@ class PerfilWidget extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -42,13 +44,12 @@ class PerfilWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hola,",
+                            'Hola,',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.95),
                               fontWeight: FontWeight.w500,
@@ -56,7 +57,7 @@ class PerfilWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            nombre.toLowerCase(),
+                            '$nombre $apellido'.toLowerCase(),  // Mostrar nombre y apellido juntos
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -65,7 +66,7 @@ class PerfilWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            "Gracias por ser parte de la familia Huellitas 🐾",
+                            'Gracias por ser parte de la comunidad',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.92),
                               fontWeight: FontWeight.w400,
@@ -83,7 +84,7 @@ class PerfilWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Text(
-                                "Administrador",
+                                'Administrador',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -98,16 +99,16 @@ class PerfilWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: 28,
                       backgroundColor: Colors.white.withOpacity(0.25),
-                      child:
-                          const Icon(Icons.pets, size: 33, color: Colors.white),
+                      child: const Icon(
+                        Icons.pets,
+                        size: 33,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
-
-              
               Container(
                 width: double.infinity,
                 padding:
@@ -115,10 +116,8 @@ class PerfilWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.18),
-                    width: 1.2,
-                  ),
+                  border:
+                      Border.all(color: Colors.grey.withOpacity(0.18), width: 1.2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.12),
@@ -139,10 +138,47 @@ class PerfilWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 18),
+                    // Apellido
                     Row(
                       children: [
-                        const Icon(Icons.email_outlined,
+                        const Icon(Icons.account_circle_outlined,
                             size: 25, color: Colors.orange),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            apellido,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    // Nombre
+                    Row(
+                      children: [
+                        const Icon(Icons.person_outlined,
+                            size: 25, color: Colors.orange),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            nombre,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        const Icon(Icons.email_outlined, size: 25, color: Colors.orange),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -159,8 +195,7 @@ class PerfilWidget extends StatelessWidget {
                     const SizedBox(height: 14),
                     Row(
                       children: [
-                        const Icon(Icons.phone_outlined,
-                            size: 25, color: Colors.orange),
+                        const Icon(Icons.phone_outlined, size: 25, color: Colors.orange),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -174,36 +209,34 @@ class PerfilWidget extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: onLogout,
+                        icon: const Icon(Icons.logout_rounded,
+                            color: Colors.redAccent, size: 24),
+                        label: const Text(
+                          'Cerrar Sesión',
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side:
+                              const BorderSide(color: Colors.redAccent, width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Colors.white,
+                          elevation: 2,
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: onLogout,
-                  icon: const Icon(Icons.logout_rounded,
-                      color: Colors.redAccent, size: 24),
-                  label: const Text(
-                    'Cerrar Sesión',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.redAccent, width: 1.5),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    backgroundColor: Colors.white,
-                    elevation: 2,
-                  ),
                 ),
               ),
             ],

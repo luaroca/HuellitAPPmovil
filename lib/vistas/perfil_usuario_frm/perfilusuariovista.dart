@@ -1,12 +1,13 @@
+// perfilusuariovista.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfil_widget.dart';
 
-
 class PerfilUsuarioView extends StatelessWidget {
   final String nombre;
+  final String apellido;  // Nuevo parámetro
   final String correo;
   final String telefono;
   final bool esAdmin;
@@ -14,6 +15,7 @@ class PerfilUsuarioView extends StatelessWidget {
   const PerfilUsuarioView({
     Key? key,
     required this.nombre,
+    required this.apellido,  // Nuevo parámetro
     required this.correo,
     required this.telefono,
     this.esAdmin = false,
@@ -40,68 +42,11 @@ class PerfilUsuarioView extends StatelessWidget {
         ),
         body: PerfilWidget(
           nombre: nombre,
+          apellido: apellido,  // Pasar nuevo parámetro
           correo: correo,
           telefono: telefono,
           esAdmin: esAdmin,
-          onLogout: () => authController.logout(),
-        ),
-
-       
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          iconSize: 28,
-          selectedFontSize: 15,
-          unselectedFontSize: 13,
-          selectedItemColor: Colors.orange[800],
-          unselectedItemColor: Colors.grey,
-          items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Inicio',
-            ),
-            if (esAdmin)
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.card_giftcard),
-                label: 'Donativos',
-              )
-            else
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.pets),
-                label: 'Adoptar',
-              ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: 'Perfil',
-            ),
-          ],
-          currentIndex: 2,
-          onTap: (index) async {
-            final user = authController.auth.currentUser;
-            if (user == null) return;
-            final doc = await authController.firestore
-                .collection('users')
-                .doc(user.uid)
-                .get();
-            final data = doc.data();
-            if (data == null) return;
-            final nombre = data['nombres'] ?? '';
-            final esAdminUser = (data['role'] ?? '') == 'admin';
-
-            if (index == 0) {
-              if (esAdminUser) {
-                Get.offAllNamed('/adminHome', arguments: {'adminName': nombre});
-              } else {
-                Get.offAllNamed('/userHome', arguments: {'userName': nombre});
-              }
-            } else if (index == 1) {
-              if (esAdminUser) {
-                Get.toNamed('/gestionDonativos');
-              } else {
-                Get.toNamed('/adoptar');
-              }
-            }
-          },
+          onLogout: authController.logout,
         ),
       ),
     );

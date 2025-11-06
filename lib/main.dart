@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
             final args = Get.arguments as Map<String, dynamic>? ?? {};
             return PerfilUsuarioView(
               nombre: args['nombre'] ?? '',
+              apellido: args['apellidos'] ?? '',
               correo: args['correo'] ?? '',
               telefono: args['telefono'] ?? '',
               esAdmin: args['esAdmin'] == true,

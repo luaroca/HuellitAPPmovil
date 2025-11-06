@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:huellitas/vistas/navegacion/main_navigation_view.dart';
 
 
 class AuthController extends GetxController {
@@ -33,31 +34,32 @@ class AuthController extends GetxController {
       isAdmin.value = false;
     }
   }
-
-  Future<void> login(String email, String password) async {
-    try {
-      final credential = await auth.signInWithEmailAndPassword(email: email, password: password);
-      final uid = credential.user?.uid;
-      if (uid != null) {
-        final doc = await firestore.collection('users').doc(uid).get();
-        final data = doc.data();
-        if (data != null) {
-          final nombreUsuario = data['nombres'] ?? 'Usuario';
-          final role = data['role'] ?? 'user';
-          if (role == 'admin') {
-            Get.offAllNamed('/adminHome', arguments: {'adminName': nombreUsuario});
-          } else {
-            Get.offAllNamed('/userHome', arguments: {'userName': nombreUsuario});
-          }
+Future<void> login(String email, String password) async {
+  try {
+    final credential = await auth.signInWithEmailAndPassword(email: email, password: password);
+    final uid = credential.user?.uid;
+    if (uid != null) {
+      final doc = await firestore.collection('users').doc(uid).get();
+      final data = doc.data();
+      if (data != null) {
+        final nombreUsuario = data['nombres'] ?? 'Usuario';
+        final role = data['role'] ?? 'user';
+        if (role == 'admin') {
+          Get.offAllNamed('/adminHome', arguments: {'adminName': nombreUsuario});
         } else {
-          Get.snackbar('Error', 'El usuario no tiene datos.', backgroundColor: Colors.red, colorText: Colors.white);
+          // Cambio aquí: redirigir a la navegación principal
+          Get.offAll(() => MainNavigationView(userName: nombreUsuario));
         }
+      } else {
+        Get.snackbar('Error', 'El usuario no tiene datos.', backgroundColor: Colors.red, colorText: Colors.white);
       }
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar('Error de Login', e.message ?? 'Ocurrió un error',
-          backgroundColor: Colors.red, colorText: Colors.white);
     }
+  } on FirebaseAuthException catch (e) {
+    Get.snackbar('Error de Login', e.message ?? 'Ocurrió un error',
+        backgroundColor: Colors.red, colorText: Colors.white);
   }
+}
+
 
   Future<void> register({
     required String email,
