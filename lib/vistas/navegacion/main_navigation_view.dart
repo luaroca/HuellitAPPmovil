@@ -5,7 +5,7 @@ import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
 
 class MainNavigationView extends StatefulWidget {
-  final String userName;
+  final String userName; // Usuario
   const MainNavigationView({Key? key, required this.userName}) : super(key: key);
 
   @override
@@ -14,7 +14,6 @@ class MainNavigationView extends StatefulWidget {
 
 class _MainNavigationViewState extends State<MainNavigationView> {
   int _selectedIndex = 0;
-  bool _isSwitchingTab = false;
 
   final _navigatorKeys = [
     GlobalKey<NavigatorState>(), // Home
@@ -84,16 +83,11 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   }
 
   void _changeTab(int newIndex) {
+    // Resetea el stack de navegación de la pestaña actual antes de cambiar el índice
+    _navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
+
     setState(() {
-      _isSwitchingTab = true; // ocultar stack para evitar parpadeo
       _selectedIndex = newIndex;
-    });
-    // Resetea el stack después de que se haya renderizado la nueva pantalla
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _navigatorKeys[newIndex].currentState?.popUntil((route) => route.isFirst);
-      setState(() {
-        _isSwitchingTab = false; // muestra el stack ya limpio
-      });
     });
   }
 
@@ -103,15 +97,12 @@ class _MainNavigationViewState extends State<MainNavigationView> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: _isSwitchingTab
-            // Cuando se está cambiando pestaña, mostrar pantalla vacía para evitar parpadeo
-            ? Container(color: Colors.white)
-            : IndexedStack(index: _selectedIndex, children: screens),
+        body: IndexedStack(index: _selectedIndex, children: screens),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: (index) {
-            if (_selectedIndex == index) {
-              // Si ya estaba en la misma pestaña, resetea su stack
+            if (index == _selectedIndex) {
+              // Si toca la misma pestaña, resetea su stack
               _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
             } else {
               _changeTab(index);
