@@ -63,9 +63,7 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
             : '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ubicación capturada: $direccionBonita')),
-      );
+     
     } catch (e) {
       setState(() {
         direccionCtrl.text =
