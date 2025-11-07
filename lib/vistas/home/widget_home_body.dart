@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:huellitas/vistas/casaspaso/casa_paso_home_view.dart';
+import 'package:huellitas/vistas/voluntariado_view_user/regis_home_voluntario_view.dart';
 import 'widget_header_home.dart';
 import 'widget_quick_action_card.dart';
 import 'widget_event_list.dart';
@@ -87,7 +89,10 @@ class HomeBody extends StatelessWidget {
                     borderColor: Colors.blueAccent,
                     iconColor: Colors.blueAccent,
                     onTap: () {
-                      Get.toNamed('/voluntariadoHome');
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const VoluntariadoHomeView()),
+                      );
+                      ///Get.toNamed('/voluntariadoHome');
                     },
                   ),
                 ),
@@ -101,7 +106,10 @@ class HomeBody extends StatelessWidget {
                     borderColor: Colors.deepPurple,
                     iconColor: Colors.deepPurple,
                     onTap: () {
-                      Get.toNamed('/casasPasoHome');
+                       Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const CasaPasoHomeView()),
+                      );
+                     // Get.toNamed('/casasPasoHome');
                     },
                   ),
                 ),
