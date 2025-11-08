@@ -5,7 +5,7 @@ import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
 
 class MainNavigationView extends StatefulWidget {
-  final String userName; // Usuario
+  final String userName;
   const MainNavigationView({Key? key, required this.userName}) : super(key: key);
 
   @override
@@ -16,9 +16,9 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   int _selectedIndex = 0;
 
   final _navigatorKeys = [
-    GlobalKey<NavigatorState>(), // Home
-    GlobalKey<NavigatorState>(), // Adoptar
-    GlobalKey<NavigatorState>(), // Perfil
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
   ];
 
   List<Widget> _buildScreens() => [
@@ -83,9 +83,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   }
 
   void _changeTab(int newIndex) {
-    // Resetea el stack de navegación de la pestaña actual antes de cambiar el índice
     _navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
-
     setState(() {
       _selectedIndex = newIndex;
     });
@@ -100,9 +98,12 @@ class _MainNavigationViewState extends State<MainNavigationView> {
         body: IndexedStack(index: _selectedIndex, children: screens),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
+          backgroundColor: const Color(0xFF00796B), 
+          selectedItemColor: Colors.white, 
+          unselectedItemColor: Colors.grey[300], 
+          type: BottomNavigationBarType.fixed, 
           onTap: (index) {
             if (index == _selectedIndex) {
-              // Si toca la misma pestaña, resetea su stack
               _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
             } else {
               _changeTab(index);
@@ -113,8 +114,6 @@ class _MainNavigationViewState extends State<MainNavigationView> {
             BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Adoptar'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
-          selectedItemColor: const Color(0xFF476AE8),
-          unselectedItemColor: Colors.grey,
         ),
       ),
     );
