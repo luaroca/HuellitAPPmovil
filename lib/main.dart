@@ -11,6 +11,7 @@ import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/login_form/login.dart';
+import 'package:huellitas/vistas/navegacionadmin/main_navigation_admin_view.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
 import 'package:huellitas/vistas/voluntariado_view_user/regis_home_voluntario_view.dart';
 
@@ -42,13 +43,13 @@ class MyApp extends StatelessWidget {
             return HomeView(userName: args['userName'] ?? 'Usuario');
           },
         ),
-        GetPage(
-          name: '/adminHome',
-          page: () {
-            final args = Get.arguments as Map<String, dynamic>? ?? {};
-            return AdminHomeView(adminName: args['adminName'] ?? 'Admin');
-          },
-        ),
+GetPage(
+  name: '/adminHome',
+  page: () {
+    final args = Get.arguments as Map<String, dynamic>? ?? {};
+    return AdminMainNavigationView(adminName: args['adminName'] ?? 'Admin');
+  },
+),
         GetPage(
           name: '/userProfile',
           page: () {

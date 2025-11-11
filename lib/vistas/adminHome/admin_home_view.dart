@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
+import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.dart';
+import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
+import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
+import 'package:huellitas/vistas/gestion_voluntario_view/gestion_voluntariados_view.dart';
 
 class AdminHomeView extends StatelessWidget {
   final String adminName;
@@ -20,7 +24,6 @@ class AdminHomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(26),
@@ -87,7 +90,6 @@ class AdminHomeView extends StatelessWidget {
                 ),
               ),
 
-              
               const Text(
                 "Acciones Rápidas",
                 style: TextStyle(
@@ -98,7 +100,6 @@ class AdminHomeView extends StatelessWidget {
               ),
               const SizedBox(height: 18),
 
-              
               GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 14,
@@ -130,8 +131,10 @@ class AdminHomeView extends StatelessWidget {
                     color: const Color(0xFFBBDEFB),
                     borderColor: const Color(0xFF64B5F6),
                     onTap: () {
-                      Get.toNamed('/gestionVoluntariados');
-
+                      
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const GestionVoluntariadosAdminView()),
+                      );
                     },
                   ),
                   _ModuleCard(
@@ -149,8 +152,9 @@ class AdminHomeView extends StatelessWidget {
                     color: const Color(0xFFD1C4E9),
                     borderColor: const Color(0xFFB39DDB),
                     onTap: () {
-                      Get.toNamed('/gestionCasasPaso');
-
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const GestionCasasPasoAdminView()),
+                      );
                     },
                   ),
                   _ModuleCard(
@@ -159,14 +163,18 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Organiza eventos',
                     color: const Color(0xFFFFF3E0),
                     borderColor: const Color(0xFFFFB74D),
-                    onTap: () => Get.toNamed('/gestionEventos'),
+                    onTap: () {
+                      
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const GestionEventosView()),
+                      );
+                    },
                   ),
                 ],
               ),
 
               const SizedBox(height: 30),
 
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -319,57 +327,9 @@ class AdminHomeView extends StatelessWidget {
           ),
         ),
       ),
-
-      
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        selectedItemColor: Colors.orange[800],
-        unselectedItemColor: Colors.grey,
-        selectedFontSize: 15,
-        unselectedFontSize: 14,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Donativos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
-        ],
-        onTap: (index) async {
-          if (index == 1) {
-            Get.toNamed('/gestionDonativos');
-          } else if (index == 2) {
-            final user = authController.auth.currentUser;
-            if (user != null) {
-              final doc = await authController.firestore
-                  .collection('users')
-                  .doc(user.uid)
-                  .get();
-              final data = doc.data();
-              if (data != null) {
-                Get.toNamed('/userProfile', arguments: {
-                  'nombre': data['nombres'] ?? '',
-                  'correo': data['email'] ?? '',
-                  'telefono': data['telefono'] ?? '',
-                  'esAdmin': (data['role'] ?? '') == 'admin',
-                });
-              }
-            }
-          }
-        },
-      ),
     );
   }
 }
-
 
 class _ModuleCard extends StatelessWidget {
   final IconData icon;

@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:huellitas/vistas/navegacion/main_navigation_view.dart';
 
 
+import 'package:huellitas/vistas/navegacionadmin/main_navigation_admin_view.dart'; // Importa la barra admin
+
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -34,32 +36,34 @@ class AuthController extends GetxController {
       isAdmin.value = false;
     }
   }
-Future<void> login(String email, String password) async {
-  try {
-    final credential = await auth.signInWithEmailAndPassword(email: email, password: password);
-    final uid = credential.user?.uid;
-    if (uid != null) {
-      final doc = await firestore.collection('users').doc(uid).get();
-      final data = doc.data();
-      if (data != null) {
-        final nombreUsuario = data['nombres'] ?? 'Usuario';
-        final role = data['role'] ?? 'user';
-        if (role == 'admin') {
-          Get.offAllNamed('/adminHome', arguments: {'adminName': nombreUsuario});
-        } else {
-          // Cambio aquí: redirigir a la navegación principal
-          Get.offAll(() => MainNavigationView(userName: nombreUsuario));
-        }
-      } else {
-        Get.snackbar('Error', 'El usuario no tiene datos.', backgroundColor: Colors.red, colorText: Colors.white);
-      }
-    }
-  } on FirebaseAuthException catch (e) {
-    Get.snackbar('Error de Login', e.message ?? 'Ocurrió un error',
-        backgroundColor: Colors.red, colorText: Colors.white);
-  }
-}
 
+  Future<void> login(String email, String password) async {
+    try {
+      final credential = await auth.signInWithEmailAndPassword(email: email, password: password);
+      final uid = credential.user?.uid;
+      if (uid != null) {
+        final doc = await firestore.collection('users').doc(uid).get();
+        final data = doc.data();
+        if (data != null) {
+          final nombreUsuario = data['nombres'] ?? 'Usuario';
+          final role = data['role'] ?? 'user';
+          if (role == 'admin') {
+            // Navega a la barra de navegación del admin
+            Get.offAll(() => AdminMainNavigationView(adminName: nombreUsuario));
+          } else {
+            // Navega a la barra de navegación de usuario
+            Get.offAll(() => MainNavigationView(userName: nombreUsuario));
+          }
+        } else {
+          Get.snackbar('Error', 'El usuario no tiene datos.',
+              backgroundColor: Colors.red, colorText: Colors.white);
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error de Login', e.message ?? 'Ocurrió un error',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
 
   Future<void> register({
     required String email,
@@ -85,7 +89,7 @@ Future<void> login(String email, String password) async {
         await firestore.collection('users').doc(userCredential.user!.uid).set(userDoc);
         Get.snackbar('Éxito', 'Cuenta creada correctamente',
             backgroundColor: Colors.green, colorText: Colors.white);
-        Get.offAllNamed('/login'); 
+        Get.offAllNamed('/login');
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error de registro', e.message ?? 'Ocurrió un error',
