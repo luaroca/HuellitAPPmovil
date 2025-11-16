@@ -65,6 +65,7 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
     final tipos = ['Todos', 'Perro', 'Gato', 'Otro'];
     final generos = ['Todos', 'Macho', 'Hembra'];
     final tamanios = ['Todos', 'Pequeño', 'Mediano', 'Grande'];
+    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
         appBar: AppBar(
@@ -138,6 +139,11 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
                         itemCount: mascotasFiltradas.length,
                         itemBuilder: (_, idx) {
                           final m = mascotasFiltradas[idx];
+                          // El botón solo debe estar deshabilitado si el usuario actual es el de la solicitud
+                          final solicitudEnviadaPorMi = m.solicitudAdopcion == true &&
+                              m.solicitudUid != null &&
+                              user != null &&
+                              m.solicitudUid == user.uid;
                           return Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 6, horizontal: 12),
@@ -214,14 +220,23 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
                                         ),
                                         const SizedBox(height: 8),
                                         ElevatedButton(
-                                          onPressed: m.solicitudAdopcion
-                                              ? null
+                                          onPressed: (m.solicitudAdopcion == true)
+                                              ? solicitudEnviadaPorMi
+                                                  ? null
+                                                  : null
                                               : () {
                                                   _solicitarAdopcion(m);
                                                 },
-                                          child: Text(m.solicitudAdopcion
-                                              ? "Solicitud enviada"
-                                              : "Solicitar adopción"),
+                                          child: Text(
+                                            (m.solicitudAdopcion == true &&
+                                                    solicitudEnviadaPorMi)
+                                                ? "Solicitud enviada"
+                                                : (m.solicitudAdopcion == true &&
+                                                        m.solicitudUid != null &&
+                                                        m.solicitudUid != user?.uid)
+                                                    ? "No disponible temporalmente"
+                                                    : "Solicitar adopción",
+                                          ),
                                         )
                                       ],
                                     ),
