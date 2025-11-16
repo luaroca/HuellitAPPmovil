@@ -12,8 +12,15 @@ class MascotaModel {
   String? fotoUrl;
   bool disponible;
   String? casaPasoId;
-  Timestamp? fechaIngresoCasa;  // NUEVO
-  Timestamp? fechaSalidaCasa;   // NUEVO
+  Timestamp? fechaIngresoCasa;
+  Timestamp? fechaSalidaCasa;
+  // ADOPCIÓN/SOLICITANTE
+  bool solicitudAdopcion;
+  bool adoptada;
+  String? solicitudUid;
+  String? nombreUsuarioSolicitud;
+  String? correoUsuarioSolicitud;
+  String? telefonoUsuarioSolicitud;
 
   MascotaModel({
     required this.id,
@@ -29,6 +36,12 @@ class MascotaModel {
     this.casaPasoId,
     this.fechaIngresoCasa,
     this.fechaSalidaCasa,
+    this.solicitudAdopcion = false,
+    this.adoptada = false,
+    this.solicitudUid,
+    this.nombreUsuarioSolicitud,
+    this.correoUsuarioSolicitud,
+    this.telefonoUsuarioSolicitud,
   });
 
   Map<String, dynamic> toMap() {
@@ -46,6 +59,12 @@ class MascotaModel {
       'casaPasoId': casaPasoId,
       'fechaIngresoCasa': fechaIngresoCasa,
       'fechaSalidaCasa': fechaSalidaCasa,
+      'solicitudAdopcion': solicitudAdopcion,
+      'adoptada': adoptada,
+      'solicitudUid': solicitudUid,
+      'nombreUsuarioSolicitud': nombreUsuarioSolicitud,
+      'correoUsuarioSolicitud': correoUsuarioSolicitud,
+      'telefonoUsuarioSolicitud': telefonoUsuarioSolicitud,
     };
   }
 
@@ -64,6 +83,12 @@ class MascotaModel {
       casaPasoId: map['casaPasoId'],
       fechaIngresoCasa: map['fechaIngresoCasa'],
       fechaSalidaCasa: map['fechaSalidaCasa'],
+      solicitudAdopcion: map['solicitudAdopcion'] ?? false,
+      adoptada: map['adoptada'] ?? false,
+      solicitudUid: map['solicitudUid'],
+      nombreUsuarioSolicitud: map['nombreUsuarioSolicitud'],
+      correoUsuarioSolicitud: map['correoUsuarioSolicitud'],
+      telefonoUsuarioSolicitud: map['telefonoUsuarioSolicitud'],
     );
   }
 }

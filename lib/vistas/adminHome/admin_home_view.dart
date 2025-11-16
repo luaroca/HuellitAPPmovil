@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
+import 'package:huellitas/vistas/gestion_adopciones_admin/gestion_adopciones_admin_view.dart';
 import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
@@ -128,7 +129,12 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Seguimiento y control',
                     color: const Color(0xFFF8BBD0),
                     borderColor: const Color(0xFFF48FB1),
-                    onTap: () {},
+                    onTap: () {
+                       Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const GestionAdopcionesAdminView()),
+                      );
+                      
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.volunteer_activism,

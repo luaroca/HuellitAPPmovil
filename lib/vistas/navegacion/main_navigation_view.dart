@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:huellitas/vistas/Solicitudes_UsuarioFM/solicitudes_usuario_View.dart';
 import 'package:huellitas/vistas/adopcion_mascotasfm/adopcion_mascotas_home_view.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
+
 
 class MainNavigationView extends StatefulWidget {
   final String userName;
@@ -17,6 +19,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
   int _selectedIndex = 0;
 
   final _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
@@ -35,12 +38,20 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           key: _navigatorKeys[1],
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
-              builder: (_) => const MascotasAdopcionView(),  // Aquí carga la vista de adopción
+              builder: (_) => const MascotasAdopcionView(),
             );
           },
         ),
         Navigator(
           key: _navigatorKeys[2],
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (_) => const SolicitudesUsuarioView(), // <-- Vista de solicitudes
+            );
+          },
+        ),
+        Navigator(
+          key: _navigatorKeys[3],
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
               builder: (context) => FutureBuilder<DocumentSnapshot>(
@@ -97,10 +108,10 @@ class _MainNavigationViewState extends State<MainNavigationView> {
         body: IndexedStack(index: _selectedIndex, children: screens),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
-          backgroundColor: const Color(0xFF00796B), 
-          selectedItemColor: Colors.white, 
-          unselectedItemColor: Colors.grey[300], 
-          type: BottomNavigationBarType.fixed, 
+          backgroundColor: const Color(0xFF00796B),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey[300],
+          type: BottomNavigationBarType.fixed,
           onTap: (index) {
             if (index == _selectedIndex) {
               _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
@@ -111,6 +122,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
             BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Adoptar'),
+            BottomNavigationBarItem(icon: Icon(Icons.assignment), label: 'Solicitudes'), // NUEVO
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),

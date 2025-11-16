@@ -64,6 +64,10 @@ class _MascotaFormViewState extends State<MascotaFormView> {
         fotoUrl: isEdit ? widget.mascota?.fotoUrl : null,
         disponible: disponible,
         casaPasoId: isEdit ? widget.mascota?.casaPasoId : null,
+        solicitudAdopcion: isEdit ? widget.mascota!.solicitudAdopcion : false,
+        adoptada: isEdit ? widget.mascota!.adoptada : false,
+        fechaIngresoCasa: isEdit ? widget.mascota?.fechaIngresoCasa : null,
+        fechaSalidaCasa: isEdit ? widget.mascota?.fechaSalidaCasa : null,
       );
 
       if (!isEdit) {
@@ -81,9 +85,9 @@ class _MascotaFormViewState extends State<MascotaFormView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF), // NUEVO COLOR
+      backgroundColor: const Color(0xFFA8E6CF),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+        backgroundColor: const Color(0xFF4DB6AC),
         elevation: 3,
         centerTitle: true,
         title: Text(
@@ -91,7 +95,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
           style: const TextStyle(fontFamily: "Roboto", fontSize: 22, fontWeight: FontWeight.w700),
         ),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(22),
         child: Form(
@@ -120,7 +123,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 25),
 
               Text(
@@ -133,7 +135,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                 ),
               ),
               const SizedBox(height: 16),
-
               // NOMBRE Y TIPO
               Row(
                 children: [
@@ -162,9 +163,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 16),
-
               // GÉNERO Y TAMAÑO
               Row(
                 children: [
@@ -198,9 +197,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 16),
-
               // DESCRIPCIÓN
               TextFormField(
                 controller: descripcionCtrl,
@@ -210,9 +207,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                 onEditingComplete: () => FocusScope.of(context).unfocus(),
                 decoration: _input("Descripción", "Temperamento, características..."),
               ),
-
               const SizedBox(height: 25),
-
               Text(
                 "Estado de salud",
                 style: TextStyle(
@@ -222,7 +217,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                     color: Colors.grey[800]),
               ),
               const SizedBox(height: 10),
-
               Column(
                 children: [
                   CheckboxListTile(
@@ -245,17 +239,14 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 30),
-
               Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Get.back(),
                       style: _botonSecundario(),
-                      child: const Text("Cancelar",
-                          style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
+                      child: const Text("Cancelar", style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -263,8 +254,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                     child: ElevatedButton(
                       onPressed: _guardar,
                       style: _botonPrincipal(),
-                      child: const Text("Guardar Mascota",
-                          style: TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.white)),
+                      child: const Text("Guardar Mascota", style: TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.white)),
                     ),
                   ),
                 ],
@@ -276,7 +266,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
     );
   }
 
-  // INPUT
   InputDecoration _input(String label, String? hint) {
     return InputDecoration(
       labelText: label,
@@ -288,20 +277,18 @@ class _MascotaFormViewState extends State<MascotaFormView> {
     );
   }
 
-  // BOTÓN PRINCIPAL
   ButtonStyle _botonPrincipal() {
     return ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+      backgroundColor: const Color(0xFF4DB6AC),
       padding: const EdgeInsets.symmetric(vertical: 18),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     );
   }
 
-  // BOTÓN SECUNDARIO
   ButtonStyle _botonSecundario() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.white,
-      foregroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+      foregroundColor: const Color(0xFF4DB6AC),
       side: const BorderSide(color: Color(0xFF4DB6AC), width: 2),
       padding: const EdgeInsets.symmetric(vertical: 18),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
