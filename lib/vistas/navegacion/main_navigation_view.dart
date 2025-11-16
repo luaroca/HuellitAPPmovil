@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:huellitas/vistas/adopcion_mascotasfm/adopcion_mascotas_home_view.dart';
 import 'package:huellitas/vistas/home/home_view.dart';
 import 'package:huellitas/vistas/perfil_usuario_frm/perfilusuariovista.dart';
 
@@ -34,9 +35,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           key: _navigatorKeys[1],
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
-              builder: (_) => const Scaffold(
-                body: Center(child: Text('Adoptar próximamente')),
-              ),
+              builder: (_) => const MascotasAdopcionView(),  // Aquí carga la vista de adopción
             );
           },
         ),

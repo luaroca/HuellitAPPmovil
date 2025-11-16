@@ -5,6 +5,7 @@ import 'package:huellitas/controllers/auth_controller.dart';
 import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
+import 'package:huellitas/vistas/gestion_mascotaform/gestion_mascotas_view.dart';
 import 'package:huellitas/vistas/gestion_voluntario_view/gestion_voluntariados_view.dart';
 
 class AdminHomeView extends StatelessWidget {
@@ -114,7 +115,12 @@ class AdminHomeView extends StatelessWidget {
                     subtitle: 'Control de fichas',
                     color: const Color(0xFFFFE0B2),
                     borderColor: const Color(0xFFFFB74D),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const GestionMascotasView()),
+                      );
+                      
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.assignment_turned_in_rounded,
