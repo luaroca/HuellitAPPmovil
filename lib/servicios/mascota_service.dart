@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/modelos/mascota_model.dart';
 
+
 class MascotaService {
   static final _ref = FirebaseFirestore.instance.collection('mascotas');
 
@@ -17,17 +18,14 @@ class MascotaService {
   }
 
   static Stream<List<MascotaModel>> obtenerMascotas() {
-    return _ref.snapshots().map(
-      (snap) => snap.docs
-          .map((d) => MascotaModel.fromMap(d.id, d.data()))
-          .toList(),
+    return _ref.snapshots().map((snap) =>
+      snap.docs.map((d) => MascotaModel.fromMap(d.data())).toList()
     );
   }
 
   static Future<MascotaModel?> obtenerPorId(String id) async {
     final doc = await _ref.doc(id).get();
     if (!doc.exists) return null;
-
-    return MascotaModel.fromMap(doc.id, doc.data()!);
+    return MascotaModel.fromMap(doc.data()!);
   }
 }

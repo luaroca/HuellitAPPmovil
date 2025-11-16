@@ -51,6 +51,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
   Future<void> _guardar() async {
     if (_formKey.currentState!.validate()) {
       final isEdit = widget.mascota != null;
+
       final mascota = MascotaModel(
         id: isEdit ? widget.mascota!.id : Uuid().v4(),
         nombre: nombreCtrl.text.trim(),
@@ -62,8 +63,9 @@ class _MascotaFormViewState extends State<MascotaFormView> {
         esterilizado: esterilizado,
         fotoUrl: isEdit ? widget.mascota?.fotoUrl : null,
         disponible: disponible,
-        casaPasoId: isEdit ? widget.mascota?.casaPasoId : null, // <-- CLAVE: nunca "" al crear
+        casaPasoId: isEdit ? widget.mascota?.casaPasoId : null,
       );
+
       if (!isEdit) {
         await controller.agregarMascota(mascota);
         Get.back();
@@ -79,12 +81,17 @@ class _MascotaFormViewState extends State<MascotaFormView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF),
+      backgroundColor: const Color(0xFFA8E6CF), // NUEVO COLOR
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFF9800),
-        title: Text(widget.mascota == null ? 'Agregar Nueva Mascota' : 'Editar Mascota'),
+        backgroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+        elevation: 3,
         centerTitle: true,
+        title: Text(
+          widget.mascota == null ? 'Agregar Nueva Mascota' : 'Editar Mascota',
+          style: const TextStyle(fontFamily: "Roboto", fontSize: 22, fontWeight: FontWeight.w700),
+        ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(22),
         child: Form(
@@ -92,135 +99,172 @@ class _MascotaFormViewState extends State<MascotaFormView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Sube foto opcional (futuro)
+              // FOTO
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 25),
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF4E3),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                      color: const Color(0xFFE5C07B), width: 1.2),
+                  color: const Color(0xFFE0F2F1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFF4DB6AC), width: 1.5),
                 ),
                 child: Column(
                   children: const [
-                    Icon(Icons.add_a_photo, color: Color(0xFFFF9800), size: 44),
-                    SizedBox(height: 8),
-                    Text('Haz clic para subir una foto\nJPG, PNG o GIF (máx. 5MB)', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFF787878))),
+                    Icon(Icons.add_photo_alternate_rounded, color: Color(0xFF4DB6AC), size: 50),
+                    SizedBox(height: 10),
+                    Text(
+                      'Subir foto (opcional)\nJPG, PNG o GIF (máx. 5MB)',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: "Roboto", fontSize: 15, color: Colors.black54),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+
+              const SizedBox(height: 25),
+
+              Text(
+                "Información de la mascota",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // NOMBRE Y TIPO
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: nombreCtrl,
-                      decoration: const InputDecoration(labelText: 'Nombre *', hintText: 'Ej: Luna', border: OutlineInputBorder()),
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Obligatorio' : null,
+                      style: const TextStyle(fontSize: 18, fontFamily: "Roboto"),
+                      decoration: _input("Nombre *", "Ej: Luna"),
+                      validator: (v) => v!.trim().isEmpty ? 'Obligatorio' : null,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: tipo,
+                      dropdownColor: Colors.white,
+                      style: const TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.black87),
                       items: const [
                         DropdownMenuItem(value: 'Perro', child: Text('🐶 Perro')),
                         DropdownMenuItem(value: 'Gato', child: Text('🐱 Gato')),
                         DropdownMenuItem(value: 'Otro', child: Text('Otro')),
                       ],
                       onChanged: (v) => setState(() => tipo = v!),
-                      decoration: const InputDecoration(labelText: 'Tipo *', border: OutlineInputBorder()),
+                      decoration: _input("Tipo *", null),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+
+              const SizedBox(height: 16),
+
+              // GÉNERO Y TAMAÑO
               Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: genero,
+                      dropdownColor: Colors.white,
+                      decoration: _input("Género *", null),
+                      style: const TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.black87),
                       items: const [
                         DropdownMenuItem(value: 'Macho', child: Text('♂ Macho')),
                         DropdownMenuItem(value: 'Hembra', child: Text('♀ Hembra')),
                       ],
                       onChanged: (v) => setState(() => genero = v!),
-                      decoration: const InputDecoration(labelText: 'Género *', border: OutlineInputBorder()),
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: tamanio,
+                      dropdownColor: Colors.white,
+                      decoration: _input("Tamaño *", null),
+                      style: const TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.black87),
                       items: const [
                         DropdownMenuItem(value: 'Pequeño', child: Text('Pequeño')),
                         DropdownMenuItem(value: 'Mediano', child: Text('Mediano')),
                         DropdownMenuItem(value: 'Grande', child: Text('Grande')),
                       ],
                       onChanged: (v) => setState(() => tamanio = v!),
-                      decoration: const InputDecoration(labelText: 'Tamaño *', border: OutlineInputBorder()),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+
+              const SizedBox(height: 16),
+
+              // DESCRIPCIÓN
               TextFormField(
                 controller: descripcionCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  hintText: 'Describir temperamento y características...',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
+                style: const TextStyle(fontSize: 18, fontFamily: "Roboto"),
+                maxLines: 4,
                 textInputAction: TextInputAction.done,
                 onEditingComplete: () => FocusScope.of(context).unfocus(),
+                decoration: _input("Descripción", "Temperamento, características..."),
               ),
-              const SizedBox(height: 16),
-              const Text('Estado de salud', style: TextStyle(fontWeight: FontWeight.bold)),
-              Row(
+
+              const SizedBox(height: 25),
+
+              Text(
+                "Estado de salud",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800]),
+              ),
+              const SizedBox(height: 10),
+
+              Column(
                 children: [
-                  Checkbox(
+                  CheckboxListTile(
                     value: vacunado,
-                    onChanged: (b) => setState(() => vacunado = b ?? false),
+                    title: const Text("Vacunado", style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
+                    onChanged: (v) => setState(() => vacunado = v!),
+                    activeColor: const Color(0xFF4DB6AC),
                   ),
-                  const Text('Vacunado'),
-                  Checkbox(
+                  CheckboxListTile(
                     value: esterilizado,
-                    onChanged: (b) => setState(() => esterilizado = b ?? false),
+                    title: const Text("Esterilizado", style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
+                    onChanged: (v) => setState(() => esterilizado = v!),
+                    activeColor: const Color(0xFF4DB6AC),
                   ),
-                  const Text('Esterilizado'),
-                ],
-              ),
-              Row(
-                children: [
-                  Checkbox(
+                  CheckboxListTile(
                     value: disponible,
-                    onChanged: (b) => setState(() => disponible = b ?? false),
+                    title: const Text("Disponible para adopción", style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
+                    onChanged: (v) => setState(() => disponible = v!),
+                    activeColor: const Color(0xFF4DB6AC),
                   ),
-                  const Text('¿Disponible para adopción?'),
                 ],
               ),
-              const SizedBox(height: 20),
+
+              const SizedBox(height: 30),
+
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: ElevatedButton(
                       onPressed: () => Get.back(),
-                      child: const Text('Cancelar', style: TextStyle(fontSize: 16)),
+                      style: _botonSecundario(),
+                      child: const Text("Cancelar",
+                          style: TextStyle(fontSize: 18, fontFamily: "Roboto")),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _guardar,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF9800),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      child: const Text('Guardar mascota', style: TextStyle(fontSize: 16, color: Colors.white)),
+                      style: _botonPrincipal(),
+                      child: const Text("Guardar Mascota",
+                          style: TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.white)),
                     ),
                   ),
                 ],
@@ -229,6 +273,38 @@ class _MascotaFormViewState extends State<MascotaFormView> {
           ),
         ),
       ),
+    );
+  }
+
+  // INPUT
+  InputDecoration _input(String label, String? hint) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      labelStyle: const TextStyle(fontSize: 17, fontFamily: "Roboto"),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+      filled: true,
+      fillColor: Colors.white,
+    );
+  }
+
+  // BOTÓN PRINCIPAL
+  ButtonStyle _botonPrincipal() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+    );
+  }
+
+  // BOTÓN SECUNDARIO
+  ButtonStyle _botonSecundario() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: const Color(0xFF4DB6AC), // NUEVO COLOR
+      side: const BorderSide(color: Color(0xFF4DB6AC), width: 2),
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     );
   }
 }

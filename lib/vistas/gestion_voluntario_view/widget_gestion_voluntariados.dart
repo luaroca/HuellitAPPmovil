@@ -24,12 +24,10 @@ class WidgetGestionVoluntariados extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F7F5),
+      backgroundColor: const Color(0xFFA8E6CF),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF14BF9B),
+        backgroundColor: const Color(0xFF4DB6AC),
         title: const Text(
           'Gestión de Voluntariados',
           style: TextStyle(
@@ -48,13 +46,12 @@ class WidgetGestionVoluntariados extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final isNarrow = constraints.maxWidth < 600;
-                  return isNarrow
+                  final narrow = constraints.maxWidth < 600;
+                  return narrow
                       ? Column(
                           children: [
                             _filtroDias(),
@@ -73,15 +70,14 @@ class WidgetGestionVoluntariados extends StatelessWidget {
               ),
             ),
 
-            
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: streamVoluntarios,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                        child:
-                            CircularProgressIndicator(color: Color(0xFF14BF9B)));
+                      child: CircularProgressIndicator(color: Color(0xFF4DB6AC)),
+                    );
                   }
 
                   final docs = snapshot.data?.docs ?? [];
@@ -89,30 +85,28 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                     return const Center(
                       child: Text(
                         'No hay voluntarios registrados.',
-                        style: TextStyle(
-                            fontSize: 18, color: Colors.black54, height: 1.4),
+                        style: TextStyle(fontSize: 18, color: Colors.black54),
                       ),
                     );
                   }
 
-                  
                   final filtrados = docs.where((d) {
                     final data = d.data() as Map<String, dynamic>;
                     final dias = List<String>.from(data['dias'] ?? []);
                     final areas = List<String>.from(data['intereses'] ?? []);
-                    final diaOk =
-                        filtroDia == null || dias.contains(filtroDia);
-                    final interesOk =
+
+                    final okDia = filtroDia == null || dias.contains(filtroDia);
+                    final okArea =
                         filtroInteres == null || areas.contains(filtroInteres);
-                    return diaOk && interesOk;
+
+                    return okDia && okArea;
                   }).toList();
 
                   if (filtrados.isEmpty) {
                     return const Center(
                       child: Text(
                         'No se encontraron voluntarios con esos filtros.',
-                        style:
-                            TextStyle(fontSize: 18, color: Colors.black45),
+                        style: TextStyle(fontSize: 18, color: Colors.black45),
                       ),
                     );
                   }
@@ -127,7 +121,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                         filtrados[i].id,
                         filtrados[i].data() as Map<String, dynamic>,
                       );
-                      return _tarjetaVoluntario(v, textTheme);
+                      return _tarjetaVoluntario(v);
                     },
                   );
                 },
@@ -139,72 +133,97 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  
+  // ---------------- FILTRO DÍAS ----------------
   Widget _filtroDias() {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        labelText: 'Filtrar por día',
-        labelStyle: const TextStyle(color: Colors.teal),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      decoration: _decoracion('Filtrar por día'),
+      value: filtroDia ?? "Todos",
+      dropdownColor: Colors.white,
+      style: const TextStyle(
+        color: Colors.black87,
+        fontSize: 16,
       ),
-      value: filtroDia,
       items: [
-        const DropdownMenuItem(value: null, child: Text('Todos los días')),
-        ...diasSemana.map((d) => DropdownMenuItem(value: d, child: Text(d))),
+        const DropdownMenuItem(
+          value: "Todos",
+          child: Text("Todos los días", style: TextStyle(color: Colors.black)),
+        ),
+        ...diasSemana.map(
+          (d) => DropdownMenuItem(
+            value: d,
+            child: Text(d, style: const TextStyle(color: Colors.black)),
+          ),
+        ),
       ],
       onChanged: onFiltroDiaChanged,
     );
   }
 
-  
+  // ---------------- FILTRO INTERESES ----------------
   Widget _filtroIntereses() {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        labelText: 'Área de interés',
-        labelStyle: const TextStyle(color: Colors.teal),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      decoration: _decoracion('Área de interés'),
+      value: filtroInteres ?? "Todas",
+      dropdownColor: Colors.white,
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 16,
       ),
-      value: filtroInteres,
       items: [
-        const DropdownMenuItem(value: null, child: Text('Todas las áreas')),
-        ...intereses.map((a) => DropdownMenuItem(value: a, child: Text(a))),
+        const DropdownMenuItem(
+          value: "Todas",
+          child: Text("Todas las áreas", style: TextStyle(color: Colors.black)),
+        ),
+        ...intereses.map(
+          (a) => DropdownMenuItem(
+            value: a,
+            child: Text(a, style: const TextStyle(color: Colors.black)),
+          ),
+        ),
       ],
       onChanged: onFiltroInteresChanged,
     );
   }
 
-  
-  Widget _tarjetaVoluntario(VoluntarioModel v, TextTheme textTheme) {
+  // ----------- DECORACIÓN DE LOS FILTROS -----------
+  InputDecoration _decoracion(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(
+        color: Colors.black,
+        fontSize: 17,
+      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+    );
+  }
+
+  // ---------------- TARJETA ----------------
+  Widget _tarjetaVoluntario(VoluntarioModel v) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0F2EE)),
+        border: Border.all(color: const Color(0xFFD6F1E9)),
         boxShadow: [
           BoxShadow(
-            color: Colors.teal.withOpacity(0.07),
+            color: Colors.black.withOpacity(0.07),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               const Icon(Icons.volunteer_activism,
-                  color: Color(0xFF14BF9B), size: 30),
+                  color: Color(0xFF4DB6AC), size: 30),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -219,34 +238,32 @@ class WidgetGestionVoluntariados extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _infoFila(Icons.email_outlined, 'Correo', v.correo),
-          _infoFila(Icons.phone, 'Teléfono',
+          _fila(Icons.email_outlined, 'Correo', v.correo),
+          _fila(Icons.phone, 'Teléfono',
               v.telefono.isNotEmpty ? v.telefono : '-'),
-          _infoFila(Icons.access_time, 'Horario', v.horario),
-          _infoFila(Icons.calendar_today, 'Días disponibles',
-              v.dias.join(', ')),
-          _infoFila(
-              Icons.category, 'Áreas de Interés', v.intereses.join(', ')),
+          _fila(Icons.access_time, 'Horario', v.horario),
+          _fila(Icons.calendar_today, 'Días', v.dias.join(', ')),
+          _fila(Icons.category, 'Intereses', v.intereses.join(', ')),
         ],
       ),
     );
   }
 
-  
-  Widget _infoFila(IconData icon, String titulo, String valor) {
+  // ---------------- FILA ----------------
+  Widget _fila(IconData icon, String titulo, String valor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 7),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.teal[400], size: 22),
+          Icon(icon, color: const Color(0xFF4DB6AC), size: 22),
           const SizedBox(width: 8),
           Text(
             '$titulo: ',
             style: const TextStyle(
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
               fontSize: 17,
+              color: Colors.black87,
             ),
           ),
           Expanded(
@@ -254,8 +271,8 @@ class WidgetGestionVoluntariados extends StatelessWidget {
               valor,
               style: const TextStyle(
                 fontSize: 16,
-                color: Colors.black87,
                 height: 1.3,
+                color: Colors.black87,
               ),
             ),
           ),

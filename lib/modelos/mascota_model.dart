@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MascotaModel {
   String id;
   String nombre;
@@ -10,6 +12,8 @@ class MascotaModel {
   String? fotoUrl;
   bool disponible;
   String? casaPasoId;
+  Timestamp? fechaIngresoCasa;  // NUEVO
+  Timestamp? fechaSalidaCasa;   // NUEVO
 
   MascotaModel({
     required this.id,
@@ -23,10 +27,13 @@ class MascotaModel {
     required this.esterilizado,
     required this.disponible,
     this.casaPasoId,
+    this.fechaIngresoCasa,
+    this.fechaSalidaCasa,
   });
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'nombre': nombre,
       'tipo': tipo,
       'genero': genero,
@@ -37,13 +44,14 @@ class MascotaModel {
       'fotoUrl': fotoUrl,
       'disponible': disponible,
       'casaPasoId': casaPasoId,
+      'fechaIngresoCasa': fechaIngresoCasa,
+      'fechaSalidaCasa': fechaSalidaCasa,
     };
   }
 
-  /// 🔥 PARA USO GENERAL
-  factory MascotaModel.fromMap(String id, Map<String, dynamic> map) {
+  factory MascotaModel.fromMap(Map<String, dynamic> map) {
     return MascotaModel(
-      id: id,
+      id: map['id'] ?? '',
       nombre: map['nombre'] ?? '',
       tipo: map['tipo'] ?? '',
       genero: map['genero'] ?? '',
@@ -54,11 +62,8 @@ class MascotaModel {
       fotoUrl: map['fotoUrl'],
       disponible: map['disponible'] ?? true,
       casaPasoId: map['casaPasoId'],
+      fechaIngresoCasa: map['fechaIngresoCasa'],
+      fechaSalidaCasa: map['fechaSalidaCasa'],
     );
-  }
-
-  /// 🔥 PARA CONSULTAS DIRECTAS DE FIRESTORE
-  factory MascotaModel.fromFirestore(String id, Map<String, dynamic> map) {
-    return MascotaModel.fromMap(id, map);
   }
 }
