@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:huellitas/modelos/casa_paso_model.dart';
 import 'package:huellitas/modelos/mascota_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'asignar_mascota_view.dart';
 
 class GestionCasasPasoAdminView extends StatefulWidget {
@@ -12,8 +14,7 @@ class GestionCasasPasoAdminView extends StatefulWidget {
       _GestionCasasPasoAdminViewState();
 }
 
-class _GestionCasasPasoAdminViewState
-    extends State<GestionCasasPasoAdminView> {
+class _GestionCasasPasoAdminViewState extends State<GestionCasasPasoAdminView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,8 +75,7 @@ class _GestionCasasPasoAdminViewState
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          AsignarMascotaView(casaDePaso: casa),
+                      builder: (_) => AsignarMascotaView(casaDePaso: casa),
                     ),
                   );
                 },
@@ -96,6 +96,9 @@ class _GestionCasasPasoAdminViewState
                     );
                   }
                 },
+                onLlamar: (telefono) {
+                  _llamarTelefono(context, telefono);
+                },
               );
             },
           );
@@ -103,17 +106,30 @@ class _GestionCasasPasoAdminViewState
       ),
     );
   }
+
+  void _llamarTelefono(BuildContext context, String telefono) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: telefono);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir la aplicación de llamadas')),
+      );
+    }
+  }
 }
 
 class _CasaCard extends StatelessWidget {
   final CasaPasoModel casa;
   final VoidCallback onAsignar;
   final Function(String mascotaId) onRetirarMascota;
+  final Function(String telefono) onLlamar;
 
   const _CasaCard({
     required this.casa,
     required this.onAsignar,
     required this.onRetirarMascota,
+    required this.onLlamar,
   });
 
   @override
@@ -149,16 +165,23 @@ class _CasaCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Chip(
-                backgroundColor: const Color(0xFFCFF8E8),
-                label: Text(
-                  casa.tipoMascotas,
-                  style: const TextStyle(
-                    color: Color(0xFF0FAF95),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.phone, size: 22),
+                label: const Text("Contactar"),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0FAF95),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+                onPressed: () {
+                  if (casa.telefono.isNotEmpty) {
+                    onLlamar(casa.telefono);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Este contacto no tiene número')));
+                  }
+                },
               ),
             ],
           ),
@@ -167,8 +190,7 @@ class _CasaCard extends StatelessWidget {
           const SizedBox(height: 10),
           _rowIconInfo(Icons.phone, 'Teléfono', casa.telefono),
           _rowIconInfo(Icons.location_on, 'Dirección', casa.direccion),
-          _rowIconInfo(
-              Icons.pets, 'Capacidad', '${casa.capacidad} mascotas'),
+          _rowIconInfo(Icons.pets, 'Capacidad', '${casa.capacidad} mascotas'),
           _rowIconInfo(Icons.check_circle, 'Patio/Jardín',
               casa.tienePatio ? 'Sí' : 'No'),
           _rowIconInfo(Icons.star, 'Experiencia',
@@ -184,8 +206,7 @@ class _CasaCard extends StatelessWidget {
                 .where('casaPasoId', isEqualTo: casa.id)
                 .snapshots(),
             builder: (context, snapMascotas) {
-              if (snapMascotas.connectionState ==
-                  ConnectionState.waiting) {
+              if (snapMascotas.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
@@ -268,8 +289,7 @@ class _CasaCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: () =>
-                                onRetirarMascota(mascota.id),
+                            onPressed: () => onRetirarMascota(mascota.id),
                           ),
                         ],
                       ),

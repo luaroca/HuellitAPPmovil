@@ -1,3 +1,4 @@
+// gestion_voluntariados_admin_view.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/vistas/gestion_voluntario_view/widget_gestion_voluntariados.dart';
@@ -41,8 +42,7 @@ class _GestionVoluntariadosAdminViewState
       filtroInteres: filtroInteres,
       diasSemana: diasSemana,
       intereses: intereses,
-      onFiltroDiaChanged: (v) =>
-          setState(() => filtroDia = v == "Todos" ? null : v),
+      onFiltroDiaChanged: (v) => setState(() => filtroDia = v == "Todos" ? null : v),
       onFiltroInteresChanged: (v) =>
           setState(() => filtroInteres = v == "Todas" ? null : v),
       streamVoluntarios: FirebaseFirestore.instance

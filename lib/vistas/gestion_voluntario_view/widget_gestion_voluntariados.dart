@@ -1,6 +1,8 @@
+// widget_gestion_voluntariados.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:huellitas/modelos/voluntario_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WidgetGestionVoluntariados extends StatelessWidget {
   final String? filtroDia;
@@ -21,6 +23,17 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     required this.onFiltroInteresChanged,
     required this.streamVoluntarios,
   });
+
+  void _llamarTelefono(BuildContext context, String telefono) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: telefono);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir la aplicación de llamadas')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +82,6 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                 },
               ),
             ),
-
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: streamVoluntarios,
@@ -112,8 +124,8 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                   }
 
                   return ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 20),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemCount: filtrados.length,
                     itemBuilder: (context, i) {
@@ -121,7 +133,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                         filtrados[i].id,
                         filtrados[i].data() as Map<String, dynamic>,
                       );
-                      return _tarjetaVoluntario(v);
+                      return _tarjetaVoluntario(v, context);
                     },
                   );
                 },
@@ -133,7 +145,6 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // ---------------- FILTRO DÍAS ----------------
   Widget _filtroDias() {
     return DropdownButtonFormField<String>(
       decoration: _decoracion('Filtrar por día'),
@@ -159,7 +170,6 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // ---------------- FILTRO INTERESES ----------------
   Widget _filtroIntereses() {
     return DropdownButtonFormField<String>(
       decoration: _decoracion('Área de interés'),
@@ -185,7 +195,6 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // ----------- DECORACIÓN DE LOS FILTROS -----------
   InputDecoration _decoracion(String label) {
     return InputDecoration(
       labelText: label,
@@ -200,8 +209,7 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // ---------------- TARJETA ----------------
-  Widget _tarjetaVoluntario(VoluntarioModel v) {
+  Widget _tarjetaVoluntario(VoluntarioModel v, BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       decoration: BoxDecoration(
@@ -235,6 +243,21 @@ class WidgetGestionVoluntariados extends StatelessWidget {
                   ),
                 ),
               ),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.phone, size: 24),
+                label: const Text('Contactar'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4DB6AC),
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () {
+                  _llamarTelefono(context, v.telefono);
+                },
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -249,7 +272,17 @@ class WidgetGestionVoluntariados extends StatelessWidget {
     );
   }
 
-  // ---------------- FILA ----------------
+  void _llamarTelefonoo(BuildContext context, String telefono) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: telefono);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir la aplicación de llamadas')),
+      );
+    }
+  }
+
   Widget _fila(IconData icon, String titulo, String valor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 7),
