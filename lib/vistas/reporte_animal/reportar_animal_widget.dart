@@ -6,7 +6,7 @@ class ReportarAnimalWidget extends StatelessWidget {
   final TextEditingController descripcionCtrl;
   final TextEditingController condicionCtrl;
   final Future<void> Function() usarUbicacion;
-  final VoidCallback enviarReporte;
+  final Future<void> Function() enviarReporte;
 
   const ReportarAnimalWidget({
     Key? key,
@@ -55,9 +55,10 @@ class ReportarAnimalWidget extends StatelessWidget {
           key: formKey,
           child: Column(
             children: [
-              
+              // UBICACIÓN
               _buildCard([
-                _buildSectionHeader("Ubicación del Animal", Icons.location_on_outlined),
+                _buildSectionHeader(
+                    "Ubicación del Animal", Icons.location_on_outlined),
                 const SizedBox(height: 12),
                 _buildLabel("Dirección o punto de referencia *"),
                 TextFormField(
@@ -67,6 +68,7 @@ class ReportarAnimalWidget extends StatelessWidget {
                     "Ej: Calle 45 # 23-15, cerca del parque...",
                     icono: const Icon(Icons.place, color: Color(0xFF0D7864)),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
@@ -77,11 +79,13 @@ class ReportarAnimalWidget extends StatelessWidget {
                     icon: const Icon(Icons.gps_fixed),
                     label: const Text(
                       'Usar mi ubicación GPS',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF0D7864),
-                      side: const BorderSide(color: Color(0xFF0D7864), width: 1.3),
+                      side: const BorderSide(
+                          color: Color(0xFF0D7864), width: 1.3),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
@@ -89,14 +93,17 @@ class ReportarAnimalWidget extends StatelessWidget {
                 ),
               ]),
 
-              
+              // FOTOS (OPCIONAL)
               _buildCard([
-                _buildSectionHeader("Fotos del Animal", Icons.photo_camera_outlined),
+                _buildSectionHeader(
+                    "Fotos del Animal", Icons.photo_camera_outlined),
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Función de subir foto próximamente.')),
+                      const SnackBar(
+                          content:
+                              Text('Función de subir foto próximamente.')),
                     );
                   },
                   child: Container(
@@ -104,16 +111,18 @@ class ReportarAnimalWidget extends StatelessWidget {
                     height: 100,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF9F9F9),
-                      border: Border.all(color: const Color(0xFFFFAE35), width: 1.2),
+                      border: Border.all(
+                          color: const Color(0xFFFFAE35), width: 1.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.upload, color: Color(0xFFFFAE35), size: 32),
+                        Icon(Icons.upload,
+                            color: Color(0xFFFFAE35), size: 32),
                         SizedBox(height: 7),
                         Text(
-                          'Subir foto',
+                          'Subir foto (opcional)',
                           style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,
@@ -126,9 +135,10 @@ class ReportarAnimalWidget extends StatelessWidget {
                 ),
               ]),
 
-              
+              // INFO ANIMAL
               _buildCard([
-                _buildSectionHeader("Información del Animal", Icons.pets_outlined),
+                _buildSectionHeader(
+                    "Información del Animal", Icons.pets_outlined),
                 const SizedBox(height: 12),
                 _buildLabel("Descripción del Animal *"),
                 TextFormField(
@@ -138,6 +148,9 @@ class ReportarAnimalWidget extends StatelessWidget {
                     "Ej: Perro mediano, color negro, con collar azul...",
                   ),
                   maxLines: 2,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () =>
+                      FocusScope.of(context).unfocus(), // cierra teclado
                 ),
                 const SizedBox(height: 14),
                 _buildLabel("Estado y Condición *"),
@@ -148,10 +161,12 @@ class ReportarAnimalWidget extends StatelessWidget {
                     "Ej: Parece herido, cojea de una pata, asustado...",
                   ),
                   maxLines: 2,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () =>
+                      FocusScope.of(context).unfocus(), // cierra teclado
                 ),
               ]),
 
-              
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -175,7 +190,9 @@ class ReportarAnimalWidget extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: enviarReporte,
+                      onPressed: () async {
+                        await enviarReporte();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFAE35),
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -202,7 +219,6 @@ class ReportarAnimalWidget extends StatelessWidget {
     );
   }
 
-  
   Widget _buildCard(List<Widget> children) => Card(
         color: Colors.white,
         elevation: 3,
@@ -244,7 +260,8 @@ class ReportarAnimalWidget extends StatelessWidget {
         ),
       );
 
-  InputDecoration _inputDecoration(String hint, {Icon? icono}) => InputDecoration(
+  InputDecoration _inputDecoration(String hint, {Icon? icono}) =>
+      InputDecoration(
         hintText: hint,
         prefixIcon: icono,
         filled: true,

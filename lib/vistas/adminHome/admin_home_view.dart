@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/controllers/auth_controller.dart';
@@ -7,6 +7,7 @@ import 'package:huellitas/vistas/gestion_casas_de_paso/gestion_casas_admin_view.
 import 'package:huellitas/vistas/gestion_eventosform/evento_form_view.dart';
 import 'package:huellitas/vistas/gestion_eventosform/gestion_eventos_wiew.dart';
 import 'package:huellitas/vistas/gestion_mascotaform/gestion_mascotas_view.dart';
+import 'package:huellitas/vistas/gestion_reportes_animales_admin/gestion_reportes_animales_viewad.dart';
 import 'package:huellitas/vistas/gestion_voluntario_view/gestion_voluntariados_view.dart';
 
 class AdminHomeView extends StatelessWidget {
@@ -16,7 +17,6 @@ class AdminHomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
-    final scale = MediaQuery.of(context).textScaleFactor;
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8E6CF),
@@ -26,6 +26,8 @@ class AdminHomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              // ------------------- HEADER -------------------
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(26),
@@ -92,6 +94,7 @@ class AdminHomeView extends StatelessWidget {
                 ),
               ),
 
+              // ------------------- ACCIONES RÁPIDAS -------------------
               const Text(
                 "Acciones Rápidas",
                 style: TextStyle(
@@ -110,75 +113,82 @@ class AdminHomeView extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 childAspectRatio: 0.85,
                 children: [
-                  _ModuleCard(
+                  AdminQuickActionCard(
                     icon: Icons.pets,
-                    label: 'Gestión de Animales',
+                    title: 'Gestión de Animales',
                     subtitle: 'Control de fichas',
-                    color: const Color(0xFFFFE0B2),
+                    backgroundColor: const Color(0xFFFFF0E0),
                     borderColor: const Color(0xFFFFB74D),
+                    iconColor: const Color(0xFFFFA726),
                     onTap: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const GestionMascotasView()),
+                        MaterialPageRoute(builder: (_) => const GestionMascotasView()),
                       );
-                      
                     },
                   ),
-                  _ModuleCard(
+                  AdminQuickActionCard(
                     icon: Icons.assignment_turned_in_rounded,
-                    label: 'Adopciones',
+                    title: 'Adopciones',
                     subtitle: 'Seguimiento y control',
-                    color: const Color(0xFFF8BBD0),
+                    backgroundColor: const Color(0xFFFFE4EC),
                     borderColor: const Color(0xFFF48FB1),
+                    iconColor: const Color(0xFFD81B60),
                     onTap: () {
-                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const GestionAdopcionesAdminView()),
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const GestionAdopcionesAdminView()),
                       );
-                      
                     },
                   ),
-                  _ModuleCard(
+                  AdminQuickActionCard(
                     icon: Icons.volunteer_activism,
-                    label: 'Voluntariado',
+                    title: 'Voluntariado',
                     subtitle: 'Gestión del equipo',
-                    color: const Color(0xFFBBDEFB),
+                    backgroundColor: const Color(0xFFE8F1FF),
                     borderColor: const Color(0xFF64B5F6),
+                    iconColor: const Color(0xFF1976D2),
                     onTap: () {
-                      
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const GestionVoluntariadosAdminView()),
+                        MaterialPageRoute(builder: (_) => const GestionVoluntariadosAdminView()),
                       );
                     },
                   ),
-                  _ModuleCard(
+                  AdminQuickActionCard(
                     icon: Icons.report_gmailerrorred_rounded,
-                    label: 'Reportes de Calle',
+                    title: 'Reportes de Calle',
                     subtitle: 'Casos reportados',
-                    color: const Color(0xFFFFCDD2),
+                    backgroundColor: const Color(0xFFFFE8E8),
                     borderColor: const Color(0xFFEF9A9A),
-                    onTap: () {},
-                  ),
-                  _ModuleCard(
-                    icon: Icons.home_work_outlined,
-                    label: 'Casas de Paso',
-                    subtitle: 'Hogares aliados',
-                    color: const Color(0xFFD1C4E9),
-                    borderColor: const Color(0xFFB39DDB),
-                    onTap: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const GestionCasasPasoAdminView()),
-                      );
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.event_rounded,
-                    label: 'Avisos y Jornadas',
-                    subtitle: 'Organiza eventos',
-                    color: const Color(0xFFFFF3E0),
-                    borderColor: const Color(0xFFFFB74D),
+                    iconColor: Colors.redAccent,
                     onTap: () {
                       
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const GestionEventosView()),
+                        MaterialPageRoute(builder: (_) => const GestionReportesAnimalesView()),
+                      );
+                    },
+                  ),
+                  AdminQuickActionCard(
+                    icon: Icons.home_work_outlined,
+                    title: 'Casas de Paso',
+                    subtitle: 'Hogares aliados',
+                    backgroundColor: const Color(0xFFF2E6FF),
+                    borderColor: const Color(0xFFB39DDB),
+                    iconColor: const Color(0xFF673AB7),
+                    onTap: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const GestionCasasPasoAdminView()),
+                      );
+                    },
+                  ),
+                  AdminQuickActionCard(
+                    icon: Icons.event_rounded,
+                    title: 'Avisos y Jornadas',
+                    subtitle: 'Organiza eventos',
+                    backgroundColor: const Color(0xFFFFF3E0),
+                    borderColor: const Color(0xFFFFB74D),
+                    iconColor: const Color(0xFFF57C00),
+                    onTap: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const GestionEventosView()),
                       );
                     },
                   ),
@@ -187,6 +197,7 @@ class AdminHomeView extends StatelessWidget {
 
               const SizedBox(height: 30),
 
+              // ------------------- EVENTOS -------------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -208,6 +219,7 @@ class AdminHomeView extends StatelessWidget {
                   ),
                 ],
               ),
+
               const SizedBox(height: 16),
 
               SizedBox(
@@ -234,9 +246,9 @@ class AdminHomeView extends StatelessWidget {
 
                     return ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: docs.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 14),
-                      itemBuilder: (context, i) {
+                      itemCount: docs.length,
+                      itemBuilder: (_, i) {
                         final ev = docs[i].data() as Map<String, dynamic>;
                         return Container(
                           width: 280,
@@ -262,7 +274,7 @@ class AdminHomeView extends StatelessWidget {
                                       color: Colors.orange[400], size: 20),
                                   const SizedBox(width: 6),
                                   Text(
-                                    (ev['tipo'] ?? '').toString(),
+                                    ev['tipo'] ?? '',
                                     style: TextStyle(
                                       color: Colors.orange[800],
                                       fontWeight: FontWeight.w700,
@@ -273,7 +285,7 @@ class AdminHomeView extends StatelessWidget {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                (ev['titulo'] ?? ''),
+                                ev['titulo'] ?? '',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
@@ -283,7 +295,7 @@ class AdminHomeView extends StatelessWidget {
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                (ev['descripcion'] ?? ''),
+                                ev['descripcion'] ?? '',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black54,
@@ -335,6 +347,7 @@ class AdminHomeView extends StatelessWidget {
                   },
                 ),
               ),
+
             ],
           ),
         ),
@@ -343,71 +356,73 @@ class AdminHomeView extends StatelessWidget {
   }
 }
 
-class _ModuleCard extends StatelessWidget {
+// -------------------------------------------------------
+//          QUICK ACTION CARD ESTILO USUARIO
+// -------------------------------------------------------
+
+class AdminQuickActionCard extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String title;
   final String subtitle;
-  final Color color;
+  final Color backgroundColor;
   final Color borderColor;
+  final Color iconColor;
   final VoidCallback onTap;
 
-  const _ModuleCard({
-    Key? key,
+  const AdminQuickActionCard({
+    super.key,
     required this.icon,
-    required this.label,
+    required this.title,
     required this.subtitle,
-    required this.color,
+    required this.backgroundColor,
     required this.borderColor,
+    required this.iconColor,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final scale = MediaQuery.of(context).textScaleFactor;
-
     return InkWell(
-      borderRadius: BorderRadius.circular(22),
-      splashColor: borderColor.withOpacity(0.3),
+      borderRadius: BorderRadius.circular(18),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        height: 130,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.6),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor, width: 1.5),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: borderColor, width: 1.4),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12.withOpacity(0.08),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            )
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: borderColor.withOpacity(0.25),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: borderColor, size: 38 * scale),
-            ),
-            const SizedBox(height: 12),
+            Icon(icon, color: iconColor, size: 36),
+            const SizedBox(height: 8),
             Text(
-              label,
-              textAlign: TextAlign.center,
+              title,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 17,
-                color: Color(0xFF222222),
+                fontSize: 16,
+                color: Colors.black87,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
               subtitle,
-              textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 15.5,
-                height: 1.3,
+                fontSize: 13,
+                color: Colors.black54,
+                fontWeight: FontWeight.w500,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

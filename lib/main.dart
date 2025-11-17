@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/controllers/mascota_controller.dart';
+import 'package:huellitas/controllers/reporte_animal_controller.dart';
 import 'package:huellitas/vistas/adminHome/admin_home_view.dart';
 import 'package:huellitas/vistas/casaspaso/casa_paso_home_view.dart';
 import 'package:huellitas/vistas/casaspaso/casa_paso_view.dart';
@@ -25,6 +26,7 @@ void main() async {
   await Firebase.initializeApp();
   Get.put(AuthController());
    Get.put(MascotaController());
+   Get.put(ReporteAnimalController());
   runApp(MyApp());
 }
 
