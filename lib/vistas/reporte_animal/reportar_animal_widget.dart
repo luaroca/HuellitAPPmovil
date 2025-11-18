@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ReportarAnimalWidget extends StatelessWidget {
@@ -8,6 +10,10 @@ class ReportarAnimalWidget extends StatelessWidget {
   final Future<void> Function() usarUbicacion;
   final Future<void> Function() enviarReporte;
 
+  final Future<void> Function() seleccionarImagen;
+  final File? imageFile;
+  final bool subiendoImagen;
+
   const ReportarAnimalWidget({
     Key? key,
     required this.formKey,
@@ -16,6 +22,9 @@ class ReportarAnimalWidget extends StatelessWidget {
     required this.condicionCtrl,
     required this.usarUbicacion,
     required this.enviarReporte,
+    required this.seleccionarImagen,
+    required this.imageFile,
+    required this.subiendoImagen,
   }) : super(key: key);
 
   @override
@@ -55,10 +64,8 @@ class ReportarAnimalWidget extends StatelessWidget {
           key: formKey,
           child: Column(
             children: [
-              // UBICACIÓN
               _buildCard([
-                _buildSectionHeader(
-                    "Ubicación del Animal", Icons.location_on_outlined),
+                _buildSectionHeader("Ubicación del Animal", Icons.location_on_outlined),
                 const SizedBox(height: 12),
                 _buildLabel("Dirección o punto de referencia *"),
                 TextFormField(
@@ -79,66 +86,85 @@ class ReportarAnimalWidget extends StatelessWidget {
                     icon: const Icon(Icons.gps_fixed),
                     label: const Text(
                       'Usar mi ubicación GPS',
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF0D7864),
-                      side: const BorderSide(
-                          color: Color(0xFF0D7864), width: 1.3),
+                      side: const BorderSide(color: Color(0xFF0D7864), width: 1.3),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
               ]),
-
-              // FOTOS (OPCIONAL)
               _buildCard([
-                _buildSectionHeader(
-                    "Fotos del Animal", Icons.photo_camera_outlined),
+                _buildSectionHeader("Fotos del Animal", Icons.photo_camera_outlined),
                 const SizedBox(height: 12),
                 GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content:
-                              Text('Función de subir foto próximamente.')),
-                    );
-                  },
+                  onTap: subiendoImagen ? null : seleccionarImagen,
                   child: Container(
                     width: double.infinity,
-                    height: 100,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF9F9F9),
-                      border: Border.all(
-                          color: const Color(0xFFFFAE35), width: 1.2),
+                      border:
+                          Border.all(color: const Color(0xFFFFAE35), width: 1.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.upload,
-                            color: Color(0xFFFFAE35), size: 32),
-                        SizedBox(height: 7),
-                        Text(
-                          'Subir foto (opcional)',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
+                        if (imageFile == null) ...[
+                          const SizedBox(height: 16),
+                          const Icon(Icons.upload,
+                              color: Color(0xFFFFAE35), size: 32),
+                          const SizedBox(height: 7),
+                          const Text(
+                            'Subir foto (opcional)',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                        ] else ...[
+                          const SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              imageFile!,
+                              width: double.infinity,
+                              height: 160,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            subiendoImagen
+                                ? 'Subiendo imagen...'
+                                : 'Toca para cambiar la imagen',
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
                       ],
                     ),
                   ),
                 ),
+                if (subiendoImagen) ...[
+                  const SizedBox(height: 8),
+                  const LinearProgressIndicator(
+                    minHeight: 4,
+                    backgroundColor: Colors.black12,
+                    color: Color(0xFFFFAE35),
+                  ),
+                ],
               ]),
-
-              // INFO ANIMAL
               _buildCard([
-                _buildSectionHeader(
-                    "Información del Animal", Icons.pets_outlined),
+                _buildSectionHeader("Información del Animal", Icons.pets_outlined),
                 const SizedBox(height: 12),
                 _buildLabel("Descripción del Animal *"),
                 TextFormField(
@@ -149,8 +175,7 @@ class ReportarAnimalWidget extends StatelessWidget {
                   ),
                   maxLines: 2,
                   textInputAction: TextInputAction.done,
-                  onEditingComplete: () =>
-                      FocusScope.of(context).unfocus(), // cierra teclado
+                  onEditingComplete: () => FocusScope.of(context).unfocus(),
                 ),
                 const SizedBox(height: 14),
                 _buildLabel("Estado y Condición *"),
@@ -162,11 +187,9 @@ class ReportarAnimalWidget extends StatelessWidget {
                   ),
                   maxLines: 2,
                   textInputAction: TextInputAction.done,
-                  onEditingComplete: () =>
-                      FocusScope.of(context).unfocus(), // cierra teclado
+                  onEditingComplete: () => FocusScope.of(context).unfocus(),
                 ),
               ]),
-
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -190,9 +213,11 @@ class ReportarAnimalWidget extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        await enviarReporte();
-                      },
+                      onPressed: subiendoImagen
+                          ? null
+                          : () async {
+                              await enviarReporte();
+                            },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFAE35),
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -244,7 +269,7 @@ class ReportarAnimalWidget extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Icon(icono, color: Color(0xFF0D7864)),
+          Icon(icono, color: const Color(0xFF0D7864)),
         ],
       );
 
@@ -260,14 +285,12 @@ class ReportarAnimalWidget extends StatelessWidget {
         ),
       );
 
-  InputDecoration _inputDecoration(String hint, {Icon? icono}) =>
-      InputDecoration(
+  InputDecoration _inputDecoration(String hint, {Icon? icono}) => InputDecoration(
         hintText: hint,
         prefixIcon: icono,
         filled: true,
         fillColor: const Color(0xFFF9F9F9),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.black12),
@@ -278,8 +301,7 @@ class ReportarAnimalWidget extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:
-              const BorderSide(color: Color(0xFF0D7864), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFF0D7864), width: 1.5),
         ),
       );
 }

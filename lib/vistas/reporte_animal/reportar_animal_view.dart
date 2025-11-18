@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -5,6 +7,9 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 
 import 'reportar_animal_widget.dart';
 import 'package:huellitas/controllers/reporte_animal_controller.dart';
@@ -29,6 +34,18 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
 
   final ReporteAnimalController reporteController = Get.find();
 
+  // Para imagen
+  File? _imageFile;
+  bool _subiendoImagen = false;
+
+  final cloudinary = CloudinaryPublic(
+    'dhwrxmehx',        // tu cloud name
+    'huellitas_preset', // tu upload preset (debe ser un preset sin firma "unsigned")
+    cache: false,
+  );
+
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void dispose() {
     direccionCtrl.dispose();
@@ -47,8 +64,8 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
       return;
     }
 
-    final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    final pos =
+        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     lat = pos.latitude;
     lng = pos.longitude;
 
@@ -59,11 +76,9 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
         if (place.street != null && place.street!.isNotEmpty) place.street!,
         if (place.subLocality != null && place.subLocality!.isNotEmpty)
           place.subLocality!,
-        if (place.locality != null && place.locality!.isNotEmpty)
-          place.locality!,
+        if (place.locality != null && place.locality!.isNotEmpty) place.locality!,
         if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty)
-          place.administrativeArea!,
+            place.administrativeArea!.isNotEmpty) place.administrativeArea!,
       ].join(', ');
 
       setState(() {
@@ -77,9 +92,53 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
             '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Ubicación obtenida mediante coordenadas.')),
+        const SnackBar(content: Text('Ubicación obtenida mediante coordenadas.')),
       );
+    }
+  }
+
+  Future<void> seleccionarImagen() async {
+    final XFile? picked = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+    }
+  }
+
+  Future<String?> _subirImagenACloudinary(File imageFile) async {
+    try {
+      setState(() {
+        _subiendoImagen = true;
+      });
+
+      final res = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(
+          imageFile.path,
+          resourceType: CloudinaryResourceType.Image,
+          folder: 'reportes_animales',
+        ),
+      );
+
+      return res.secureUrl;
+    } on CloudinaryException catch (e) {
+      debugPrint('Error Cloudinary: ${e.message}');
+      debugPrint('Request: ${e.request}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al subir imagen: ${e.message}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return null;
+    } finally {
+      setState(() {
+        _subiendoImagen = false;
+      });
     }
   }
 
@@ -94,10 +153,17 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
       return;
     }
 
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
+    String? fotoUrl;
+    if (_imageFile != null) {
+      fotoUrl = await _subirImagenACloudinary(_imageFile!);
+      if (fotoUrl == null) {
+        // Si falla la subida, no continuar
+        return;
+      }
+    }
+
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
     final dataUser = userDoc.data() ?? {};
 
     final reporte = ReporteAnimalModel(
@@ -111,7 +177,7 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
       condicion: condicionCtrl.text.trim(),
       lat: lat,
       lng: lng,
-      fotoUrl: null, // por ahora no hay storage
+      fotoUrl: fotoUrl,
       estado: 'pendiente',
     );
 
@@ -136,6 +202,9 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
       condicionCtrl: condicionCtrl,
       usarUbicacion: usarUbicacion,
       enviarReporte: enviarReporte,
+      seleccionarImagen: seleccionarImagen,
+      imageFile: _imageFile,
+      subiendoImagen: _subiendoImagen,
     );
   }
 }
