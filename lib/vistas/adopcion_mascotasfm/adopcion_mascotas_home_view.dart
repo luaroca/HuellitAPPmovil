@@ -139,7 +139,7 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
                         itemCount: mascotasFiltradas.length,
                         itemBuilder: (_, idx) {
                           final m = mascotasFiltradas[idx];
-                          // El botón solo debe estar deshabilitado si el usuario actual es el de la solicitud
+                          // El botón solo debe estar deshabilitado si el usuario actual es el de la solicitudsss
                           final solicitudEnviadaPorMi = m.solicitudAdopcion == true &&
                               m.solicitudUid != null &&
                               user != null &&
