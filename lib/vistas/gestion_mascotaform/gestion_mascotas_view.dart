@@ -13,15 +13,25 @@ class GestionMascotasView extends StatefulWidget {
 
 class _GestionMascotasViewState extends State<GestionMascotasView> {
   final MascotaController controller = Get.put(MascotaController());
-  bool filterVacunado = false;
-  bool filterEsterilizado = false;
-  bool filterAdoptable = false;
+
+  String filterVacunado = "Todos";
+  String filterEsterilizado = "Todos";
+  String filterAdoptable = "Todos";
 
   List<MascotaModel> _applyFilters(List<MascotaModel> mascotas) {
     return mascotas.where((m) {
-      if (filterVacunado && !m.vacunado) return false;
-      if (filterEsterilizado && !m.esterilizado) return false;
-      if (filterAdoptable && !m.disponible) return false;
+      if (filterVacunado != "Todos") {
+        if (filterVacunado == "Vacunado" && !m.vacunado) return false;
+        if (filterVacunado == "No vacunado" && m.vacunado) return false;
+      }
+      if (filterEsterilizado != "Todos") {
+        if (filterEsterilizado == "Esterilizado" && !m.esterilizado) return false;
+        if (filterEsterilizado == "No esterilizado" && m.esterilizado) return false;
+      }
+      if (filterAdoptable != "Todos") {
+        if (filterAdoptable == "Adoptable" && !m.disponible) return false;
+        if (filterAdoptable == "No adoptable" && m.disponible) return false;
+      }
       return true;
     }).toList();
   }
@@ -71,26 +81,38 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
                 ],
               ),
               const SizedBox(height: 14),
+              // FILTROS COMO MENÚ DESPLEGABLE
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  FilterChip(
-                    selected: filterVacunado,
-                    label: const Text("Vacunados"),
-                    selectedColor: Colors.green[100],
-                    onSelected: (s) => setState(() => filterVacunado = s),
+                  Expanded(
+                    child: _DropdownFilter(
+                      label: "Vacunado",
+                      value: filterVacunado,
+                      items: const ["Todos", "Vacunado", "No vacunado"],
+                      onChanged: (val) =>
+                          setState(() => filterVacunado = val!),
+                    ),
                   ),
-                  FilterChip(
-                    selected: filterEsterilizado,
-                    label: const Text("Esterilizados"),
-                    selectedColor: Colors.blue[100],
-                    onSelected: (s) => setState(() => filterEsterilizado = s),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _DropdownFilter(
+                      label: "Esterilizado",
+                      value: filterEsterilizado,
+                      items: const ["Todos", "Esterilizado", "No esterilizado"],
+                      onChanged: (val) =>
+                          setState(() => filterEsterilizado = val!),
+                    ),
                   ),
-                  FilterChip(
-                    selected: filterAdoptable,
-                    label: const Text("Adoptables"),
-                    selectedColor: Colors.orange[100],
-                    onSelected: (s) => setState(() => filterAdoptable = s),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _DropdownFilter(
+                      label: "Adoptable",
+                      value: filterAdoptable,
+                      items: const ["Todos", "Adoptable", "No adoptable"],
+                      onChanged: (val) =>
+                          setState(() => filterAdoptable = val!),
+                    ),
                   ),
                 ],
               ),
@@ -167,6 +189,60 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
   }
 }
 
+class _DropdownFilter extends StatelessWidget {
+  final String label;
+  final String value;
+  final List<String> items;
+  final ValueChanged<String?> onChanged;
+
+  const _DropdownFilter({
+    Key? key,
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: Colors.white,
+      ),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+        icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+        dropdownColor: Colors.white,
+        style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Colors.black),
+        items: items
+            .map((opcion) => DropdownMenuItem(
+                  value: opcion,
+                  child: Text(
+                    opcion,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.normal),
+                  ),
+                ))
+            .toList(),
+        onChanged: onChanged,
+        isExpanded: true,
+      ),
+    );
+  }
+}
+
+// Resto de código igual (no tocado en tu petición, mantiene layout y lógica original)
 class _MascotaCard extends StatelessWidget {
   final MascotaModel mascota;
   final VoidCallback onEdit;
@@ -239,7 +315,6 @@ class _MascotaCard extends StatelessWidget {
                         color: Colors.black54,
                       ),
                       overflow: TextOverflow.ellipsis),
-                  // Descripción scrollable y elegante
                   if (mascota.descripcion != null &&
                       mascota.descripcion!.trim().isNotEmpty) ...[
                     const SizedBox(height: 8),
@@ -332,7 +407,8 @@ class _MascotaCard extends StatelessWidget {
 
   Widget _defaultIcon() => Container(
         color: Colors.teal[50],
-        child: const Center(child: Icon(Icons.pets, color: Colors.teal, size: 50)),
+        child:
+            const Center(child: Icon(Icons.pets, color: Colors.teal, size: 50)),
       );
   Widget _estadoChip(bool activo, String texto, Color color) {
     return Chip(
