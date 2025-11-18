@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huellitas/controllers/mascota_controller.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
+
+import 'package:huellitas/controllers/mascota_controller.dart';
 import 'package:huellitas/modelos/mascota_model.dart';
 
 class MascotaFormView extends StatefulWidget {
@@ -25,6 +29,17 @@ class _MascotaFormViewState extends State<MascotaFormView> {
   bool esterilizado = false;
   bool disponible = true;
 
+  // Imagen para Cloudinary
+  File? _imageFile;
+  bool _subiendoImagen = false;
+
+  final cloudinary = CloudinaryPublic(
+    'dhwrxmehx',        // Tu cloud name
+    'huellitas_preset', // Tu upload preset sin firma (unsigned)
+    cache: false,
+  );
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +53,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
       vacunado = m.vacunado;
       esterilizado = m.esterilizado;
       disponible = m.disponible;
+      // NO recuperamos foto directamente aquí, la mostramos solo si existe
     }
   }
 
@@ -48,9 +64,58 @@ class _MascotaFormViewState extends State<MascotaFormView> {
     super.dispose();
   }
 
+  Future<void> seleccionarImagen() async {
+    final XFile? picked = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+    }
+  }
+
+  Future<String?> _subirImagenACloudinary(File imageFile) async {
+    try {
+      setState(() {
+        _subiendoImagen = true;
+      });
+
+      final res = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(
+          imageFile.path,
+          resourceType: CloudinaryResourceType.Image,
+          folder: 'mascotas',
+        ),
+      );
+      return res.secureUrl;
+    } on CloudinaryException catch (e) {
+      debugPrint('Cloudinary error: ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al subir imagen: ${e.message}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return null;
+    } finally {
+      setState(() {
+        _subiendoImagen = false;
+      });
+    }
+  }
+
   Future<void> _guardar() async {
     if (_formKey.currentState!.validate()) {
       final isEdit = widget.mascota != null;
+      String? fotoUrl = isEdit ? widget.mascota?.fotoUrl : null;
+
+      // Si seleccionaste imagen, súbela a Cloudinary antes de guardar
+      if (_imageFile != null) {
+        fotoUrl = await _subirImagenACloudinary(_imageFile!);
+        if (fotoUrl == null) return; // Si falla la subida, no continue
+      }
 
       final mascota = MascotaModel(
         id: isEdit ? widget.mascota!.id : Uuid().v4(),
@@ -61,13 +126,17 @@ class _MascotaFormViewState extends State<MascotaFormView> {
         descripcion: descripcionCtrl.text.trim(),
         vacunado: vacunado,
         esterilizado: esterilizado,
-        fotoUrl: isEdit ? widget.mascota?.fotoUrl : null,
+        fotoUrl: fotoUrl,
         disponible: disponible,
         casaPasoId: isEdit ? widget.mascota?.casaPasoId : null,
         solicitudAdopcion: isEdit ? widget.mascota!.solicitudAdopcion : false,
         adoptada: isEdit ? widget.mascota!.adoptada : false,
         fechaIngresoCasa: isEdit ? widget.mascota?.fechaIngresoCasa : null,
         fechaSalidaCasa: isEdit ? widget.mascota?.fechaSalidaCasa : null,
+        solicitudUid: isEdit ? widget.mascota?.solicitudUid : null,
+        nombreUsuarioSolicitud: isEdit ? widget.mascota?.nombreUsuarioSolicitud : null,
+        correoUsuarioSolicitud: isEdit ? widget.mascota?.correoUsuarioSolicitud : null,
+        telefonoUsuarioSolicitud: isEdit ? widget.mascota?.telefonoUsuarioSolicitud : null,
       );
 
       if (!isEdit) {
@@ -112,19 +181,55 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   border: Border.all(color: const Color(0xFF4DB6AC), width: 1.5),
                 ),
                 child: Column(
-                  children: const [
-                    Icon(Icons.add_photo_alternate_rounded, color: Color(0xFF4DB6AC), size: 50),
-                    SizedBox(height: 10),
-                    Text(
-                      'Subir foto (opcional)\nJPG, PNG o GIF (máx. 5MB)',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: "Roboto", fontSize: 15, color: Colors.black54),
+                  children: [
+                    GestureDetector(
+                      onTap: _subiendoImagen ? null : seleccionarImagen,
+                      child: _imageFile != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.file(
+                                _imageFile!,
+                                width: 150, height: 150,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : widget.mascota?.fotoUrl != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    widget.mascota!.fotoUrl!,
+                                    width: 150, height: 150,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Column(
+                                  children: const [
+                                    Icon(Icons.add_photo_alternate_rounded, color: Color(0xFF4DB6AC), size: 50),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Subir foto (opcional)\nJPG, PNG o GIF (máx. 5MB)',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontFamily: "Roboto", fontSize: 15, color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
                     ),
+                    if (_subiendoImagen)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: LinearProgressIndicator(minHeight: 4, color: Color(0xFF4DB6AC)),
+                      ),
+                    if (!_subiendoImagen && _imageFile != null)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text("Toca para cambiar foto", style: TextStyle(color: Colors.black54)),
+                      ),
                   ],
                 ),
               ),
               const SizedBox(height: 25),
 
+              // EL RESTO ES IGUAL, NO CAMBIA...
               Text(
                 "Información de la mascota",
                 style: TextStyle(
@@ -135,7 +240,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                 ),
               ),
               const SizedBox(height: 16),
-              // NOMBRE Y TIPO
               Row(
                 children: [
                   Expanded(
@@ -164,7 +268,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                 ],
               ),
               const SizedBox(height: 16),
-              // GÉNERO Y TAMAÑO
               Row(
                 children: [
                   Expanded(
@@ -198,7 +301,6 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                 ],
               ),
               const SizedBox(height: 16),
-              // DESCRIPCIÓN
               TextFormField(
                 controller: descripcionCtrl,
                 style: const TextStyle(fontSize: 18, fontFamily: "Roboto"),
@@ -252,7 +354,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _guardar,
+                      onPressed: _subiendoImagen ? null : _guardar,
                       style: _botonPrincipal(),
                       child: const Text("Guardar Mascota", style: TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.white)),
                     ),

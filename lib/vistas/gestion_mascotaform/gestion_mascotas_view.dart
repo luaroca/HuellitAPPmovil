@@ -28,9 +28,11 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final crossAxisCount = width > 900 ? 3 : (width > 600 ? 2 : 1);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Mascotas',
+        title: const Text("Gestión de Mascotas",
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF4DB6AC),
         leading: const BackButton(color: Colors.white),
@@ -38,33 +40,34 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
       ),
       backgroundColor: const Color(0xFFA8E6CF),
       body: Obx(() {
-        final masc = controller.mascotas;
-        final visibles = _applyFilters(masc);
-        int total = masc.length;
-        int disponibles = masc.where((e) => e.disponible).length;
+        final mascotas = controller.mascotas;
+        final visibles = _applyFilters(mascotas);
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.all(14),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Expanded(
-                      child: _ContadorBonito(
-                          icon: Icons.pets,
-                          count: total,
-                          color: const Color(0xFF4DB6AC),
-                          bgColor: const Color(0xFFE8F6F4),
-                          title: 'Total mascotas')),
+                    child: _ContadorBonito(
+                      icon: Icons.pets,
+                      count: mascotas.length,
+                      title: "Total",
+                      color: const Color(0xFF4DB6AC),
+                      bgColor: const Color(0xFFE8F6F4),
+                    ),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
-                      child: _ContadorBonito(
-                          icon: Icons.check_circle,
-                          count: disponibles,
-                          color: const Color(0xFFFFB74D),
-                          bgColor: const Color(0xFFFFF4E3),
-                          title: 'Disponibles')),
+                    child: _ContadorBonito(
+                      icon: Icons.check_circle,
+                      count: mascotas.where((e) => e.disponible).length,
+                      title: "Disponibles",
+                      color: const Color(0xFFFFB74D),
+                      bgColor: const Color(0xFFFFF4E3),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 14),
@@ -75,207 +78,65 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
                     selected: filterVacunado,
                     label: const Text("Vacunados"),
                     selectedColor: Colors.green[100],
-                    backgroundColor: Colors.white,
-                    onSelected: (s) =>
-                        setState(() => filterVacunado = s),
+                    onSelected: (s) => setState(() => filterVacunado = s),
                   ),
                   FilterChip(
                     selected: filterEsterilizado,
                     label: const Text("Esterilizados"),
                     selectedColor: Colors.blue[100],
-                    backgroundColor: Colors.white,
-                    onSelected: (s) =>
-                        setState(() => filterEsterilizado = s),
+                    onSelected: (s) => setState(() => filterEsterilizado = s),
                   ),
                   FilterChip(
                     selected: filterAdoptable,
                     label: const Text("Adoptables"),
                     selectedColor: Colors.orange[100],
-                    backgroundColor: Colors.white,
-                    onSelected: (s) =>
-                        setState(() => filterAdoptable = s),
+                    onSelected: (s) => setState(() => filterAdoptable = s),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton.icon(
-                  onPressed: () => Get.to(() => MascotaFormView()),
-                  icon: const Icon(Icons.add_circle_outline,
-                      color: Colors.white, size: 26),
-                  label: const Text('Agregar Nueva Mascota',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600)),
+                  icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                  label: const Text("Agregar Nueva Mascota",
+                      style: TextStyle(fontSize: 20, color: Colors.white)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4DB6AC),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 4,
-                  ),
+                      backgroundColor: const Color(0xFF4DB6AC),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))),
+                  onPressed: () => Get.to(() => MascotaFormView()),
                 ),
               ),
               const SizedBox(height: 16),
-              if (visibles.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: Center(
+              visibles.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.all(24),
                       child: Text(
-                          "No hay mascotas coincidentes con el filtro seleccionado.",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 17,
-                          ))),
-                ),
-              ListView.builder(
-                itemCount: visibles.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, i) {
-                  final mascota = visibles[i];
-                  return Card(
-                    color: const Color(0xFFFFFCF5),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Imagen o icono
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: mascota.fotoUrl != null &&
-                                    mascota.fotoUrl!.isNotEmpty
-                                ? Image.network(mascota.fotoUrl!,
-                                    width: 55,
-                                    height: 55,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => _defaultIcon())
-                                : _defaultIcon(),
-                          ),
-                          const SizedBox(width: 15),
-                          // Datos principales y chips
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${mascota.nombre} (${mascota.tipo})',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    )),
-                                Text('${mascota.genero} - ${mascota.tamanio}',
-                                    style:
-                                        const TextStyle(color: Colors.black54)),
-                                const SizedBox(height: 5),
-                                Wrap(
-                                  spacing: 6,
-                                  children: [
-                                    Chip(
-                                      avatar: Icon(Icons.check_circle,
-                                          color: mascota.vacunado
-                                              ? Colors.green
-                                              : Colors.grey[400],
-                                          size: 18),
-                                      backgroundColor: Colors.green[50],
-                                      label: Text(
-                                          mascota.vacunado
-                                              ? 'Vacunado'
-                                              : 'No vacunado',
-                                          style: TextStyle(
-                                              color: mascota.vacunado
-                                                  ? Colors.green[700]
-                                                  : Colors.grey[600],
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                    Chip(
-                                      avatar: Icon(Icons.medical_services,
-                                          color: mascota.esterilizado
-                                              ? Colors.blue
-                                              : Colors.grey[400],
-                                          size: 18),
-                                      backgroundColor: Colors.blue[50],
-                                      label: Text(
-                                          mascota.esterilizado
-                                              ? 'Esterilizado'
-                                              : 'No esterilizado',
-                                          style: TextStyle(
-                                              color: mascota.esterilizado
-                                                  ? Colors.blue[700]
-                                                  : Colors.grey[600],
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                    Chip(
-                                      avatar: Icon(Icons.pets,
-                                          color: mascota.disponible
-                                              ? Colors.deepOrange
-                                              : Colors.grey[400],
-                                          size: 18),
-                                      backgroundColor: Colors.orange[50],
-                                      label: Text(
-                                          mascota.disponible
-                                              ? 'Adoptable'
-                                              : 'No adoptable',
-                                          style: TextStyle(
-                                              color: mascota.disponible
-                                                  ? Colors.deepOrange
-                                                  : Colors.grey[600],
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Botón más (editar/eliminar)
-                          PopupMenuButton<String>(
-                            onSelected: (val) async {
-                              if (val == 'editar') {
-                                Get.to(() => MascotaFormView(mascota: mascota));
-                              }
-                              if (val == 'eliminar') {
-                                final sure = await Get.dialog<bool>(
-                                  AlertDialog(
-                                    title: const Text('¿Eliminar mascota?'),
-                                    content: Text(
-                                        '¿Seguro que deseas eliminar a ${mascota.nombre}?'),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: false),
-                                          child: const Text('Cancelar')),
-                                      TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: true),
-                                          child: const Text('Eliminar')),
-                                    ],
-                                  ),
-                                );
-                                if (sure == true) {
-                                  await controller.eliminarMascota(mascota.id);
-                                }
-                              }
-                            },
-                            itemBuilder: (_) => [
-                              const PopupMenuItem(
-                                  value: 'editar', child: Text('Editar')),
-                              const PopupMenuItem(
-                                  value: 'eliminar', child: Text('Eliminar')),
-                            ],
-                          ),
-                        ],
+                        "No hay mascotas que coincidan con el filtro.",
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
+                    )
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: visibles.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                        childAspectRatio: 0.78,
+                      ),
+                      itemBuilder: (_, i) {
+                        return _MascotaCard(
+                          mascota: visibles[i],
+                          onEdit: () =>
+                              Get.to(() => MascotaFormView(mascota: visibles[i])),
+                          onDelete: () => _confirmDelete(visibles[i]),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ],
           ),
         );
@@ -283,15 +144,211 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
     );
   }
 
+  void _confirmDelete(MascotaModel mascota) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Confirmar"),
+        content: Text("¿Eliminar a ${mascota.nombre}?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar")),
+          TextButton(
+            onPressed: () {
+              controller.eliminarMascota(mascota.id!);
+              Navigator.pop(context);
+            },
+            child: const Text("Eliminar", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MascotaCard extends StatelessWidget {
+  final MascotaModel mascota;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _MascotaCard({
+    super.key,
+    required this.mascota,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      color: const Color(0xFFFFFCF5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.network(
+                mascota.fotoUrl ?? "",
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _defaultIcon(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          mascota.nombre,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.teal[50],
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        child: Text(
+                          mascota.tipo,
+                          style: const TextStyle(
+                              color: Color(0xFF46A58D),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text("${mascota.genero} • ${mascota.tamanio}",
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.black54,
+                      ),
+                      overflow: TextOverflow.ellipsis),
+                  // Descripción scrollable y elegante
+                  if (mascota.descripcion != null &&
+                      mascota.descripcion!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: Scrollbar(
+                        thickness: 4,
+                        radius: const Radius.circular(5),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            mascota.descripcion!,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    const Spacer(),
+                  ],
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      _estadoChip(mascota.vacunado, "Vacunado", Colors.green),
+                      _estadoChip(
+                          mascota.esterilizado, "Esterilizado", Colors.blue),
+                      _estadoChip(mascota.disponible, "Adoptable", Colors.orange),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        color: Colors.blue[50],
+                        elevation: 0,
+                        onPressed: onEdit,
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit, color: Colors.blue, size: 18),
+                            SizedBox(width: 4),
+                            Text("Editar",
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      MaterialButton(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        color: Colors.red[50],
+                        elevation: 0,
+                        onPressed: onDelete,
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete, color: Colors.red, size: 18),
+                            SizedBox(width: 4),
+                            Text("Eliminar",
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _defaultIcon() => Container(
-        width: 55,
-        height: 55,
-        decoration: BoxDecoration(
-          color: Colors.teal[50],
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: const Icon(Icons.pets, color: Colors.teal, size: 33),
+        color: Colors.teal[50],
+        child: const Center(child: Icon(Icons.pets, color: Colors.teal, size: 50)),
       );
+  Widget _estadoChip(bool activo, String texto, Color color) {
+    return Chip(
+      backgroundColor:
+          activo ? color.withOpacity(.15) : Colors.grey.withOpacity(.15),
+      avatar: Icon(Icons.circle, size: 14, color: activo ? color : Colors.grey),
+      label: Text(
+        activo ? texto : "No $texto",
+        style: TextStyle(
+          color: activo ? color : Colors.grey[700],
+          fontWeight: FontWeight.w500,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
 }
 
 class _ContadorBonito extends StatelessWidget {
@@ -301,41 +358,33 @@ class _ContadorBonito extends StatelessWidget {
   final Color color;
   final Color bgColor;
 
-  const _ContadorBonito(
-      {required this.icon,
-      required this.count,
-      required this.title,
-      required this.color,
-      required this.bgColor});
+  const _ContadorBonito({
+    required this.icon,
+    required this.count,
+    required this.title,
+    required this.color,
+    required this.bgColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: bgColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: color.withOpacity(0.2), width: 1),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 30),
+            Icon(icon, size: 30, color: color),
             const SizedBox(height: 6),
-            Text('$count',
+            Text("$count",
                 style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24)),
-            const SizedBox(height: 4),
+                    fontSize: 22, color: color, fontWeight: FontWeight.bold)),
             Text(title,
-                textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: color.withOpacity(0.9),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15)),
+                    fontSize: 14,
+                    color: color.withOpacity(.9),
+                    fontWeight: FontWeight.w600)),
           ],
         ),
       ),
