@@ -65,79 +65,81 @@ class SolicitudesUsuarioView extends StatelessWidget {
               return Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18)),
+                  borderRadius: BorderRadius.circular(18),
+                ),
                 margin: const EdgeInsets.only(bottom: 22),
                 child: Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //-----------------------------------------
-                      //  MASCOTA
-                      //-----------------------------------------
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: mascota.fotoUrl != null &&
-                                    mascota.fotoUrl!.isNotEmpty
-                                ? Image.network(
-                                    mascota.fotoUrl!,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.grey.shade200,
-                                    child: const Icon(
-                                      Icons.pets,
-                                      size: 45,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                          ),
-                          const SizedBox(width: 18),
-
-                          // Datos principales
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  mascota.nombre,
-                                  style: const TextStyle(
-                                    fontFamily: 'Roboto',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${mascota.tipo} • ${mascota.genero}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Tamaño: ${mascota.tamanio}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Vacunado: ${mascota.vacunado ? "Sí" : "No"}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Esterilizado: ${mascota.esterilizado ? "Sí" : "No"}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                              ],
+                      //-----------------------------------------------------
+                      //   IMAGEN PRINCIPAL (ÚNICA IMAGEN)
+                      //-----------------------------------------------------
+                      if (mascota.fotoUrl != null &&
+                          mascota.fotoUrl!.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            mascota.fotoUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 200,
+                              width: double.infinity,
+                              color: Colors.grey.shade200,
+                              child: const Icon(
+                                Icons.pets,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
-                        ],
+                        ),
+
+                      const SizedBox(height: 18),
+
+                      //-----------------------------------------
+                      //  INFO PRINCIPAL
+                      //-----------------------------------------
+                      Text(
+                        mascota.nombre,
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      Text(
+                        '${mascota.tipo} • ${mascota.genero}',
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        'Tamaño: ${mascota.tamanio}',
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        'Vacunado: ${mascota.vacunado ? "Sí" : "No"}',
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        'Esterilizado: ${mascota.esterilizado ? "Sí" : "No"}',
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 18,
+                        ),
                       ),
 
                       //-----------------------------------------
@@ -157,7 +159,7 @@ class SolicitudesUsuarioView extends StatelessWidget {
                           ),
                         ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
 
                       //-----------------------------------------
                       //  ETIQUETA DE CONFIRMACIÓN
@@ -176,16 +178,20 @@ class SolicitudesUsuarioView extends StatelessWidget {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.check_circle,
-                                color: Color(0xFF4DB6AC), size: 26),
+                            Icon(
+                              Icons.check_circle,
+                              color: Color(0xFF4DB6AC),
+                              size: 26,
+                            ),
                             SizedBox(width: 10),
                             Text(
                               "Solicitud Confirmada",
                               style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontSize: 18,
-                                  color: Color(0xFF4DB6AC),
-                                  fontWeight: FontWeight.bold),
+                                fontFamily: 'Roboto',
+                                fontSize: 18,
+                                color: Color(0xFF4DB6AC),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),

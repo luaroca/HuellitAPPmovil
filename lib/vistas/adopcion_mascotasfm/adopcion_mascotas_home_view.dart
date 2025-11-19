@@ -68,189 +68,189 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF4DB6AC),
-          centerTitle: true,
-          title: const Text(
-            'Mascotas para adopción',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF4DB6AC),
+        centerTitle: true,
+        title: const Text(
+          'Mascotas para adopción',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFFA8E6CF),
-        body: Obx(() {
-          final mascotas = controller.mascotas;
-          final mascotasFiltradas = _filtrarMascotas(mascotas);
-          return Column(
-            children: [
-              const SizedBox(height: 10),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: _dropdownFiltro(
-                        label: "Tipo",
-                        valorActual: filtroTipo,
-                        opciones: tipos,
-                        onChanged: (v) =>
-                            setState(() => filtroTipo = v ?? 'Todos'),
-                      ),
+      ),
+      backgroundColor: const Color(0xFFA8E6CF),
+      body: Obx(() {
+        final mascotas = controller.mascotas;
+        final mascotasFiltradas = _filtrarMascotas(mascotas);
+
+        return Column(
+          children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: _dropdownFiltro(
+                      label: "Tipo",
+                      valorActual: filtroTipo,
+                      opciones: tipos,
+                      onChanged: (v) => setState(() => filtroTipo = v ?? 'Todos'),
                     ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: _dropdownFiltro(
-                        label: "Género",
-                        valorActual: filtroGenero,
-                        opciones: generos,
-                        onChanged: (v) =>
-                            setState(() => filtroGenero = v ?? 'Todos'),
-                      ),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: _dropdownFiltro(
+                      label: "Género",
+                      valorActual: filtroGenero,
+                      opciones: generos,
+                      onChanged: (v) => setState(() => filtroGenero = v ?? 'Todos'),
                     ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: _dropdownFiltro(
-                        label: "Tamaño",
-                        valorActual: filtroTamanio,
-                        opciones: tamanios,
-                        onChanged: (v) =>
-                            setState(() => filtroTamanio = v ?? 'Todos'),
-                      ),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: _dropdownFiltro(
+                      label: "Tamaño",
+                      valorActual: filtroTamanio,
+                      opciones: tamanios,
+                      onChanged: (v) => setState(() => filtroTamanio = v ?? 'Todos'),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 14),
-              Expanded(
-                child: mascotasFiltradas.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Text(
-                            "No hay mascotas disponibles con los filtros seleccionados.",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.grey[600]),
-                            textAlign: TextAlign.center,
-                          ),
+            ),
+
+            const SizedBox(height: 14),
+
+            Expanded(
+              child: mascotasFiltradas.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          "No hay mascotas disponibles con los filtros seleccionados.",
+                          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                          textAlign: TextAlign.center,
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount: mascotasFiltradas.length,
-                        itemBuilder: (_, idx) {
-                          final m = mascotasFiltradas[idx];
-                          // El botón solo debe estar deshabilitado si el usuario actual es el de la solicitudsss
-                          final solicitudEnviadaPorMi = m.solicitudAdopcion == true &&
-                              m.solicitudUid != null &&
-                              user != null &&
-                              m.solicitudUid == user.uid;
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: mascotasFiltradas.length,
+                      itemBuilder: (_, idx) {
+                        final m = mascotasFiltradas[idx];
+
+                        final solicitudEnviadaPorMi =
+                            m.solicitudAdopcion == true &&
+                                m.solicitudUid != null &&
+                                user != null &&
+                                m.solicitudUid == user.uid;
+
+                        return Card(
+                          margin:
+                              const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // FOTO GRANDE ÚNICA
+                                if (m.fotoUrl != null && m.fotoUrl!.isNotEmpty)
                                   ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: m.fotoUrl != null &&
-                                            m.fotoUrl!.isNotEmpty
-                                        ? Image.network(
-                                            m.fotoUrl!,
-                                            width: 70,
-                                            height: 70,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) =>
-                                                _iconoPorDefecto(),
-                                          )
-                                        : _iconoPorDefecto(),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${m.nombre} (${m.tipo})",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${m.genero} - ${m.tamanio}",
-                                          style: const TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 14),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Wrap(
-                                          spacing: 6,
-                                          children: [
-                                            _chipEstado(
-                                              icon: Icons.check_circle,
-                                              activo: m.vacunado,
-                                              labelTrue: 'Vacunado',
-                                              labelFalse: 'No vacunado',
-                                              colorTrue: Colors.green,
-                                              colorFalse: Colors.grey,
-                                            ),
-                                            _chipEstado(
-                                              icon: Icons.medical_services,
-                                              activo: m.esterilizado,
-                                              labelTrue: 'Esterilizado',
-                                              labelFalse: 'No esterilizado',
-                                              colorTrue: Colors.blue,
-                                              colorFalse: Colors.grey,
-                                            ),
-                                            _chipEstado(
-                                              icon: Icons.pets,
-                                              activo: m.disponible,
-                                              labelTrue: 'Adoptable',
-                                              labelFalse: 'No adoptable',
-                                              colorTrue: Colors.orange,
-                                              colorFalse: Colors.grey,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        ElevatedButton(
-                                          onPressed: (m.solicitudAdopcion == true)
-                                              ? solicitudEnviadaPorMi
-                                                  ? null
-                                                  : null
-                                              : () {
-                                                  _solicitarAdopcion(m);
-                                                },
-                                          child: Text(
-                                            (m.solicitudAdopcion == true &&
-                                                    solicitudEnviadaPorMi)
-                                                ? "Solicitud enviada"
-                                                : (m.solicitudAdopcion == true &&
-                                                        m.solicitudUid != null &&
-                                                        m.solicitudUid != user?.uid)
-                                                    ? "No disponible temporalmente"
-                                                    : "Solicitar adopción",
-                                          ),
-                                        )
-                                      ],
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.network(
+                                      m.fotoUrl!,
+                                      height: 230,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          _iconoPorDefecto(),
                                     ),
                                   ),
-                                ],
-                              ),
+
+                                const SizedBox(height: 14),
+
+                                Text(
+                                  "${m.nombre} (${m.tipo})",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+
+                                const SizedBox(height: 6),
+
+                                Text(
+                                  "${m.genero} - ${m.tamanio}",
+                                  style: const TextStyle(
+                                      color: Colors.black54, fontSize: 16),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                Wrap(
+                                  spacing: 6,
+                                  children: [
+                                    _chipEstado(
+                                      icon: Icons.check_circle,
+                                      activo: m.vacunado,
+                                      labelTrue: 'Vacunado',
+                                      labelFalse: 'No vacunado',
+                                      colorTrue: Colors.green,
+                                      colorFalse: Colors.grey,
+                                    ),
+                                    _chipEstado(
+                                      icon: Icons.medical_services,
+                                      activo: m.esterilizado,
+                                      labelTrue: 'Esterilizado',
+                                      labelFalse: 'No esterilizado',
+                                      colorTrue: Colors.blue,
+                                      colorFalse: Colors.grey,
+                                    ),
+                                    _chipEstado(
+                                      icon: Icons.pets,
+                                      activo: m.disponible,
+                                      labelTrue: 'Adoptable',
+                                      labelFalse: 'No adoptable',
+                                      colorTrue: Colors.orange,
+                                      colorFalse: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 14),
+
+                                ElevatedButton(
+                                  onPressed: (m.solicitudAdopcion == true)
+                                      ? null
+                                      : () => _solicitarAdopcion(m),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    (m.solicitudAdopcion == true &&
+                                            solicitudEnviadaPorMi)
+                                        ? "Solicitud enviada"
+                                        : (m.solicitudAdopcion == true)
+                                            ? "No disponible temporalmente"
+                                            : "Solicitar adopción",
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          );
-        }));
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        );
+      }),
+    );
   }
 
   Widget _dropdownFiltro({
@@ -262,26 +262,26 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
     return DropdownButtonFormField<String>(
       value: opciones.contains(valorActual) ? valorActual : opciones.first,
       decoration: InputDecoration(
-        labelText: label,
+        hintText: label,
         border: const OutlineInputBorder(),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       ),
-      items: opciones.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+      items:
+          opciones.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
       onChanged: onChanged,
       isExpanded: true,
     );
   }
 
   Widget _iconoPorDefecto() => Container(
-        width: 70,
-        height: 70,
+        width: double.infinity,
+        height: 200,
         decoration: BoxDecoration(
           color: Colors.teal[50],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.pets, size: 36, color: Colors.teal),
+        child: const Icon(Icons.pets, size: 70, color: Colors.teal),
       );
 
   Widget _chipEstado({
@@ -297,7 +297,9 @@ class _MascotasAdopcionViewState extends State<MascotasAdopcionView> {
       backgroundColor: (activo ? colorTrue : colorFalse).withOpacity(0.15),
       label: Text(
         activo ? labelTrue : labelFalse,
-        style: TextStyle(color: activo ? colorTrue : colorFalse, fontWeight: FontWeight.w600),
+        style: TextStyle(
+            color: activo ? colorTrue : colorFalse,
+            fontWeight: FontWeight.w600),
       ),
     );
   }

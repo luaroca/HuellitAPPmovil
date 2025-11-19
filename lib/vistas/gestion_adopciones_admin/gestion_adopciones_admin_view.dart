@@ -28,9 +28,6 @@ class GestionAdopcionesAdminView extends StatelessWidget {
         elevation: 2,
       ),
 
-      // -------------------------------
-      //   LISTADO DE SOLICITUDES
-      // -------------------------------
       body: StreamBuilder<QuerySnapshot>(
         stream: ref.snapshots(),
         builder: (context, snapshot) {
@@ -71,69 +68,64 @@ class GestionAdopcionesAdminView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //-----------------------------------------
-                      //  DATOS DE LA MASCOTA
-                      //-----------------------------------------
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: mascota.fotoUrl != null &&
-                                    mascota.fotoUrl!.isNotEmpty
-                                ? Image.network(
-                                    mascota.fotoUrl!,
-                                    width: 75,
-                                    height: 75,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    width: 75,
-                                    height: 75,
-                                    color: Colors.grey.shade200,
-                                    child: const Icon(Icons.pets,
-                                        size: 40, color: Colors.grey),
-                                  ),
-                          ),
-                          const SizedBox(width: 16),
-
-                          // Datos
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  mascota.nombre,
-                                  style: const TextStyle(
-                                    fontFamily: 'Roboto',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${mascota.tipo} • ${mascota.genero}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Tamaño: ${mascota.tamanio}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Vacunado: ${mascota.vacunado ? "Sí" : "No"}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                                Text(
-                                  'Esterilizado: ${mascota.esterilizado ? "Sí" : "No"}',
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto', fontSize: 17),
-                                ),
-                              ],
+                      //-----------------------------------------------------
+                      //             IMAGEN PRINCIPAL (SOLAMENTE ESTA)
+                      //-----------------------------------------------------
+                      if (mascota.fotoUrl != null &&
+                          mascota.fotoUrl!.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            mascota.fotoUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 200,
+                              width: double.infinity,
+                              color: Colors.grey.shade200,
+                              child: const Icon(
+                                Icons.pets,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
-                        ],
+                        ),
+
+                      const SizedBox(height: 14),
+
+                      //-----------------------------------------
+                      //   INFO DE LA MASCOTA (SIN IMAGEN PEQUEÑA)
+                      //-----------------------------------------
+                      Text(
+                        mascota.nombre,
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        '${mascota.tipo} • ${mascota.genero}',
+                        style: const TextStyle(
+                            fontFamily: 'Roboto', fontSize: 18),
+                      ),
+                      Text(
+                        'Tamaño: ${mascota.tamanio}',
+                        style: const TextStyle(
+                            fontFamily: 'Roboto', fontSize: 18),
+                      ),
+                      Text(
+                        'Vacunado: ${mascota.vacunado ? "Sí" : "No"}',
+                        style: const TextStyle(
+                            fontFamily: 'Roboto', fontSize: 18),
+                      ),
+                      Text(
+                        'Esterilizado: ${mascota.esterilizado ? "Sí" : "No"}',
+                        style: const TextStyle(
+                            fontFamily: 'Roboto', fontSize: 18),
                       ),
 
                       if (mascota.descripcion != null &&
