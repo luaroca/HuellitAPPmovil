@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:huellitas/modelos/casa_paso_model.dart';
 import 'package:huellitas/servicios/casa_paso_service.dart';
-import 'package:huellitas/vistas/casaspaso/casa_paso_view.dart';
+import 'package:huellitas/vistas/casas_de_paso_usuario/casa_paso_view.dart';
 
 class CasaPasoHomeView extends StatefulWidget {
   const CasaPasoHomeView({Key? key}) : super(key: key);

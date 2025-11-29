@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:huellitas/vistas/casaspaso/casa_paso_home_view.dart';
+import 'package:huellitas/vistas/casas_de_paso_usuario/casa_paso_home_view.dart';
 import 'package:huellitas/vistas/voluntariado_view_user/regis_home_voluntario_view.dart';
 import 'widget_header_home.dart';
 import 'widget_quick_action_card.dart';
