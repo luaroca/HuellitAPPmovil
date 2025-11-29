@@ -38,133 +38,108 @@ class WidgetGestionVoluntariados extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF),
+      backgroundColor: const Color(0xFFA8E6CF), 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4DB6AC),
+        backgroundColor: const Color(0xFFFFAE35),
+        elevation: 4,
+        centerTitle: true,
+        leading: const BackButton(color: Colors.white),
         title: const Text(
           'Gestión de Voluntariados',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
             fontSize: 22,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
         ),
-        centerTitle: true,
-        elevation: 3,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final narrow = constraints.maxWidth < 600;
-                  return narrow
-                      ? Column(
-                          children: [
-                            _filtroDias(),
-                            const SizedBox(height: 10),
-                            _filtroIntereses(),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            Expanded(child: _filtroDias()),
-                            const SizedBox(width: 10),
-                            Expanded(child: _filtroIntereses()),
-                          ],
-                        );
-                },
-              ),
+
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              children: [
+                _filtroDias(),
+                const SizedBox(height: 12),
+                _filtroIntereses(),
+              ],
             ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: streamVoluntarios,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Color(0xFF4DB6AC)),
-                    );
-                  }
+          ),
 
-                  final docs = snapshot.data?.docs ?? [];
-                  if (docs.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No hay voluntarios registrados.',
-                        style: TextStyle(fontSize: 18, color: Colors.black54),
-                      ),
-                    );
-                  }
-
-                  final filtrados = docs.where((d) {
-                    final data = d.data() as Map<String, dynamic>;
-                    final dias = List<String>.from(data['dias'] ?? []);
-                    final areas = List<String>.from(data['intereses'] ?? []);
-
-                    final okDia = filtroDia == null || dias.contains(filtroDia);
-                    final okArea =
-                        filtroInteres == null || areas.contains(filtroInteres);
-
-                    return okDia && okArea;
-                  }).toList();
-
-                  if (filtrados.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No se encontraron voluntarios con esos filtros.',
-                        style: TextStyle(fontSize: 18, color: Colors.black45),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                    separatorBuilder: (_, __) => const SizedBox(height: 16),
-                    itemCount: filtrados.length,
-                    itemBuilder: (context, i) {
-                      final v = VoluntarioModel.fromMap(
-                        filtrados[i].id,
-                        filtrados[i].data() as Map<String, dynamic>,
-                      );
-                      return _tarjetaVoluntario(v, context);
-                    },
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: streamVoluntarios,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xFFFFAE35)),
                   );
-                },
-              ),
+                }
+
+                final docs = snapshot.data?.docs ?? [];
+
+                if (docs.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No hay voluntarios registrados.',
+                      style: TextStyle(fontSize: 18, color: Colors.black54),
+                    ),
+                  );
+                }
+
+                // FILTROS
+                final filtrados = docs.where((d) {
+                  final data = d.data() as Map<String, dynamic>;
+                  final dias = List<String>.from(data['dias'] ?? []);
+                  final areas = List<String>.from(data['intereses'] ?? []);
+
+                  final okDia = filtroDia == null || dias.contains(filtroDia);
+                  final okArea =
+                      filtroInteres == null || areas.contains(filtroInteres);
+
+                  return okDia && okArea;
+                }).toList();
+
+                if (filtrados.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No se encontraron voluntarios con esos filtros.',
+                      style: TextStyle(fontSize: 18, color: Colors.black45),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  itemCount: filtrados.length,
+                  itemBuilder: (context, i) {
+                    final v = VoluntarioModel.fromMap(
+                      filtrados[i].id,
+                      filtrados[i].data() as Map<String, dynamic>,
+                    );
+                    return _tarjetaVoluntario(v, context);
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
+  
+
   Widget _filtroDias() {
     return DropdownButtonFormField<String>(
-      decoration: _decoracion('Filtrar por día'),
+      decoration: _decoracionFiltro('Filtrar por día'),
       value: filtroDia ?? "Todos",
-      dropdownColor: Colors.white,
-      style: const TextStyle(
-        color: Colors.black87,
-        fontSize: 16,
-      ),
       items: [
         const DropdownMenuItem(
-          value: "Todos",
-          child: Text("Todos los días", style: TextStyle(color: Colors.black)),
-        ),
-        ...diasSemana.map(
-          (d) => DropdownMenuItem(
-            value: d,
-            child: Text(d, style: const TextStyle(color: Colors.black)),
-          ),
-        ),
+            value: "Todos", child: Text("Todos los días")),
+        ...diasSemana.map((d) => DropdownMenuItem(value: d, child: Text(d))),
       ],
       onChanged: onFiltroDiaChanged,
     );
@@ -172,130 +147,116 @@ class WidgetGestionVoluntariados extends StatelessWidget {
 
   Widget _filtroIntereses() {
     return DropdownButtonFormField<String>(
-      decoration: _decoracion('Área de interés'),
+      decoration: _decoracionFiltro('Filtrar por área'),
       value: filtroInteres ?? "Todas",
-      dropdownColor: Colors.white,
-      style: const TextStyle(
-        color: Colors.black,
-        fontSize: 16,
-      ),
       items: [
         const DropdownMenuItem(
-          value: "Todas",
-          child: Text("Todas las áreas", style: TextStyle(color: Colors.black)),
-        ),
-        ...intereses.map(
-          (a) => DropdownMenuItem(
-            value: a,
-            child: Text(a, style: const TextStyle(color: Colors.black)),
-          ),
-        ),
+            value: "Todas", child: Text("Todas las áreas")),
+        ...intereses.map((a) => DropdownMenuItem(value: a, child: Text(a))),
       ],
       onChanged: onFiltroInteresChanged,
     );
   }
 
-  InputDecoration _decoracion(String label) {
+  InputDecoration _decoracionFiltro(String label) {
     return InputDecoration(
       labelText: label,
       labelStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 17,
+        color: Colors.black87,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
       ),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       filled: true,
-      fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+      fillColor: const Color(0xFFFFFCF5), 
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.orange.withOpacity(0.4)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color(0xFFFFAE35), width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
     );
   }
+
+  
 
   Widget _tarjetaVoluntario(VoluntarioModel v, BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      color: const Color(0xFFFFFCF5),
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFD6F1E9)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.07),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.volunteer_activism,
-                  color: Color(0xFF4DB6AC), size: 30),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  v.nombre,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 21,
-                    color: Colors.black87,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            
+            Row(
+              children: [
+                const Icon(Icons.volunteer_activism,
+                    size: 30, color: Color(0xFF226776)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    v.nombre,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.phone, size: 24),
-                label: const Text('Contactar'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4DB6AC),
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: () {
-                  _llamarTelefono(context, v.telefono);
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _fila(Icons.email_outlined, 'Correo', v.correo),
-          _fila(Icons.phone, 'Teléfono',
-              v.telefono.isNotEmpty ? v.telefono : '-'),
-          _fila(Icons.access_time, 'Horario', v.horario),
-          _fila(Icons.calendar_today, 'Días', v.dias.join(', ')),
-          _fila(Icons.category, 'Intereses', v.intereses.join(', ')),
-        ],
+
+                ElevatedButton.icon(
+                  onPressed: () => _llamarTelefono(context, v.telefono),
+                  icon: const Icon(Icons.phone, color: Colors.white, size: 22),
+                  label: const Text('Contactar'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4DB6AC),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                  ),
+                )
+              ],
+            ),
+
+            const SizedBox(height: 12),
+            _fila(Icons.email_outlined, 'Correo', v.correo),
+            _fila(Icons.phone, 'Teléfono', v.telefono),
+            _fila(Icons.access_time, 'Horario', v.horario),
+            _fila(Icons.calendar_today, 'Días', v.dias.join(', ')),
+            _fila(Icons.category, 'Intereses', v.intereses.join(', ')),
+          ],
+        ),
       ),
     );
-  }
-
-  void _llamarTelefonoo(BuildContext context, String telefono) async {
-    final Uri phoneUri = Uri(scheme: 'tel', path: telefono);
-    if (await canLaunchUrl(phoneUri)) {
-      await launchUrl(phoneUri);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo abrir la aplicación de llamadas')),
-      );
-    }
   }
 
   Widget _fila(IconData icon, String titulo, String valor) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 7),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: const Color(0xFF4DB6AC), size: 22),
+          Icon(icon, color: const Color(0xFFFFAE35), size: 22),
           const SizedBox(width: 8),
           Text(
             '$titulo: ',
             style: const TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 17,
+              fontSize: 16,
               color: Colors.black87,
             ),
           ),
@@ -304,8 +265,8 @@ class WidgetGestionVoluntariados extends StatelessWidget {
               valor,
               style: const TextStyle(
                 fontSize: 16,
-                height: 1.3,
                 color: Colors.black87,
+                height: 1.35,
               ),
             ),
           ),

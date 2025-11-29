@@ -35,7 +35,7 @@ class RegistroVoluntarioWidget extends StatelessWidget {
   });
 
   Future<void> _seleccionarHorario(BuildContext context) async {
-    // Selecciona hora de inicio
+    
     final TimeOfDay? horaInicio = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -44,7 +44,7 @@ class RegistroVoluntarioWidget extends StatelessWidget {
 
     if (horaInicio == null) return;
 
-    // Selecciona hora de fin
+   
     final TimeOfDay? horaFin = await showTimePicker(
       context: context,
       initialTime: horaInicio.replacing(hour: horaInicio.hour + 1),
@@ -53,7 +53,7 @@ class RegistroVoluntarioWidget extends StatelessWidget {
 
     if (horaFin == null) return;
 
-    // Guarda el resultado formateado
+    
     final String rango = '${horaInicio.format(context)} - ${horaFin.format(context)}';
     horarioCtrl.text = rango;
   }

@@ -7,7 +7,7 @@ import 'package:huellitas/vistas/perfil_usuario_frm/perfil_widget.dart';
 
 class PerfilUsuarioView extends StatelessWidget {
   final String nombre;
-  final String apellido;  // Nuevo parámetro
+  final String apellido;  
   final String correo;
   final String telefono;
   final bool esAdmin;
@@ -15,7 +15,7 @@ class PerfilUsuarioView extends StatelessWidget {
   const PerfilUsuarioView({
     Key? key,
     required this.nombre,
-    required this.apellido,  // Nuevo parámetro
+    required this.apellido,  
     required this.correo,
     required this.telefono,
     this.esAdmin = false,
@@ -42,7 +42,7 @@ class PerfilUsuarioView extends StatelessWidget {
         ),
         body: PerfilWidget(
           nombre: nombre,
-          apellido: apellido,  // Pasar nuevo parámetro
+          apellido: apellido,  
           correo: correo,
           telefono: telefono,
           esAdmin: esAdmin,

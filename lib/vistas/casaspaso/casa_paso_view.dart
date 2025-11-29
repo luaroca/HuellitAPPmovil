@@ -102,7 +102,7 @@ class _CasaPasoViewState extends State<CasaPasoView> {
             ? direccionBonita
             : '${lat!.toStringAsFixed(5)}, ${lng!.toStringAsFixed(5)}';
       });
-      // 🔹 Eliminado mensaje de "Ubicación capturada"
+    
     } catch (e) {
       setState(() {
         direccionCtrl.text =
@@ -341,7 +341,7 @@ class _CasaPasoViewState extends State<CasaPasoView> {
                   ),
                   const SizedBox(height: 10),
 
-                  // 🔹 Campo de comentarios con botón ✓ en el teclado
+                  
                   TextFormField(
                     controller: comentariosCtrl,
                     minLines: 3,
@@ -361,7 +361,7 @@ class _CasaPasoViewState extends State<CasaPasoView> {
                   ),
                   const SizedBox(height: 25),
 
-                  // 🔹 Botones del mismo tamaño y “Enviar” en lugar de “Enviar solicitud”
+                 
                   Row(
                     children: [
                       Expanded(

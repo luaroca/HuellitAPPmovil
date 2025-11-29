@@ -1,9 +1,9 @@
-// perfil_widget.dart
+
 import 'package:flutter/material.dart';
 
 class PerfilWidget extends StatelessWidget {
   final String nombre;
-  final String apellido;  // Nuevo parámetro
+  final String apellido;  
   final String correo;
   final String telefono;
   final bool esAdmin;
@@ -12,7 +12,7 @@ class PerfilWidget extends StatelessWidget {
   const PerfilWidget({
     Key? key,
     required this.nombre,
-    required this.apellido,  // Nuevo parámetro
+    required this.apellido,  
     required this.correo,
     required this.telefono,
     required this.onLogout,
@@ -57,7 +57,7 @@ class PerfilWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '$nombre $apellido'.toLowerCase(),  // Mostrar nombre y apellido juntos
+                            '$nombre $apellido'.toLowerCase(),  
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

@@ -29,13 +29,13 @@ class _MascotaFormViewState extends State<MascotaFormView> {
   bool esterilizado = false;
   bool disponible = true;
 
-  // Imagen para Cloudinary
+  
   File? _imageFile;
   bool _subiendoImagen = false;
 
   final cloudinary = CloudinaryPublic(
-    'dhwrxmehx',        // Tu cloud name
-    'huellitas_preset', // Tu upload preset sin firma (unsigned)
+    'dhwrxmehx',        
+    'huellitas_preset', 
     cache: false,
   );
   final ImagePicker _picker = ImagePicker();
@@ -53,7 +53,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
       vacunado = m.vacunado;
       esterilizado = m.esterilizado;
       disponible = m.disponible;
-      // NO recuperamos foto directamente aquí, la mostramos solo si existe
+      
     }
   }
 
@@ -111,10 +111,10 @@ class _MascotaFormViewState extends State<MascotaFormView> {
       final isEdit = widget.mascota != null;
       String? fotoUrl = isEdit ? widget.mascota?.fotoUrl : null;
 
-      // Si seleccionaste imagen, súbela a Cloudinary antes de guardar
+      
       if (_imageFile != null) {
         fotoUrl = await _subirImagenACloudinary(_imageFile!);
-        if (fotoUrl == null) return; // Si falla la subida, no continue
+        if (fotoUrl == null) return; 
       }
 
       final mascota = MascotaModel(
@@ -171,7 +171,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // FOTO
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 25),
@@ -229,7 +229,7 @@ class _MascotaFormViewState extends State<MascotaFormView> {
               ),
               const SizedBox(height: 25),
 
-              // EL RESTO ES IGUAL, NO CAMBIA...
+              
               Text(
                 "Información de la mascota",
                 style: TextStyle(
@@ -257,8 +257,8 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                       dropdownColor: Colors.white,
                       style: const TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.black87),
                       items: const [
-                        DropdownMenuItem(value: 'Perro', child: Text('🐶 Perro')),
-                        DropdownMenuItem(value: 'Gato', child: Text('🐱 Gato')),
+                        DropdownMenuItem(value: 'Perro', child: Text(' Perro')),
+                        DropdownMenuItem(value: 'Gato', child: Text(' Gato')),
                         DropdownMenuItem(value: 'Otro', child: Text('Otro')),
                       ],
                       onChanged: (v) => setState(() => tipo = v!),
@@ -277,8 +277,8 @@ class _MascotaFormViewState extends State<MascotaFormView> {
                       decoration: _input("Género *", null),
                       style: const TextStyle(fontSize: 18, fontFamily: "Roboto", color: Colors.black87),
                       items: const [
-                        DropdownMenuItem(value: 'Macho', child: Text('♂ Macho')),
-                        DropdownMenuItem(value: 'Hembra', child: Text('♀ Hembra')),
+                        DropdownMenuItem(value: 'Macho', child: Text(' Macho')),
+                        DropdownMenuItem(value: 'Hembra', child: Text(' Hembra')),
                       ],
                       onChanged: (v) => setState(() => genero = v!),
                     ),

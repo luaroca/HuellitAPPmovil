@@ -46,7 +46,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           key: _navigatorKeys[2],
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
-              builder: (_) => const SolicitudesUsuarioView(), // <-- Vista de solicitudes
+              builder: (_) => const SolicitudesUsuarioView(), 
             );
           },
         ),
@@ -122,7 +122,7 @@ class _MainNavigationViewState extends State<MainNavigationView> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
             BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Adoptar'),
-            BottomNavigationBarItem(icon: Icon(Icons.assignment), label: 'Solicitudes'), // NUEVO
+            BottomNavigationBarItem(icon: Icon(Icons.assignment), label: 'Solicitudes'), 
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),

@@ -81,7 +81,6 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
                 ],
               ),
               const SizedBox(height: 14),
-              // FILTROS COMO MENÚ DESPLEGABLE
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -137,14 +136,16 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
                       padding: EdgeInsets.all(24),
                       child: Text(
                         "No hay mascotas que coincidan con el filtro.",
-                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        style:
+                            TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                     )
                   : GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: visibles.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 20,
@@ -153,9 +154,8 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
                       itemBuilder: (_, i) {
                         return _MascotaCard(
                           mascota: visibles[i],
-                          onEdit: () =>
-                              Get.to(() => MascotaFormView(mascota: visibles[i])),
-                          onDelete: () => _confirmDelete(visibles[i]),
+                          onEdit: () => Get.to(
+                              () => MascotaFormView(mascota: visibles[i])),
                         );
                       },
                     ),
@@ -163,28 +163,6 @@ class _GestionMascotasViewState extends State<GestionMascotasView> {
           ),
         );
       }),
-    );
-  }
-
-  void _confirmDelete(MascotaModel mascota) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Confirmar"),
-        content: Text("¿Eliminar a ${mascota.nombre}?"),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancelar")),
-          TextButton(
-            onPressed: () {
-              controller.eliminarMascota(mascota.id!);
-              Navigator.pop(context);
-            },
-            child: const Text("Eliminar", style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -213,9 +191,11 @@ class _DropdownFilter extends StatelessWidget {
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          labelStyle:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           filled: true,
           fillColor: Colors.white,
         ),
@@ -231,7 +211,8 @@ class _DropdownFilter extends StatelessWidget {
                   child: Text(
                     opcion,
                     style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal),
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal),
                   ),
                 ))
             .toList(),
@@ -242,17 +223,14 @@ class _DropdownFilter extends StatelessWidget {
   }
 }
 
-// Resto de código igual (no tocado en tu petición, mantiene layout y lógica original)
 class _MascotaCard extends StatelessWidget {
   final MascotaModel mascota;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
 
   const _MascotaCard({
     super.key,
     required this.mascota,
     required this.onEdit,
-    required this.onDelete,
   });
 
   @override
@@ -265,7 +243,8 @@ class _MascotaCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(22)),
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: Image.network(
@@ -344,57 +323,35 @@ class _MascotaCard extends StatelessWidget {
                       _estadoChip(mascota.vacunado, "Vacunado", Colors.green),
                       _estadoChip(
                           mascota.esterilizado, "Esterilizado", Colors.blue),
-                      _estadoChip(mascota.disponible, "Adoptable", Colors.orange),
+                      _estadoChip(
+                          mascota.disponible, "Adoptable", Colors.orange),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        color: Colors.blue[50],
-                        elevation: 0,
-                        onPressed: onEdit,
-                        child: Row(
-                          children: const [
-                            Icon(Icons.edit, color: Colors.blue, size: 18),
-                            SizedBox(width: 4),
-                            Text("Editar",
-                                style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14)),
-                          ],
-                        ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: MaterialButton(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(width: 8),
-                      MaterialButton(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        color: Colors.red[50],
-                        elevation: 0,
-                        onPressed: onDelete,
-                        child: Row(
-                          children: const [
-                            Icon(Icons.delete, color: Colors.red, size: 18),
-                            SizedBox(width: 4),
-                            Text("Eliminar",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14)),
-                          ],
-                        ),
+                      color: Colors.blue[50],
+                      elevation: 0,
+                      onPressed: onEdit,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(Icons.edit, color: Colors.blue, size: 18),
+                          SizedBox(width: 4),
+                          Text("Editar",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14)),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -407,14 +364,16 @@ class _MascotaCard extends StatelessWidget {
 
   Widget _defaultIcon() => Container(
         color: Colors.teal[50],
-        child:
-            const Center(child: Icon(Icons.pets, color: Colors.teal, size: 50)),
+        child: const Center(
+            child: Icon(Icons.pets, color: Colors.teal, size: 50)),
       );
+
   Widget _estadoChip(bool activo, String texto, Color color) {
     return Chip(
       backgroundColor:
           activo ? color.withOpacity(.15) : Colors.grey.withOpacity(.15),
-      avatar: Icon(Icons.circle, size: 14, color: activo ? color : Colors.grey),
+      avatar:
+          Icon(Icons.circle, size: 14, color: activo ? color : Colors.grey),
       label: Text(
         activo ? texto : "No $texto",
         style: TextStyle(
@@ -455,7 +414,9 @@ class _ContadorBonito extends StatelessWidget {
             const SizedBox(height: 6),
             Text("$count",
                 style: TextStyle(
-                    fontSize: 22, color: color, fontWeight: FontWeight.bold)),
+                    fontSize: 22,
+                    color: color,
+                    fontWeight: FontWeight.bold)),
             Text(title,
                 style: TextStyle(
                     fontSize: 14,

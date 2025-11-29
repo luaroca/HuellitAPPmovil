@@ -73,9 +73,7 @@ class SolicitudesUsuarioView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //-----------------------------------------------------
-                      //   IMAGEN PRINCIPAL (ÚNICA IMAGEN)
-                      //-----------------------------------------------------
+             
                       if (mascota.fotoUrl != null &&
                           mascota.fotoUrl!.isNotEmpty)
                         ClipRRect(
@@ -100,9 +98,7 @@ class SolicitudesUsuarioView extends StatelessWidget {
 
                       const SizedBox(height: 18),
 
-                      //-----------------------------------------
-                      //  INFO PRINCIPAL
-                      //-----------------------------------------
+                    
                       Text(
                         mascota.nombre,
                         style: const TextStyle(
@@ -142,9 +138,7 @@ class SolicitudesUsuarioView extends StatelessWidget {
                         ),
                       ),
 
-                      //-----------------------------------------
-                      //  DESCRIPCIÓN
-                      //-----------------------------------------
+                      
                       if (mascota.descripcion != null &&
                           mascota.descripcion!.trim().isNotEmpty)
                         Padding(
@@ -161,9 +155,7 @@ class SolicitudesUsuarioView extends StatelessWidget {
 
                       const SizedBox(height: 14),
 
-                      //-----------------------------------------
-                      //  ETIQUETA DE CONFIRMACIÓN
-                      //-----------------------------------------
+                    
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),

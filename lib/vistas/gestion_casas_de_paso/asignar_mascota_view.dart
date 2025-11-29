@@ -95,7 +95,7 @@ class _AsignarMascotaViewState extends State<AsignarMascotaView> {
 
                     const SizedBox(height: 20),
 
-                    // Fecha ingreso
+                    // feecha de ingresoooooooooooooo
                     _buildCard(
                       child: ListTile(
                         leading: const Icon(Icons.calendar_month,
@@ -166,7 +166,7 @@ class _AsignarMascotaViewState extends State<AsignarMascotaView> {
 
                     const SizedBox(height: 30),
 
-                    // Botón Asignar
+                    
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -251,7 +251,7 @@ class _AsignarMascotaViewState extends State<AsignarMascotaView> {
     );
   }
 
-  // ---- Widgets auxiliares ----
+
 
   Widget _buildCard({required Widget child}) {
     return Container(

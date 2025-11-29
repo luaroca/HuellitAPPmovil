@@ -13,7 +13,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFA8E6CF),
-      // ---------- ELIMINADA la bottomNavigationBar ----------
+      
       body: SafeArea(
         child: HomeBody(userName: userName),
       ),

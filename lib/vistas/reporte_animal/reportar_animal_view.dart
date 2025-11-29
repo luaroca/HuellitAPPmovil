@@ -34,13 +34,13 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
 
   final ReporteAnimalController reporteController = Get.find();
 
-  // Para imagen
+  
   File? _imageFile;
   bool _subiendoImagen = false;
 
   final cloudinary = CloudinaryPublic(
-    'dhwrxmehx',        // tu cloud name
-    'huellitas_preset', // tu upload preset (debe ser un preset sin firma "unsigned")
+    'dhwrxmehx',        
+    'huellitas_preset', 
     cache: false,
   );
 
@@ -157,7 +157,7 @@ class _ReportarAnimalViewState extends State<ReportarAnimalView> {
     if (_imageFile != null) {
       fotoUrl = await _subirImagenACloudinary(_imageFile!);
       if (fotoUrl == null) {
-        // Si falla la subida, no continuar
+        
         return;
       }
     }

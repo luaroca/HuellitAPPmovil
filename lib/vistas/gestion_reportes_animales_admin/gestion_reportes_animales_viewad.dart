@@ -22,66 +22,86 @@ class _GestionReportesAnimalesViewState
     return Scaffold(
       backgroundColor: const Color(0xFFA8E6CF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFAE35),
+        centerTitle: true,
+        elevation: 0,
         title: const Text(
-          'Gestión de Reportes de Animales',
+          'Reportes de Animales',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
-        backgroundColor: const Color(0xFFFFAE35),
-        centerTitle: true,
       ),
-
       body: Column(
         children: [
           const SizedBox(height: 12),
 
+          // Filtro
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Filtrar por estado:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.07),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.black26),
-                  ),
-                  child: DropdownButton<String>(
-                    value: filtroEstado,
-                    underline: Container(),
-                    style: const TextStyle(
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    "Filtrar:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
                       fontSize: 18,
-                      color: Colors.black,
                     ),
-                    dropdownColor: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "pendiente",
-                        child: Text("Pendientes"),
-                      ),
-                      DropdownMenuItem(
-                        value: "revisado",
-                        child: Text("Revisados"),
-                      ),
-                    ],
-                    onChanged: (v) {
-                      if (v != null) setState(() => filtroEstado = v);
-                    },
                   ),
-                ),
-              ],
+                  const SizedBox(width: 18),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF6F6F6),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.black26),
+                      ),
+                      child: DropdownButton<String>(
+                        value: filtroEstado,
+                        underline: Container(),
+                        isExpanded: true,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                        dropdownColor: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        items: const [
+                          DropdownMenuItem(
+                            value: "pendiente",
+                            child: Text("Pendientes"),
+                          ),
+                          DropdownMenuItem(
+                            value: "revisado",
+                            child: Text("Revisados"),
+                          ),
+                        ],
+                        onChanged: (v) {
+                          if (v != null) {
+                            setState(() => filtroEstado = v);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -96,13 +116,14 @@ class _GestionReportesAnimalesViewState
               if (reportes.isEmpty) {
                 return const Center(
                   child: Text(
-                    "No hay reportes registrados para este estado.",
+                    "No hay reportes para este estado.",
                     style: TextStyle(fontSize: 18, color: Colors.black54),
                   ),
                 );
               }
 
               return ListView.builder(
+                padding: const EdgeInsets.only(bottom: 18),
                 itemCount: reportes.length,
                 itemBuilder: (_, index) {
                   final reporte = reportes[index];
@@ -114,19 +135,19 @@ class _GestionReportesAnimalesViewState
                       "${fecha.hour.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')}";
 
                   return Card(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                     color: Colors.white,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 14),
                     elevation: 6,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Header
                           Row(
                             children: [
                               Expanded(
@@ -138,21 +159,17 @@ class _GestionReportesAnimalesViewState
                                   ),
                                 ),
                               ),
-
                               Chip(
+                                backgroundColor:
+                                    reporte.estado == 'pendiente'
+                                        ? Colors.orange
+                                        : Colors.green,
                                 label: Text(
-                                  reporte.estado,
+                                  reporte.estado.toUpperCase(),
                                   style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                                 ),
-                                backgroundColor: reporte.estado == 'pendiente'
-                                    ? Colors.orange
-                                    : Colors.green,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 8),
                               ),
                             ],
                           ),
@@ -160,6 +177,7 @@ class _GestionReportesAnimalesViewState
                           const SizedBox(height: 10),
                           const Divider(),
 
+                          // Info animal
                           const Text(
                             "Animal reportado:",
                             style: TextStyle(
@@ -168,19 +186,12 @@ class _GestionReportesAnimalesViewState
                             ),
                           ),
                           const SizedBox(height: 6),
-
-                          Text(
-                            "Descripción: ${reporte.descripcion}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          Text(
-                            "Condición: ${reporte.condicion}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          Text(
-                            "Dirección: ${reporte.direccion}",
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                          Text("Descripción: ${reporte.descripcion}",
+                              style: const TextStyle(fontSize: 16)),
+                          Text("Condición: ${reporte.condicion}",
+                              style: const TextStyle(fontSize: 16)),
+                          Text("Dirección: ${reporte.direccion}",
+                              style: const TextStyle(fontSize: 16)),
 
                           if (reporte.fotoUrl != null &&
                               reporte.fotoUrl!.isNotEmpty)
@@ -191,7 +202,7 @@ class _GestionReportesAnimalesViewState
                                 borderRadius: BorderRadius.circular(16),
                                 child: Image.network(
                                   reporte.fotoUrl!,
-                                  height: 200,
+                                  height: 220,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 ),
@@ -200,6 +211,7 @@ class _GestionReportesAnimalesViewState
 
                           const Divider(),
 
+                          // Info usuario
                           const Text(
                             "Reporte realizado por:",
                             style: TextStyle(
@@ -207,9 +219,7 @@ class _GestionReportesAnimalesViewState
                               fontSize: 18,
                             ),
                           ),
-
                           const SizedBox(height: 6),
-
                           Text("Nombre: ${reporte.nombreUsuario}",
                               style: const TextStyle(fontSize: 16)),
                           Text("Correo: ${reporte.correoUsuario}",
@@ -219,38 +229,31 @@ class _GestionReportesAnimalesViewState
 
                           const SizedBox(height: 10),
 
+                          // Fecha y hora
                           Row(
                             children: [
                               const Icon(Icons.calendar_today,
                                   size: 22, color: Colors.grey),
                               const SizedBox(width: 6),
-                              Text(
-                                "Fecha: $fechaString",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black54,
-                                ),
-                              ),
+                              Text("Fecha: $fechaString",
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.black54)),
                             ],
                           ),
-
                           Row(
                             children: [
                               const Icon(Icons.access_time,
                                   size: 22, color: Colors.grey),
                               const SizedBox(width: 6),
-                              Text(
-                                "Hora: $horaString",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black54,
-                                ),
-                              ),
+                              Text("Hora: $horaString",
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.black54)),
                             ],
                           ),
 
                           const SizedBox(height: 18),
 
+                          
                           Center(
                             child: Wrap(
                               spacing: 14,
@@ -258,9 +261,9 @@ class _GestionReportesAnimalesViewState
                                 if (reporte.estado == "pendiente")
                                   ElevatedButton.icon(
                                     icon: const Icon(Icons.check_circle,
-                                        size: 26),
+                                        size: 26, color: Colors.white),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
+                                      backgroundColor: Colors.green.shade600,
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 12, horizontal: 16),
                                       shape: RoundedRectangleBorder(
@@ -289,27 +292,25 @@ class _GestionReportesAnimalesViewState
                                           .actualizarReporte(actualizado);
 
                                       ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text('Marcado como revisado.'),
-                                        ),
-                                      );
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Marcado como revisado.')));
                                     },
                                     label: const Text(
                                       "Revisado",
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
 
                                 if (reporte.estado == "revisado")
                                   ElevatedButton.icon(
-                                    icon: const Icon(Icons.refresh, size: 26),
+                                    icon: const Icon(Icons.refresh,
+                                        size: 26, color: Colors.white),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.orange,
+                                      backgroundColor: Colors.orange.shade700,
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 12, horizontal: 16),
                                       shape: RoundedRectangleBorder(
@@ -338,82 +339,18 @@ class _GestionReportesAnimalesViewState
                                           .actualizarReporte(actualizado);
 
                                       ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text('Marcado como pendiente.'),
-                                        ),
-                                      );
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Marcado como pendiente.')));
                                     },
                                     label: const Text(
-                                      "pendiente",
+                                      "Pendiente",
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
-
-                                ElevatedButton.icon(
-                                  icon: const Icon(Icons.delete,
-                                      size: 28, color: Colors.white),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    final confirm =
-                                        await showDialog<bool>(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title:
-                                            const Text('Eliminar reporte'),
-                                        content: const Text(
-                                            '¿Deseas eliminar este reporte? Esta acción no se puede deshacer.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(
-                                                context, false),
-                                            child: const Text('Cancelar'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, true),
-                                            child: const Text(
-                                              'Eliminar',
-                                              style: TextStyle(
-                                                  color: Colors.red),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-
-                                    if (confirm == true) {
-                                      await reporteController
-                                          .eliminarReporte(reporte.id);
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text('Reporte eliminado.'),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  label: const Text(
-                                    "Eliminar",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           )
