@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReporteAnimalModel {
   String id;
-  String uid; // usuario que reporta
+  String uid; 
   String nombreUsuario;
   String correoUsuario;
   String telefonoUsuario;
@@ -11,8 +11,8 @@ class ReporteAnimalModel {
   String condicion;
   double? lat;
   double? lng;
-  String? fotoUrl; // opcional, por ahora null
-  String estado; // p.ej. "pendiente"
+  String? fotoUrl; 
+  String estado; 
   Timestamp fechaCreacion;
 
   ReporteAnimalModel({
