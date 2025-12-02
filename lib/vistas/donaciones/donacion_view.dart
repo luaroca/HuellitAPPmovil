@@ -135,7 +135,7 @@ class _DonacionViewState extends State<DonacionView> {
         backgroundColor: const Color(0xFFFFAE35),
         elevation: 4,
         title: const Text(
-          'Donar Alimentos o Insumos',
+          'Donativos',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 22,

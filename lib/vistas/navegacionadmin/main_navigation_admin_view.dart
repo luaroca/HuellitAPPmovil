@@ -19,13 +19,13 @@ class _AdminMainNavigationViewState extends State<AdminMainNavigationView> {
   int _selectedIndex = 0;
 
   final _navigatorKeys = [
-    GlobalKey<NavigatorState>(), // Inicio
-    GlobalKey<NavigatorState>(), // Donativos
-    GlobalKey<NavigatorState>(), // Perfil
+    GlobalKey<NavigatorState>(), 
+    GlobalKey<NavigatorState>(), 
+    GlobalKey<NavigatorState>(), 
   ];
 
   List<Widget> _buildScreens() => [
-        // Inicio
+        
         Navigator(
           key: _navigatorKeys[0],
           onGenerateRoute: (settings) {
@@ -35,7 +35,7 @@ class _AdminMainNavigationViewState extends State<AdminMainNavigationView> {
             );
           },
         ),
-        // Donativos
+        
         Navigator(
           key: _navigatorKeys[1],
           onGenerateRoute: (settings) {
@@ -44,7 +44,7 @@ class _AdminMainNavigationViewState extends State<AdminMainNavigationView> {
             );
           },
         ),
-        // Perfil
+        
         Navigator(
           key: _navigatorKeys[2],
           onGenerateRoute: (settings) {

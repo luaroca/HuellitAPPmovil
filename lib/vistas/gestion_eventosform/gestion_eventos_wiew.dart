@@ -26,7 +26,6 @@ class GestionEventosView extends StatelessWidget {
         elevation: 4,
       ),
       backgroundColor: const Color(0xFFA8E6CF),
-
       body: StreamBuilder<QuerySnapshot>(
         stream: eventosRef.snapshots(),
         builder: (context, snapshot) {

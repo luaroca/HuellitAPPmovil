@@ -21,7 +21,6 @@ class WidgetGestionEventos extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Row(
             children: [
               Expanded(
@@ -53,8 +52,11 @@ class WidgetGestionEventos extends StatelessWidget {
             height: 56,
             child: ElevatedButton.icon(
               onPressed: () => Get.toNamed('/crearEvento'),
-              icon: const Icon(Icons.add_circle_outline,
-                  color: Colors.white, size: 26),
+              icon: const Icon(
+                Icons.add_circle_outline,
+                color: Colors.white,
+                size: 26,
+              ),
               label: const Text(
                 'Crear Nuevo Evento',
                 style: TextStyle(
@@ -75,7 +77,6 @@ class WidgetGestionEventos extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          
           ListView.builder(
             itemCount: docs.length,
             shrinkWrap: true,
@@ -97,7 +98,6 @@ class WidgetGestionEventos extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       Wrap(
                         spacing: 8,
                         runSpacing: 4,
@@ -116,7 +116,6 @@ class WidgetGestionEventos extends StatelessWidget {
 
                       const SizedBox(height: 10),
 
-                      
                       Text(
                         evento['titulo'] ?? 'Sin título',
                         style: const TextStyle(
@@ -131,7 +130,8 @@ class WidgetGestionEventos extends StatelessWidget {
                           .toString()
                           .isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
                             evento['descripcion'] ?? '',
                             maxLines: 3,
@@ -145,11 +145,13 @@ class WidgetGestionEventos extends StatelessWidget {
 
                       const SizedBox(height: 8),
 
-                      
                       Row(
                         children: [
-                          const Icon(Icons.event,
-                              size: 20, color: Color(0xFFFFAE35)),
+                          const Icon(
+                            Icons.event,
+                            size: 20,
+                            color: Color(0xFFFFAE35),
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
@@ -161,8 +163,11 @@ class WidgetGestionEventos extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          const Icon(Icons.access_time,
-                              size: 20, color: Color(0xFF226776)),
+                          const Icon(
+                            Icons.access_time,
+                            size: 20,
+                            color: Color(0xFF226776),
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
@@ -178,81 +183,55 @@ class WidgetGestionEventos extends StatelessWidget {
 
                       const SizedBox(height: 12),
 
-                      
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 6,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      // Botones centrados y con mismo ancho
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextButton.icon(
-                            onPressed: () {
-                              Get.toNamed('/editarEvento', arguments: {
-                                'id': doc.id,
-                                ...evento,
-                              });
-                            },
-                            icon: const Icon(Icons.edit,
-                                size: 18, color: Color(0xFF1565C0)),
-                            label: const Text(
-                              'Editar',
-                              style: TextStyle(
-                                  fontSize: 15, color: Color(0xFF1565C0)),
-                            ),
-                          ),
-
-                          TextButton.icon(
-                            onPressed: () async {
-                              await doc.reference
-                                  .update({'publico': !publicado});
-                            },
-                            icon: Icon(
-                              publicado
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              size: 18,
-                              color: const Color(0xFF0D7864),
-                            ),
-                            label: Text(
-                              publicado ? 'Ocultar' : 'Publicar',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Color(0xFF0D7864),
+                          Expanded(
+                            child: TextButton.icon(
+                              onPressed: () {
+                                Get.toNamed('/editarEvento', arguments: {
+                                  'id': doc.id,
+                                  ...evento,
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                size: 18,
+                                color: Color(0xFF1565C0),
+                              ),
+                              label: const Text(
+                                'Editar',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Color(0xFF1565C0),
+                                ),
                               ),
                             ),
                           ),
-
-                          TextButton.icon(
-                            onPressed: () async {
-                              final confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  title: const Text('Confirmar eliminación'),
-                                  content: const Text(
-                                      '¿Estás seguro que quieres eliminar este evento?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, false),
-                                      child: const Text('Cancelar'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, true),
-                                      child: const Text('Eliminar'),
-                                    ),
-                                  ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextButton.icon(
+                              onPressed: () async {
+                                await doc.reference
+                                    .update({'publico': !publicado});
+                              },
+                              icon: Icon(
+                                publicado
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                size: 18,
+                                color: const Color(0xFF0D7864),
+                              ),
+                              label: Text(
+                                publicado ? 'Ocultar' : 'Publicar',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Color(0xFF0D7864),
                                 ),
-                              );
-                              if (confirm == true) {
-                                await doc.reference.delete();
-                              }
-                            },
-                            icon: const Icon(Icons.delete,
-                                color: Colors.red, size: 18),
-                            label: const Text(
-                              'Eliminar',
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.red),
+                              ),
                             ),
                           ),
                         ],
@@ -268,7 +247,6 @@ class WidgetGestionEventos extends StatelessWidget {
     );
   }
 }
-
 
 class _ContadorBonito extends StatelessWidget {
   final IconData icon;
@@ -326,7 +304,6 @@ class _ContadorBonito extends StatelessWidget {
     );
   }
 }
-
 
 class _Etiqueta extends StatelessWidget {
   final String text;

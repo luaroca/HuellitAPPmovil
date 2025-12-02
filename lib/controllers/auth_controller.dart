@@ -3,9 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huellitas/vistas/navegacion/main_navigation_view.dart';
-
-
-import 'package:huellitas/vistas/navegacionadmin/main_navigation_admin_view.dart'; // Importa la barra admin
+import 'package:huellitas/vistas/navegacionadmin/main_navigation_admin_view.dart'; 
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -48,10 +46,10 @@ class AuthController extends GetxController {
           final nombreUsuario = data['nombres'] ?? 'Usuario';
           final role = data['role'] ?? 'user';
           if (role == 'admin') {
-            // Navega a la barra de navegación del admin
+            
             Get.offAll(() => AdminMainNavigationView(adminName: nombreUsuario));
           } else {
-            // Navega a la barra de navegación de usuario
+            
             Get.offAll(() => MainNavigationView(userName: nombreUsuario));
           }
         } else {

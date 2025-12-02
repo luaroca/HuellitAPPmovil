@@ -8,15 +8,16 @@ class GestionDonativosView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final c = Get.put(DonacionController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFA8E6CF), 
+      backgroundColor: const Color(0xFFA8E6CF),
       appBar: AppBar(
         backgroundColor: const Color(0xFF5594A3),
+        centerTitle: true,
         title: const Text(
           'Gestión de Donativos',
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -25,31 +26,7 @@ class GestionDonativosView extends StatelessWidget {
         ),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => c.onInit(),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(28),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 18, bottom: 13),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Administra las donaciones recibidas',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
-     
       body: GestionDonativosWidget(controller: c),
     );
   }

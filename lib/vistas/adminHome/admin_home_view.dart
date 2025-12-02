@@ -27,7 +27,7 @@ class AdminHomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ------------------- HEADER -------------------
+             
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(26),
@@ -94,7 +94,7 @@ class AdminHomeView extends StatelessWidget {
                 ),
               ),
 
-              // ------------------- ACCIONES RÁPIDAS -------------------
+              
               const Text(
                 "Acciones Rápidas",
                 style: TextStyle(
@@ -197,7 +197,6 @@ class AdminHomeView extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              // ------------------- EVENTOS -------------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -210,7 +209,7 @@ class AdminHomeView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Ver todos',
+                    '',
                     style: TextStyle(
                       color: Colors.orange,
                       fontWeight: FontWeight.w600,
@@ -356,9 +355,7 @@ class AdminHomeView extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------
-//          QUICK ACTION CARD ESTILO USUARIO
-// -------------------------------------------------------
+
 
 class AdminQuickActionCard extends StatelessWidget {
   final IconData icon;
